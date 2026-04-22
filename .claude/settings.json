@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv sync)",
+      "Bash(uv run *)",
+      "Bash(pnpm dev)",
+      "Bash(pnpm build)",
+      "Bash(pnpm run *)",
+      "Bash(pnpm install)",
+      "Bash(docker compose *)",
+      "Bash(psql *)",
+      "Bash(pytest *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import sys,json,subprocess,os; d=json.load(sys.stdin); f=d.get('tool_input',{}).get('file_path',''); f.endswith('.py') and os.path.exists(f) and subprocess.run(['uv','run','ruff','format',f],cwd=os.path.dirname(f) or '.')\""
+          }
+        ]
+      }
+    ]
+  }
+}
