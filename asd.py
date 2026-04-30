@@ -1,0 +1,176 @@
+from pathlib import Path
+
+svg = r"""<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1000" height="780" viewBox="0 0 1000 780" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#faf8ff"/>
+      <stop offset="100%" stop-color="#eef4ff"/>
+    </linearGradient>
+    <linearGradient id="elevatorMetal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9097a6"/>
+      <stop offset="50%" stop-color="#dfe4eb"/>
+      <stop offset="100%" stop-color="#8d95a4"/>
+    </linearGradient>
+    <style>
+      .label  { font: 700 24px Arial, sans-serif; fill: #1d2433; }
+      .small  { font: 600 18px Arial, sans-serif; fill: #344055; }
+      .counter{ font: 700 34px Arial, sans-serif; fill: #146c2e; }
+      .floorline  { stroke: #a6b0c2; stroke-width: 2; }
+      .building   { fill: url(#bg); stroke: #505b70; stroke-width: 4; }
+      .floorbox   { fill: rgba(255,255,255,0.55); }
+      .startFloor { fill: rgba(111,197,90,0.18); stroke: #4d9f38; stroke-width: 3; }
+      .parkingFloor { fill: rgba(76,135,245,0.16); stroke: #4c87f5; stroke-width: 3; }
+      .shaft      { fill: #c6ccd6; stroke: #5a6477; stroke-width: 3; }
+      .numcircle  { fill: #ffffff; stroke: #98a5bd; stroke-width: 3; }
+    </style>
+  </defs>
+
+  <!-- background -->
+  <rect x="0" y="0" width="1000" height="780" fill="#ffffff"/>
+
+  <!-- building: y=40 to y=740 -->
+  <rect x="40" y="40" width="520" height="700" class="building"/>
+  <rect x="30" y="28" width="540" height="22" fill="#707070" rx="4"/>
+
+  <!--
+    7 floors, each 90px tall:
+    4. Kat   y=80-170
+    3. Kat   y=170-260  (start)
+    2. Kat   y=260-350
+    1. Kat   y=350-440
+    Zemin    y=440-530
+    -1. Kat  y=530-620
+    -2. Kat  y=620-740  (parking, 120px)
+  -->
+  <g id="floors">
+    <rect x="40" y="80"  width="520" height="90"  class="floorbox"/>
+    <rect x="40" y="170" width="520" height="90"  class="startFloor"/>
+    <rect x="40" y="260" width="520" height="90"  class="floorbox"/>
+    <rect x="40" y="350" width="520" height="90"  class="floorbox"/>
+    <rect x="40" y="440" width="520" height="90"  class="floorbox"/>
+    <rect x="40" y="530" width="520" height="90"  class="floorbox"/>
+    <rect x="40" y="620" width="520" height="120" class="parkingFloor"/>
+
+    <line x1="40" y1="170" x2="560" y2="170" class="floorline"/>
+    <line x1="40" y1="260" x2="560" y2="260" class="floorline"/>
+    <line x1="40" y1="350" x2="560" y2="350" class="floorline"/>
+    <line x1="40" y1="440" x2="560" y2="440" class="floorline"/>
+    <line x1="40" y1="530" x2="560" y2="530" class="floorline"/>
+    <line x1="40" y1="620" x2="560" y2="620" class="floorline"/>
+
+    <text x="70" y="132" class="label">4. Kat</text>
+    <text x="70" y="222" class="label">3. Kat</text>
+    <text x="70" y="312" class="label">2. Kat</text>
+    <text x="70" y="402" class="label">1. Kat</text>
+    <text x="55" y="492" class="label">Zemin Kat</text>
+    <text x="70" y="582" class="label">-1. Kat</text>
+    <text x="70" y="665" class="label">-2. Kat</text>
+    <text x="70" y="697" class="small">(Otopark)</text>
+  </g>
+
+  <!-- elevator shaft -->
+  <rect x="365" y="80" width="120" height="660" class="shaft"/>
+
+  <!-- Sayaç counter panel (top-right, above floors) -->
+  <!--
+    Cycle = 6.6s. keyTime fractions:
+      0s=0  1s=0.1515  2s=0.3030  3s=0.4545  4s=0.6061  5s=0.7576  6.6s=1
+    Each digit is visible for exactly its 1-second window, then hidden.
+    repeatCount=indefinite resets the counter every loop.
+  -->
+  <g transform="translate(600,6)">
+    <rect x="0" y="0" width="160" height="95" fill="#f7fbf4" stroke="#3f9946" stroke-width="3" rx="10"/>
+    <text x="80" y="34" class="small" style="font-size:22px;text-anchor:middle;">Sayaç</text>
+    <text x="80" y="76" class="counter" text-anchor="middle">0
+      <animate attributeName="visibility" calcMode="discrete" repeatCount="indefinite" dur="6.6s"
+        keyTimes="0;0.1515;1" values="visible;hidden;hidden"/>
+    </text>
+    <text x="80" y="76" class="counter" text-anchor="middle" visibility="hidden">1
+      <animate attributeName="visibility" calcMode="discrete" repeatCount="indefinite" dur="6.6s"
+        keyTimes="0;0.1515;0.3030;1" values="hidden;visible;hidden;hidden"/>
+    </text>
+    <text x="80" y="76" class="counter" text-anchor="middle" visibility="hidden">2
+      <animate attributeName="visibility" calcMode="discrete" repeatCount="indefinite" dur="6.6s"
+        keyTimes="0;0.3030;0.4545;1" values="hidden;visible;hidden;hidden"/>
+    </text>
+    <text x="80" y="76" class="counter" text-anchor="middle" visibility="hidden">3
+      <animate attributeName="visibility" calcMode="discrete" repeatCount="indefinite" dur="6.6s"
+        keyTimes="0;0.4545;0.6061;1" values="hidden;visible;hidden;hidden"/>
+    </text>
+    <text x="80" y="76" class="counter" text-anchor="middle" visibility="hidden">4
+      <animate attributeName="visibility" calcMode="discrete" repeatCount="indefinite" dur="6.6s"
+        keyTimes="0;0.6061;0.7576;1" values="hidden;visible;hidden;hidden"/>
+    </text>
+    <text x="80" y="76" class="counter" text-anchor="middle" visibility="hidden">5
+      <animate attributeName="visibility" calcMode="discrete" repeatCount="indefinite" dur="6.6s"
+        keyTimes="0;0.7576;1" values="hidden;visible;visible"/>
+    </text>
+  </g>
+
+  <!-- woman on 3rd floor (outside elevator) -->
+  <!-- 3.kat floor line at y=260; woman feet at y=260 -->
+  <g id="womanOutside">
+    <set attributeName="visibility" to="visible" begin="0s"/>
+    <set attributeName="visibility" to="hidden"  begin="1.1s"/>
+    <circle cx="315" cy="192" r="12" fill="#f0c4a8"/>
+    <path d="M303 208 Q315 196 327 208 L325 238 L305 238 Z" fill="#d85c76"/>
+    <rect x="309" y="238" width="6" height="22" rx="3" fill="#2e5f9b"/>
+    <rect x="319" y="238" width="6" height="22" rx="3" fill="#2e5f9b"/>
+    <rect x="300" y="210" width="6" height="18" rx="3" fill="#f0c4a8"/>
+    <rect x="324" y="210" width="6" height="18" rx="3" fill="#f0c4a8"/>
+    <path d="M303 180 Q315 166 327 180" fill="#3a2a24"/>
+    <circle cx="309" cy="190" r="1.7"/><circle cx="320" cy="190" r="1.7"/>
+    <path d="M312 197 Q315 200 319 197" stroke="#8e5b4a" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- elevator cabin -->
+  <!-- 3.kat: y=170-260 → cabin top y=172; -2.kat: y=620-740 → cabin top y=637; travel=465 -->
+  <g id="elevatorCabin">
+    <animateTransform attributeName="transform"
+      type="translate"
+      values="0 0; 0 0; 0 465; 0 465"
+      keyTimes="0; 0.18; 0.84; 1"
+      dur="6.6s"
+      repeatCount="indefinite"/>
+    <rect x="382" y="172" width="86" height="86" rx="4" fill="url(#elevatorMetal)" stroke="#434c5e" stroke-width="3"/>
+    <line x1="425" y1="174" x2="425" y2="256" stroke="#7b8494" stroke-width="2"/>
+    <rect x="397" y="160" width="56" height="8" rx="2" fill="#1f232a"/>
+    <!-- woman inside elevator -->
+    <g>
+      <set attributeName="visibility" to="hidden"  begin="0s"/>
+      <set attributeName="visibility" to="visible" begin="1.1s"/>
+      <circle cx="425" cy="200" r="9" fill="#f0c4a8"/>
+      <path d="M416 213 Q425 204 434 213 L432 236 L418 236 Z" fill="#d85c76"/>
+      <rect x="420" y="236" width="4" height="16" rx="2" fill="#2e5f9b"/>
+      <rect x="427" y="236" width="4" height="16" rx="2" fill="#2e5f9b"/>
+      <path d="M416 191 Q425 180 434 191" fill="#3a2a24"/>
+    </g>
+  </g>
+
+  <!-- elevator call button on 3rd floor -->
+  <rect x="488" y="196" width="12" height="34" rx="3" fill="#e9eef4" stroke="#4a5467" stroke-width="2"/>
+  <circle cx="494" cy="208" r="3" fill="#75b843"/>
+  <circle cx="494" cy="220" r="3" fill="#75b843"/>
+
+  <!-- parking cars in -2. Kat (y=620-740) -->
+  <g transform="translate(160,648)">
+    <rect x="0"  y="26" width="86" height="22" rx="8" fill="#3f6db4"/>
+    <path d="M16 26 L30 8 H62 L74 26 Z" fill="#4e7cca"/>
+    <circle cx="20" cy="50" r="10" fill="#343434"/>
+    <circle cx="66" cy="50" r="10" fill="#343434"/>
+  </g>
+  <g transform="translate(258,648)">
+    <rect x="0"  y="20" width="74" height="20" rx="8" fill="#8b8e97"/>
+    <path d="M12 20 L25 6 H52 L63 20 Z" fill="#a4a8b3"/>
+    <circle cx="18" cy="42" r="9" fill="#343434"/>
+    <circle cx="57" cy="42" r="9" fill="#343434"/>
+  </g>
+
+</svg>
+"""
+
+path = Path("./api/visuals/animated_elevator_scenario.svg")
+path.write_text(svg, encoding="utf-8")
+
+print(f"Created {path}")
