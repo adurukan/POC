@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -15,3 +18,6 @@ app.add_middleware(
 
 app.mount("/visuals", StaticFiles(directory="visuals"), name="visuals")
 app.include_router(questions_router, prefix="/questions")
+
+schema_path = Path(__file__).resolve().parent.parent / "openapi.json"
+schema_path.write_text(json.dumps(app.openapi(), indent=2))
