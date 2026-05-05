@@ -49,30 +49,46 @@ export default function QuestionPanel({ onQuestionSelect }: Props) {
     onQuestionSelect(q)
   }
 
-  return (
-    <div className="panel">
-      <div className="panel-header">
-        <select defaultValue="" onChange={(e) => handleSubjectChange(e.target.value)}>
-          <option value="" disabled>Select subject</option>
-          {subjects.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+  const isTyping = selectedQuestion && displayedText.length < selectedQuestion.question_text.length
 
-        {questions.length > 0 && (
-          <select defaultValue="" onChange={(e) => handleQuestionChange(e.target.value)}>
-            <option value="" disabled>Select question</option>
-            {questions.map((q) => (
-              <option key={q.id} value={q.id}>Question {q.id}</option>
+  return (
+    <div className="panel-card area-question">
+      <div className="panel-head">
+        <span className="panel-title">Soru</span>
+        <div className="selector-row">
+          <select
+            className="select"
+            defaultValue=""
+            onChange={(e) => handleSubjectChange(e.target.value)}
+          >
+            <option value="" disabled>Konu seçin</option>
+            {subjects.map((s) => (
+              <option key={s} value={s}>{s}</option>
             ))}
           </select>
-        )}
+
+          {questions.length > 0 && (
+            <select
+              className="select"
+              defaultValue=""
+              onChange={(e) => handleQuestionChange(e.target.value)}
+            >
+              <option value="" disabled>Soru seçin</option>
+              {questions.map((q) => (
+                <option key={q.id} value={q.id}>Soru {q.id}</option>
+              ))}
+            </select>
+          )}
+        </div>
       </div>
 
       <div className="panel-body">
         {selectedQuestion
-          ? <p>{displayedText}</p>
-          : <p className="placeholder">Select a subject and question to begin.</p>
+          ? <p className="q-text">
+              {displayedText}
+              {isTyping && <span className="caret" />}
+            </p>
+          : <p className="placeholder">Bir konu ve soru seçerek başlayalım.</p>
         }
       </div>
     </div>

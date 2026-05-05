@@ -1,32 +1,14 @@
-/* ============================================================
-   Matemantık — Application styles
-   Tokens live in ./styles/tokens.css (imported in main.tsx)
-   ============================================================ */
+/* Local styles for the UI kit demo. Pulls tokens from colors_and_type.css. */
 
-@import 'katex/dist/katex.min.css';
-
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body, #root {
-  height: 100%;
-}
-
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
 body {
   font-family: var(--font-body);
   background: var(--bg);
   color: var(--fg-1);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ============================================================
-   LOGIN
-   ============================================================ */
-
+/* ── Login ─────────────────────────────────────────────── */
 .login-bg {
   min-height: 100vh;
   display: flex;
@@ -38,7 +20,6 @@ body {
     radial-gradient(50% 35% at 80% 75%, #fde6ff 0%, transparent 65%),
     var(--bg);
 }
-
 .login-card {
   width: 360px;
   background: var(--bg-card);
@@ -50,7 +31,6 @@ body {
   gap: 18px;
   border: 1px solid var(--ink-100);
 }
-
 .login-brand {
   display: flex;
   align-items: center;
@@ -58,44 +38,35 @@ body {
   align-self: center;
   margin-bottom: 4px;
 }
-
 .login-brand img { width: 36px; height: 36px; }
-
 .login-brand .word {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 24px;
-  letter-spacing: -0.02em;
+  letter-spacing: -.02em;
   color: var(--ink-900);
 }
-
 .login-brand .accent { color: var(--violet-500); }
-
 .login-tagline {
   text-align: center;
   font-size: 14px;
   color: var(--fg-2);
   margin: -4px 0 8px;
 }
-
 .field-label {
   font-family: var(--font-display);
   font-size: 12px;
   font-weight: 600;
   color: var(--ink-700);
   margin-bottom: 6px;
-  letter-spacing: 0.02em;
+  letter-spacing: .02em;
 }
-
 .error-text {
   color: var(--coral-600);
-  font-size: var(--fs-13);
+  font-size: 13px;
 }
 
-/* ============================================================
-   APP SHELL
-   ============================================================ */
-
+/* ── App shell ─────────────────────────────────────────── */
 .app-shell {
   height: 100vh;
   display: grid;
@@ -110,14 +81,9 @@ body {
     radial-gradient(70% 50% at 100% 0%, var(--violet-50) 0%, transparent 55%),
     var(--bg);
 }
-
 .area-question { grid-area: question; }
 .area-visual   { grid-area: visual; }
 .area-solution { grid-area: solution; }
-
-/* ============================================================
-   PANEL
-   ============================================================ */
 
 .panel-card {
   background: var(--bg-card);
@@ -138,33 +104,29 @@ body {
   flex-shrink: 0;
   gap: 12px;
 }
-
 .panel-title {
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 14px;
   color: var(--ink-800);
 }
-
 .panel-eyebrow {
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.08em;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--violet-600);
   font-weight: 600;
   white-space: nowrap;
 }
-
 .panel-body {
   flex: 1;
   overflow: auto;
   padding: 24px;
-  font-size: var(--fs-16);
+  font-size: 16px;
   line-height: 1.6;
   color: var(--fg-1);
 }
-
 .panel-foot {
   padding: 14px 20px;
   border-top: 1px solid var(--ink-100);
@@ -175,35 +137,27 @@ body {
   flex-shrink: 0;
   flex-wrap: nowrap;
 }
-
 .panel-foot > .btn { flex-shrink: 0; }
 .panel-foot > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
 .placeholder {
   color: var(--fg-3);
   font-style: italic;
 }
 
-/* ============================================================
-   QUESTION PANEL
-   ============================================================ */
-
+/* ── Question selectors ─────────────────────────────────── */
 .selector-row {
   display: flex;
   gap: 10px;
   flex: 1;
-  justify-content: flex-end;
 }
-
 .selector-row .select { width: auto; flex: 1; max-width: 260px; }
 
 .q-text {
   max-width: 56ch;
-  font-size: var(--fs-18);
+  font-size: 18px;
   line-height: 1.55;
   color: var(--ink-900);
 }
-
 .caret::after {
   content: '';
   display: inline-block;
@@ -211,16 +165,12 @@ body {
   height: 1em;
   background: var(--violet-500);
   margin-left: 2px;
-  vertical-align: -0.15em;
+  vertical-align: -.15em;
   animation: blink-caret 1s steps(1) infinite;
 }
-
 @keyframes blink-caret { 50% { opacity: 0; } }
 
-/* ============================================================
-   VISUAL PANEL
-   ============================================================ */
-
+/* ── Visual ─────────────────────────────────────────────── */
 .visual-canvas {
   width: 100%;
   height: 100%;
@@ -229,15 +179,10 @@ body {
   justify-content: center;
   background: linear-gradient(180deg, #faf8ff 0%, #eef4ff 100%);
 }
-
 .visual-canvas svg { max-width: 100%; max-height: 100%; height: auto; }
 
-/* ============================================================
-   SOLUTION STEPS
-   ============================================================ */
-
+/* ── Solution steps ─────────────────────────────────────── */
 .step-list { display: flex; flex-direction: column; gap: 10px; }
-
 .step {
   display: flex;
   align-items: center;
@@ -246,102 +191,68 @@ body {
   border-radius: 10px;
   background: var(--bg-card);
   border: 1px solid var(--ink-100);
-  animation: step-rise var(--dur-step) var(--ease-out) both;
+  animation: step-rise 240ms var(--ease-out) both;
 }
-
 .step.done { background: var(--violet-50); border-color: #e6dbff; }
-
 .step .num {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--violet-50);
-  color: var(--violet-700);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 12px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--violet-50); color: var(--violet-700);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 700; font-size: 12px;
   flex-shrink: 0;
 }
-
 .step.done .num { background: var(--violet-500); color: #fff; }
-
-.step .desc { flex: 1; font-size: var(--fs-14); color: var(--fg-2); }
-
+.step .desc { flex: 1; font-size: 14px; color: var(--fg-2); }
 .step .expr {
   font-family: var(--font-mono);
-  font-size: var(--fs-15);
+  font-size: 15px;
   font-weight: 500;
   color: var(--violet-600);
   white-space: nowrap;
 }
-
 @keyframes step-rise {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================================================
-   USER AVATAR
-   ============================================================ */
-
-.avatar-wrap {
-  position: fixed;
-  top: 16px;
-  right: 24px;
-  z-index: 100;
-}
-
+/* ── Avatar ─────────────────────────────────────────────── */
+.avatar-wrap { position: fixed; top: 16px; right: 24px; z-index: 100; }
 .avatar-btn {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: 50%;
   background: var(--violet-500);
-  color: var(--fg-on-violet);
-  font-family: var(--font-display);
+  color: #fff;
   font-weight: 700;
-  font-size: var(--fs-16);
+  font-family: var(--font-display);
+  font-size: 16px;
   border: none;
   cursor: pointer;
   box-shadow: var(--shadow-violet);
-  transition: background var(--dur-fast) var(--ease-out),
-              transform var(--dur-fast) var(--ease-out);
+  transition: background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
-
 .avatar-btn:hover  { background: var(--violet-600); }
 .avatar-btn:active { transform: scale(0.96); }
-
 .avatar-menu {
   position: absolute;
-  top: 48px;
-  right: 0;
-  min-width: 160px;
-  padding: 6px;
+  top: 48px; right: 0;
   background: var(--bg-card);
   border: 1px solid var(--ink-100);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-md);
+  min-width: 160px;
+  padding: 6px;
 }
-
-.avatar-menu .username {
-  color: var(--fg-3);
-  padding: 8px 12px;
-  font-size: 12px;
-}
-
 .avatar-menu button {
   width: 100%;
   padding: 10px 12px;
-  font-family: var(--font-body);
-  font-size: var(--fs-14);
-  text-align: left;
   background: none;
   border: none;
-  border-radius: var(--r-sm);
-  color: var(--fg-1);
+  text-align: left;
   cursor: pointer;
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--fg-1);
 }
-
 .avatar-menu button:hover { background: var(--bg-hover); }
+.avatar-menu .username { color: var(--fg-3); padding: 8px 12px; font-size: 12px; }

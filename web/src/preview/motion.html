@@ -1,0 +1,28 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:#fff;font-family:var(--font-body)}
+  .frame{box-sizing:border-box;width:700px;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .demo{display:flex;flex-direction:column;gap:8px}
+  .name{font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--ink-700);text-transform:uppercase;letter-spacing:.05em}
+  .meta{font-family:var(--font-mono);font-size:10px;color:var(--fg-3)}
+  .typewriter{padding:14px 16px;background:#fff;border-radius:10px;border:1px solid var(--ink-100);font-size:15px;color:var(--ink-800)}
+  .caret::after{content:'';display:inline-block;width:2px;height:1em;background:var(--violet-500);margin-left:2px;vertical-align:-.15em;animation:bl 1s steps(1) infinite}
+  @keyframes bl{50%{opacity:0}}
+  .ease{height:60px;border-radius:10px;background:linear-gradient(90deg,var(--violet-50),var(--violet-200));position:relative;overflow:hidden}
+  .ease::after{content:'';position:absolute;top:50%;left:8%;width:32px;height:32px;border-radius:8px;background:var(--violet-500);transform:translateY(-50%);animation:slide 2.4s var(--ease-out) infinite}
+  @keyframes slide{0%{left:8%}50%{left:calc(100% - 8% - 32px)}100%{left:8%}}
+  .step{padding:10px 14px;border-radius:8px;background:#fff;border:1px solid var(--ink-100);font-size:13px;animation:rise 2.4s var(--ease-out) infinite}
+  @keyframes rise{0%,30%{opacity:0;transform:translateY(8px)}40%,100%{opacity:1;transform:translateY(0)}}
+</style></head><body>
+<div class="frame">
+  <div class="demo"><span class="name">Typewriter</span><span class="meta">18ms / char</span><div class="typewriter">Bir alışveriş merkezinin<span class="caret"></span></div></div>
+  <div class="demo"><span class="name">Step rise</span><span class="meta">240ms · cubic-bezier(.2,.7,.2,1)</span><div class="step">x − 5 = y</div></div>
+  <div class="demo"><span class="name">Default ease</span><span class="meta">cubic-bezier(.2,.7,.2,1)</span><div class="ease"></div></div>
+  <div class="demo"><span class="name">Press</span><span class="meta">scale(0.98) · 80ms</span>
+    <button class="btn btn-primary" style="align-self:flex-start;animation:press 1.2s infinite">Tıkla</button>
+    <style>@keyframes press{0%,40%,100%{transform:scale(1)}50%,90%{transform:scale(.98)}}</style>
+  </div>
+</div>
+</body></html>

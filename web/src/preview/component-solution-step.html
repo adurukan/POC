@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--bg);font-family:var(--font-body)}
+  .frame{box-sizing:border-box;width:700px;padding:28px;display:flex;flex-direction:column;gap:12px}
+  .step{display:flex;align-items:baseline;gap:18px;padding:14px 18px;border-radius:10px;background:#fff;border:1px solid var(--ink-100)}
+  .num{width:24px;height:24px;border-radius:50%;background:var(--violet-50);color:var(--violet-700);font-family:var(--font-display);font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;align-self:center}
+  .desc{flex:1;font-size:14px;color:var(--fg-2)}
+  .expr{font-family:var(--font-mono);font-size:15px;font-weight:500;color:var(--violet-600);white-space:nowrap}
+  .step.done{background:linear-gradient(0deg,var(--violet-50),var(--violet-50)),#fff;border-color:#e6dbff}
+</style></head><body>
+<div class="frame">
+  <div class="step done"><span class="num">1</span><span class="desc">Ayşe is on the 3rd floor</span><span class="expr">x = 3</span></div>
+  <div class="step done"><span class="num">2</span><span class="desc">She goes down 5 floors to the parking lot</span><span class="expr">x − 5 = y</span></div>
+  <div class="step"><span class="num" style="background:#fff;border:1px dashed var(--ink-300);color:var(--ink-400)">3</span><span class="desc" style="color:var(--ink-400);font-style:italic">Reveal next step…</span><span class="expr" style="color:var(--ink-300)">y = ?</span></div>
+</div>
+</body></html>

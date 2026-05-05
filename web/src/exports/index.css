@@ -27,11 +27,11 @@ body {
    LOGIN
    ============================================================ */
 
-.login-bg {
-  min-height: 100vh;
+.login-container {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  min-height: 100vh;
   padding: 24px;
   background:
     radial-gradient(60% 40% at 30% 25%, var(--violet-100) 0%, transparent 60%),
@@ -39,71 +39,85 @@ body {
     var(--bg);
 }
 
-.login-card {
-  width: 360px;
-  background: var(--bg-card);
-  border-radius: var(--r-xl);
-  box-shadow: var(--shadow-lg);
-  padding: 36px 32px 32px;
+.login-form {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  width: 360px;
+  padding: 36px 32px 32px;
+  background: var(--bg-card);
   border: 1px solid var(--ink-100);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
 }
 
-.login-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  align-self: center;
-  margin-bottom: 4px;
-}
-
-.login-brand img { width: 36px; height: 36px; }
-
-.login-brand .word {
+.login-form h2 {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 24px;
   letter-spacing: -0.02em;
-  color: var(--ink-900);
-}
-
-.login-brand .accent { color: var(--violet-500); }
-
-.login-tagline {
   text-align: center;
-  font-size: 14px;
-  color: var(--fg-2);
-  margin: -4px 0 8px;
+  color: var(--ink-900);
+  margin-bottom: 4px;
 }
 
-.field-label {
+.login-form input {
+  font-family: var(--font-body);
+  font-size: var(--fs-14);
+  padding: 10px 14px;
+  border: 1px solid var(--ink-200);
+  border-radius: var(--r-sm);
+  background: var(--bg-card);
+  color: var(--fg-1);
+  transition: border-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.login-form input::placeholder {
+  color: var(--fg-3);
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: var(--violet-500);
+  box-shadow: 0 0 0 3px var(--violet-100);
+}
+
+.login-form button {
   font-family: var(--font-display);
-  font-size: 12px;
   font-weight: 600;
-  color: var(--ink-700);
-  margin-bottom: 6px;
-  letter-spacing: 0.02em;
+  font-size: var(--fs-16);
+  padding: 16px 28px;
+  background: var(--violet-500);
+  color: var(--fg-on-violet);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-violet);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
 }
 
-.error-text {
+.login-form button:hover  { background: var(--violet-600); }
+.login-form button:active { background: var(--violet-700); transform: scale(0.98); }
+
+.error {
   color: var(--coral-600);
   font-size: var(--fs-13);
 }
 
 /* ============================================================
-   APP SHELL
+   MAIN LAYOUT
    ============================================================ */
 
-.app-shell {
-  height: 100vh;
+.layout {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   grid-template-rows: 1fr 280px;
   grid-template-areas:
     "question visual"
     "solution solution";
+  height: 100vh;
   gap: 16px;
   padding: 16px;
   background:
@@ -111,166 +125,153 @@ body {
     var(--bg);
 }
 
-.area-question { grid-area: question; }
-.area-visual   { grid-area: visual; }
-.area-solution { grid-area: solution; }
+.layout-question { grid-area: question; }
+.layout-visual   { grid-area: visual; }
+.layout-solution { grid-area: solution; }
 
 /* ============================================================
-   PANEL
+   PANEL (shared shell for question / visual / solution)
    ============================================================ */
 
-.panel-card {
-  background: var(--bg-card);
-  border-radius: var(--r-lg);
-  border: 1px solid var(--ink-100);
-  box-shadow: var(--shadow-sm);
+.panel {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
-.panel-head {
+.panel-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   padding: 14px 20px;
   border-bottom: 1px solid var(--ink-100);
   flex-shrink: 0;
-  gap: 12px;
 }
 
-.panel-title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--ink-800);
+.panel-header select {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: var(--fs-14);
+  padding: 10px 14px;
+  border: 1px solid var(--ink-200);
+  border-radius: var(--r-sm);
+  background: var(--bg-card);
+  color: var(--fg-1);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
 }
 
-.panel-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--violet-600);
-  font-weight: 600;
-  white-space: nowrap;
+.panel-header select:focus {
+  outline: none;
+  border-color: var(--violet-500);
+  box-shadow: 0 0 0 3px var(--violet-100);
 }
 
 .panel-body {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
   padding: 24px;
   font-size: var(--fs-16);
-  line-height: 1.6;
-  color: var(--fg-1);
+  line-height: var(--lh-normal);
+  color: var(--ink-900);
 }
 
-.panel-foot {
+.panel-body p {
+  max-width: 56ch;
+  font-size: var(--fs-18);
+  line-height: 1.55;
+}
+
+.panel-body svg {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+}
+
+.panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
   padding: 14px 20px;
   border-top: 1px solid var(--ink-100);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
   flex-shrink: 0;
-  flex-wrap: nowrap;
 }
 
-.panel-foot > .btn { flex-shrink: 0; }
-.panel-foot > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.panel-footer button {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-14);
+  padding: 12px 20px;
+  background: var(--violet-500);
+  color: var(--fg-on-violet);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-violet);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+
+.panel-footer button:hover  { background: var(--violet-600); }
+.panel-footer button:active { background: var(--violet-700); transform: scale(0.98); }
+.panel-footer button:disabled {
+  background: var(--ink-300);
+  color: var(--ink-100);
+  box-shadow: none;
+  cursor: not-allowed;
+}
 
 .placeholder {
   color: var(--fg-3);
   font-style: italic;
 }
 
-/* ============================================================
-   QUESTION PANEL
-   ============================================================ */
-
-.selector-row {
-  display: flex;
-  gap: 10px;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.selector-row .select { width: auto; flex: 1; max-width: 260px; }
-
-.q-text {
-  max-width: 56ch;
-  font-size: var(--fs-18);
-  line-height: 1.55;
-  color: var(--ink-900);
-}
-
-.caret::after {
-  content: '';
-  display: inline-block;
-  width: 2px;
-  height: 1em;
-  background: var(--violet-500);
-  margin-left: 2px;
-  vertical-align: -0.15em;
-  animation: blink-caret 1s steps(1) infinite;
-}
-
-@keyframes blink-caret { 50% { opacity: 0; } }
-
-/* ============================================================
-   VISUAL PANEL
-   ============================================================ */
-
-.visual-canvas {
-  width: 100%;
-  height: 100%;
+/* ── Visual panel surface ──────────────────────────────── */
+.layout-visual .panel-body {
   display: flex;
   align-items: center;
   justify-content: center;
   background: linear-gradient(180deg, #faf8ff 0%, #eef4ff 100%);
 }
 
-.visual-canvas svg { max-width: 100%; max-height: 100%; height: auto; }
+/* ── Solution panel sizing ─────────────────────────────── */
+.solution-panel {
+  /* layout-solution row already constrains height to 280px */
+}
 
 /* ============================================================
    SOLUTION STEPS
    ============================================================ */
 
-.step-list { display: flex; flex-direction: column; gap: 10px; }
-
-.step {
+.solution-step {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 12px 16px;
-  border-radius: 10px;
+  margin-bottom: 10px;
   background: var(--bg-card);
   border: 1px solid var(--ink-100);
+  border-radius: 10px;
   animation: step-rise var(--dur-step) var(--ease-out) both;
 }
 
-.step.done { background: var(--violet-50); border-color: #e6dbff; }
-
-.step .num {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--violet-50);
-  color: var(--violet-700);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 12px;
-  flex-shrink: 0;
+.solution-step:last-child {
+  margin-bottom: 0;
 }
 
-.step.done .num { background: var(--violet-500); color: #fff; }
+.step-description {
+  flex: 1;
+  font-size: var(--fs-14);
+  color: var(--fg-2);
+}
 
-.step .desc { flex: 1; font-size: var(--fs-14); color: var(--fg-2); }
-
-.step .expr {
+.step-expression {
   font-family: var(--font-mono);
   font-size: var(--fs-15);
   font-weight: 500;
@@ -287,7 +288,7 @@ body {
    USER AVATAR
    ============================================================ */
 
-.avatar-wrap {
+.avatar-wrapper {
   position: fixed;
   top: 16px;
   right: 24px;
@@ -313,7 +314,7 @@ body {
 .avatar-btn:hover  { background: var(--violet-600); }
 .avatar-btn:active { transform: scale(0.96); }
 
-.avatar-menu {
+.avatar-dropdown {
   position: absolute;
   top: 48px;
   right: 0;
@@ -323,15 +324,10 @@ body {
   border: 1px solid var(--ink-100);
   border-radius: var(--r-md);
   box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
-.avatar-menu .username {
-  color: var(--fg-3);
-  padding: 8px 12px;
-  font-size: 12px;
-}
-
-.avatar-menu button {
+.avatar-dropdown button {
   width: 100%;
   padding: 10px 12px;
   font-family: var(--font-body);
@@ -344,4 +340,6 @@ body {
   cursor: pointer;
 }
 
-.avatar-menu button:hover { background: var(--bg-hover); }
+.avatar-dropdown button:hover {
+  background: var(--bg-hover);
+}

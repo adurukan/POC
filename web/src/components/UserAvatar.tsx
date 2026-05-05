@@ -9,7 +9,7 @@ export default function UserAvatar({ username, onLogout }: Props) {
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="avatar-wrapper">
+    <div className="avatar-wrap">
       <button
         className="avatar-btn"
         onClick={() => setOpen((o) => !o)}
@@ -18,8 +18,9 @@ export default function UserAvatar({ username, onLogout }: Props) {
         {username[0]?.toUpperCase()}
       </button>
       {open && (
-        <div className="avatar-dropdown">
-          <button onClick={onLogout}>Sign out</button>
+        <div className="avatar-menu">
+          <div className="username">{username}</div>
+          <button onMouseDown={onLogout}>Çıkış yap</button>
         </div>
       )}
     </div>

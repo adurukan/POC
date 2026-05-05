@@ -14,17 +14,11 @@ export default function MainLayout({ username, onLogout }: Props) {
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionResponse | null>(null)
 
   return (
-    <div className="layout">
+    <div className="app-shell">
       <UserAvatar username={username} onLogout={onLogout} />
-      <div className="layout-question">
-        <QuestionPanel onQuestionSelect={setSelectedQuestion} />
-      </div>
-      <div className="layout-visual">
-        <VisualPanel question={selectedQuestion} />
-      </div>
-      <div className="layout-solution">
-        <SolutionPanel question={selectedQuestion} />
-      </div>
+      <QuestionPanel onQuestionSelect={setSelectedQuestion} />
+      <VisualPanel question={selectedQuestion} />
+      <SolutionPanel question={selectedQuestion} />
     </div>
   )
 }

@@ -1,0 +1,38 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:#fff;font-family:var(--font-body)}
+  .frame{box-sizing:border-box;width:700px;padding:24px}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+  .sw{aspect-ratio:1.4/1;border-radius:10px;display:flex;align-items:flex-end;padding:8px;font-family:var(--font-mono);font-size:10px;border:1px solid rgba(0,0,0,.06)}
+  .sw.dark{color:#fff}.sw.light{color:var(--ink-900)}
+  .label{font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--ink-600);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+</style></head><body>
+<div class="frame">
+  <div class="label">Cyan · accent (illustration only)</div>
+  <div class="grid">
+    <div class="sw light" style="background:#e2f4ff">100<br>#e2f4ff</div>
+    <div class="sw light" style="background:#95d8ff">300<br>#95d8ff</div>
+    <div class="sw dark"  style="background:#47bfff">500<br>#47bfff</div>
+    <div class="sw dark"  style="background:#1a8acc">700<br>#1a8acc</div>
+    <div class="sw light" style="background:#fff;border:1px solid var(--ink-200)">—</div>
+  </div>
+  <div class="label">Math green · positive / correct</div>
+  <div class="grid">
+    <div class="sw light" style="background:#d6efdc">100<br>#d6efdc</div>
+    <div class="sw dark"  style="background:#4d9f38">500<br>#4d9f38</div>
+    <div class="sw dark"  style="background:#146c2e">600<br>#146c2e</div>
+    <div class="sw light" style="background:#fff;border:1px solid var(--ink-200)">—</div>
+    <div class="sw light" style="background:#fff;border:1px solid var(--ink-200)">—</div>
+  </div>
+  <div class="label">Coral · negative / error</div>
+  <div class="grid">
+    <div class="sw dark" style="background:#f25c5c">500<br>#f25c5c</div>
+    <div class="sw dark" style="background:#dc2626">600<br>#dc2626</div>
+    <div class="sw light" style="background:#fff;border:1px solid var(--ink-200)">—</div>
+    <div class="sw light" style="background:#fff;border:1px solid var(--ink-200)">—</div>
+    <div class="sw light" style="background:#fff;border:1px solid var(--ink-200)">—</div>
+  </div>
+</div>
+</body></html>

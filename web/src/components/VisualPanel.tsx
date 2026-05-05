@@ -20,12 +20,20 @@ export default function VisualPanel({ question }: Props) {
   }, [question])
 
   return (
-    <div className="panel">
-      <div className="panel-body">
-        {svgContent
-          ? <div dangerouslySetInnerHTML={{ __html: svgContent }} />
-          : <p className="placeholder">No visual available for this question.</p>
-        }
+    <div className="panel-card area-visual">
+      <div className="panel-head">
+        <span className="panel-title">Görsel</span>
+        <span className="panel-eyebrow">SVG</span>
+      </div>
+      <div className="panel-body" style={{ padding: 0 }}>
+        <div className="visual-canvas">
+          {svgContent
+            ? <div dangerouslySetInnerHTML={{ __html: svgContent }} />
+            : <p className="placeholder" style={{ padding: 24 }}>
+                {question ? 'Bu soru için görsel yok.' : 'Bir soru seçildiğinde burada görselleştireceğiz.'}
+              </p>
+          }
+        </div>
       </div>
     </div>
   )
