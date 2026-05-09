@@ -10,6 +10,15 @@ export default function App() {
     localStorage.getItem('username') ?? ''
   )
 
+  const [lang, setLang] = useState<'tr' | 'en'>(
+  (localStorage.getItem('lang') as 'tr' | 'en') ?? 'tr'
+)
+
+  function handleLangChange(next: 'tr' | 'en') {
+    setLang(next)
+    localStorage.setItem('lang', next)
+  }
+
   function handleLogin(name: string) {
     setUsername(name)
     setLoggedIn(true)
@@ -26,5 +35,10 @@ export default function App() {
     return <LoginPage onLogin={handleLogin} />
   }
 
-  return <MainLayout username={username} onLogout={handleLogout} />
+  return <MainLayout
+  username={username}
+  onLogout={handleLogout}
+  lang={lang}
+  onLangChange={handleLangChange}
+/>
 }

@@ -282,66 +282,295 @@ body {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 /* ============================================================
-   USER AVATAR
+   Profile Button — Matemantık design tokens
+   Drop-in companion to UserAvatar; classes prefixed `pb-`
    ============================================================ */
 
-.avatar-wrap {
-  position: fixed;
-  top: 16px;
-  right: 24px;
-  z-index: 100;
+.pb-wrap {
+  position: relative;
+  font-family: var(--font-body);
+  display: inline-block;
 }
 
-.avatar-btn {
-  width: 40px;
+/* ── Trigger: pill (Variant A) ───────────────────────────── */
+.pb-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px 5px 5px;
   height: 40px;
+  border-radius: var(--r-pill);
+  background: var(--bg-card);
+  border: 1px solid var(--ink-200);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font-family: var(--font-display);
+  color: var(--ink-900);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.pb-pill:hover {
+  background: var(--bg-hover);
+  border-color: var(--ink-300);
+  box-shadow: var(--shadow-md);
+}
+.pb-pill:active { transform: scale(0.98); }
+.pb-pill:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.pb-pill.is-open {
+  background: var(--bg-card);
+  border-color: var(--violet-200);
+  box-shadow: 0 0 0 3px var(--violet-100);
+}
+
+.pb-pill__avatar {
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: var(--violet-500);
   color: var(--fg-on-violet);
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--fs-16);
-  border: none;
-  cursor: pointer;
-  box-shadow: var(--shadow-violet);
-  transition: background var(--dur-fast) var(--ease-out),
-              transform var(--dur-fast) var(--ease-out);
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-image: linear-gradient(135deg, var(--violet-400) 0%, var(--violet-600) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
 }
 
-.avatar-btn:hover  { background: var(--violet-600); }
-.avatar-btn:active { transform: scale(0.96); }
+.pb-pill__name {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-.avatar-menu {
+/* ── Trigger: avatar-only (Variant B) ────────────────────── */
+.pb-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  color: var(--fg-on-violet);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--fs-16);
+  background: linear-gradient(135deg, var(--violet-400) 0%, var(--violet-600) 100%);
+  box-shadow:
+    var(--shadow-violet),
+    inset 0 0 0 1px rgba(255,255,255,.18);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    filter var(--dur-fast) var(--ease-out);
+}
+.pb-avatar:hover { filter: brightness(1.06); }
+.pb-avatar:active { transform: scale(0.96); }
+.pb-avatar:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.pb-avatar.is-open {
+  box-shadow:
+    var(--shadow-violet),
+    0 0 0 3px var(--bg),
+    0 0 0 5px var(--violet-300),
+    inset 0 0 0 1px rgba(255,255,255,.18);
+}
+
+/* ── Menu surface ────────────────────────────────────────── */
+.pb-menu {
   position: absolute;
-  top: 48px;
+  top: calc(100% + 10px);
   right: 0;
-  min-width: 160px;
+  min-width: 280px;
   padding: 6px;
   background: var(--bg-card);
   border: 1px solid var(--ink-100);
-  border-radius: var(--r-md);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  /* anim */
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top right;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+.pb-menu.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
 }
 
-.avatar-menu .username {
-  color: var(--fg-3);
-  padding: 8px 12px;
-  font-size: 12px;
+/* identity header */
+.pb-menu__id {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px 12px;
 }
-
-.avatar-menu button {
-  width: 100%;
-  padding: 10px 12px;
+.pb-menu__avatar-lg {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--violet-400) 0%, var(--violet-600) 100%);
+  color: var(--fg-on-violet);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+}
+.pb-menu__id-text { min-width: 0; }
+.pb-menu__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink-900);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pb-menu__sub {
   font-family: var(--font-body);
-  font-size: var(--fs-14);
-  text-align: left;
-  background: none;
-  border: none;
-  border-radius: var(--r-sm);
-  color: var(--fg-1);
-  cursor: pointer;
+  font-size: 12px;
+  color: var(--fg-3);
+  line-height: 1.3;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.avatar-menu button:hover { background: var(--bg-hover); }
+.pb-menu__divider {
+  height: 1px;
+  background: var(--ink-100);
+  margin: 4px 6px;
+}
+
+/* section */
+.pb-menu__section { padding: 4px 4px 6px; }
+.pb-menu__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  padding: 6px 8px 8px;
+}
+.pb-menu__label svg { color: var(--ink-400); }
+
+/* segmented language switch (Variant A) */
+.pb-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  background: var(--bg-sunken);
+  border-radius: var(--r-md);
+}
+.pb-seg__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--fg-2);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
+}
+.pb-seg__btn:hover { color: var(--ink-900); }
+.pb-seg__btn.is-active {
+  background: var(--bg-card);
+  color: var(--ink-900);
+  box-shadow: var(--shadow-sm), 0 0 0 1px var(--ink-200);
+}
+
+/* listed language rows (Variant B) */
+.pb-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink-900);
+  text-align: left;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.pb-row:hover { background: var(--bg-hover); }
+.pb-row.is-active { background: var(--violet-50); }
+.pb-row__label {
+  flex: 1;
+  font-weight: 500;
+}
+.pb-row.is-active .pb-row__label { font-weight: 600; color: var(--violet-700); }
+
+/* destructive action */
+.pb-menu__action {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-900);
+  text-align: left;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.pb-menu__action:hover { background: var(--bg-hover); }
+.pb-menu__action--danger { color: var(--coral-600); }
+.pb-menu__action--danger:hover { background: #fff0f0; color: var(--coral-600); }
+.pb-menu__action--danger svg { color: currentColor; }
+
+/* focus rings inside menu */
+.pb-seg__btn:focus-visible,
+.pb-row:focus-visible,
+.pb-menu__action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--violet-100), 0 0 0 3px var(--violet-500);
+}
+
