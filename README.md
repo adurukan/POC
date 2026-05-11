@@ -34,82 +34,99 @@ All DB responsibilities are centralized in `db/`:
 
 `api/`, `pipeline/`, and `agents/` share this DB layer.
 
-## Run App (Backend + Frontend)
+## Local Dev: Step by Step
 
-### Backend (FastAPI)
+Run all commands from repo root unless noted otherwise.
 
-Run from repo root:
+### 1) Start Docker services (DB + bootstrap)
 
 ```bash
-cd api                                      # enter backend folder
-uv run uvicorn main:app --reload           # start FastAPI in dev mode
+docker compose up -d --build                 # start PostgreSQL + one-shot db-bootstrap (migrations + seed)
 ```
 
-### Frontend (Vite + React)
-
-Run from repo root:
+### 2) Verify Docker health
 
 ```bash
-cd web                                      # enter frontend folder
-pnpm dev                                    # start Vite dev server
-```
-
-## Database Bootstrap (Auto Migrate + Auto Seed)
-
-### 1) Start services
-
-```bash
-docker compose up -d --build                # start DB + one-shot bootstrap
-docker compose ps                            # check long-running services
-docker compose ps -a db-bootstrap            # confirm bootstrap exit status
+docker compose ps                             # check that db is Up
+docker compose ps -a db-bootstrap             # check that bootstrap exited successfully
+docker compose logs db-bootstrap              # inspect migration + seed logs
 ```
 
 What to check:
 
 - `db` is `Up`.
-- `db-bootstrap` runs and exits successfully (check via `docker compose ps -a db-bootstrap`).
+- `db-bootstrap` finished with `Exit 0`.
+- Logs contain successful Alembic upgrade and `python -m db.seed all`.
 
-### 2) Inspect bootstrap logs
+### 3) Run backend (Terminal 1)
 
 ```bash
-docker compose logs db-bootstrap             # view migrate+seed logs
+cd api                                        # enter backend folder
+uv run uvicorn main:app --reload             # start FastAPI
 ```
 
-What to check:
+### 4) Run frontend (Terminal 2)
 
-- Alembic upgrade succeeds.
-- `python -m db.seed all` succeeds.
+```bash
+cd web                                        # enter frontend folder
+pnpm dev                                      # start Vite dev server
+```
 
-Important:
+### 5) Verify DB tables and contents (Terminal 3)
 
-- Canonical seed runs in **exact-sync mode** for included tables.
-- Any extra local rows in those tables are removed on each bootstrap run.
+```bash
+docker compose exec db psql -U app -d teachingai   # open psql shell inside db container
+```
+
+Inside `psql`, run:
+
+```sql
+\conninfo                                     -- confirm current DB/user
+SHOW search_path;                             -- usually "$user", public
+\dt                                           -- list all tables
+
+SELECT COUNT(*) AS questions FROM questions;
+SELECT COUNT(*) AS documents FROM documents;
+SELECT COUNT(*) AS sections FROM document_sections;
+SELECT COUNT(*) AS packs FROM section_knowledge_packs;
+SELECT COUNT(*) AS pending FROM pending_questions;
+SELECT COUNT(*) AS problems FROM problems;
+
+SELECT id, subject_name, left(question_text, 120) FROM questions ORDER BY id DESC LIMIT 5;
+SELECT id, status, started_at, finished_at FROM ingestion_runs ORDER BY id DESC LIMIT 5;
+```
+
+Exit `psql`:
+
+```sql
+\q
+```
+
+### 6) (Optional) Reset everything from scratch
+
+```bash
+docker compose down -v                        # remove containers + DB volume
+docker compose up -d --build                  # recreate DB and rerun bootstrap
+docker compose logs db-bootstrap              # verify migrations + seed again
+```
 
 ## Manual DB Commands
 
-### Migration
+### Migration (manual)
 
 ```bash
-uv run alembic -c db/alembic.ini heads      # show migration heads
-uv run alembic -c db/alembic.ini upgrade head  # apply all migrations
-uv run alembic -c db/alembic.ini current    # show current revision
+uv run alembic -c db/alembic.ini heads        # show migration heads
+uv run alembic -c db/alembic.ini upgrade head # apply all migrations
+uv run alembic -c db/alembic.ini current      # show current revision
 ```
 
-### Seed
+### Seed (manual)
 
 ```bash
-uv run python -m db.seed --help             # show seeder commands
-uv run python -m db.seed all                # exact-sync canonical seed tables
-uv run python -m db.seed questions          # exact-sync questions table only
-uv run python -m db.seed export             # export current DB into seed fixtures
-```
-
-### Reset everything
-
-```bash
-docker compose down -v                       # remove containers + DB volume
-docker compose up -d --build                # recreate from scratch
-docker compose logs db-bootstrap             # verify migration+seed success
+uv run python -m db.seed --help               # show seeder commands
+uv run python -m db.seed all                  # exact-sync canonical seed tables
+uv run python -m db.seed questions            # exact-sync only questions table
+uv run python -m db.seed export               # export current DB into seed fixtures
 ```
 
 ## Canonical Seed Coverage
