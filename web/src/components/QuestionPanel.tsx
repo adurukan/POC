@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { getSubjects, getQuestions } from '../api/client'
+import { getQuestions, getSubjects } from '../api/client'
 import type { QuestionResponse } from '../api/client'
+import LessonPanel from './LessonPanel'
 
 interface Props {
   onQuestionSelect: (question: QuestionResponse | null) => void
@@ -10,27 +11,10 @@ export default function QuestionPanel({ onQuestionSelect }: Props) {
   const [subjects, setSubjects] = useState<string[]>([])
   const [questions, setQuestions] = useState<QuestionResponse[]>([])
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionResponse | null>(null)
-  const [displayedText, setDisplayedText] = useState('')
 
   useEffect(() => {
     getSubjects().then(setSubjects)
   }, [])
-
-  useEffect(() => {
-    if (!selectedQuestion) {
-      setDisplayedText('')
-      return
-    }
-    setDisplayedText('')
-    let i = 0
-    const text = selectedQuestion.question_text
-    const interval = setInterval(() => {
-      i++
-      setDisplayedText(text.slice(0, i))
-      if (i >= text.length) clearInterval(interval)
-    }, 18)
-    return () => clearInterval(interval)
-  }, [selectedQuestion])
 
   async function handleSubjectChange(subject: string) {
     setSelectedQuestion(null)
@@ -49,48 +33,75 @@ export default function QuestionPanel({ onQuestionSelect }: Props) {
     onQuestionSelect(q)
   }
 
-  const isTyping = selectedQuestion && displayedText.length < selectedQuestion.question_text.length
-
-  return (
-    <div className="panel-card area-question">
-      <div className="panel-head">
-        <span className="panel-title">Soru</span>
-        <div className="selector-row">
-          <select
-            className="select"
-            defaultValue=""
-            onChange={(e) => handleSubjectChange(e.target.value)}
-          >
-            <option value="" disabled>Konu seçin</option>
-            {subjects.map((s) => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
-
-          {questions.length > 0 && (
+  if (!selectedQuestion) {
+    return (
+      <div className="panel-card area-question">
+        <div className="panel-head">
+          <span className="panel-title">Soru</span>
+          <div className="selector-row">
             <select
-              className="select"
+              className="select select-fixed-subject"
               defaultValue=""
-              onChange={(e) => handleQuestionChange(e.target.value)}
+              onChange={(e) => handleSubjectChange(e.target.value)}
             >
-              <option value="" disabled>Soru seçin</option>
-              {questions.map((q) => (
-                <option key={q.id} value={q.id}>Soru {q.id}</option>
+              <option value="" disabled>Konu seçin</option>
+              {subjects.map((s) => (
+                <option key={s} value={s}>{s}</option>
               ))}
             </select>
-          )}
+
+            {questions.length > 0 && (
+              <select
+                className="select select-fixed-question"
+                defaultValue=""
+                onChange={(e) => handleQuestionChange(e.target.value)}
+              >
+                <option value="" disabled>Soru seçin</option>
+                {questions.map((q) => (
+                  <option key={q.id} value={q.id}>Soru {q.id}</option>
+                ))}
+              </select>
+            )}
+          </div>
+        </div>
+
+        <div className="panel-body">
+          <p className="placeholder">Bir konu ve soru seçerek başlayalım.</p>
         </div>
       </div>
+    )
+  }
 
-      <div className="panel-body">
-        {selectedQuestion
-          ? <p className="q-text">
-              {displayedText}
-              {isTyping && <span className="caret" />}
-            </p>
-          : <p className="placeholder">Bir konu ve soru seçerek başlayalım.</p>
-        }
+  return (
+    <div className="area-question" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      <div className="selector-row" style={{ display: 'flex', gap: 8 }}>
+        <select
+          className="select select-fixed-subject"
+          value={selectedQuestion.subject_name}
+          onChange={(e) => handleSubjectChange(e.target.value)}
+        >
+          <option value="" disabled>Konu seçin</option>
+          {subjects.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+        {questions.length > 0 && (
+          <select
+            className="select select-fixed-question"
+            value={selectedQuestion.id}
+            onChange={(e) => handleQuestionChange(e.target.value)}
+          >
+            {questions.map((q) => (
+              <option key={q.id} value={q.id}>Soru {q.id}</option>
+            ))}
+          </select>
+        )}
       </div>
+
+      <LessonPanel
+        question={selectedQuestion.question_text}
+        steps={selectedQuestion.solution_steps}
+      />
     </div>
   )
 }

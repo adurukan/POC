@@ -3,9 +3,9 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import select, asc
 
-from database import get_db
-from models.question import Question
-from schemas.question import QuestionResponse
+from db.database import get_db
+from api.models.question import Question
+from api.schemas.question import QuestionResponse
 
 router = APIRouter()
 

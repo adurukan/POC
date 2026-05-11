@@ -1,0 +1,1540 @@
+[
+  {
+    "request_id": "req_08367d33",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "button_step",
+        "p5_sketch": "let triangleAngles = [50, 65, null];\nlet selectedAngles = [];\nlet sumSelected = 0;\nlet missingAngle = null;\nlet stage = 0;\nlet feedbackText = 'İki açıyı seç.';\nlet angleButtons = [];\nlet calcBtn, resetBtn;\n\nfunction setup() {\n  createCanvas(560, 340);\n  textFont('sans-serif');\n  initializeGame();\n}\n\nfunction initializeGame() {\n  resetGame();\n  angleButtons = [\n    { label: '50°', value: 50, x: 396, y: 100, w: 56, h: 34 },\n    { label: '65°', value: 65, x: 456, y: 100, w: 56, h: 34 }\n  ];\n  calcBtn = { x: 396, y: 150, w: 116, h: 34 };\n  resetBtn = { x: 396, y: 194, w: 116, h: 34 };\n}\n\nfunction resetGame() {\n  selectedAngles = [];\n  sumSelected = 0;\n  missingAngle = null;\n  stage = 0;\n  feedbackText = 'İki açıyı seç.';\n}\n\nfunction draw() {\n  background(248);\n  fill(30);\n  textSize(18);\n  text('Üçgenin eksik açısını bul', 16, 34);\n\n  drawPlayArea();\n  drawControls();\n  drawFeedback();\n}\n\nfunction drawPlayArea() {\n  fill(255);\n  stroke(210);\n  rect(16, 56, 360, 220, 10);\n\n  push();\n  translate(110, 230);\n  stroke(70);\n  strokeWeight(2);\n  line(0, 0, 120, 0);\n  line(0, 0, 70, -115);\n  line(120, 0, 70, -115);\n  pop();\n\n  drawAngleLabel(50, 98, 204, selectedAngles.includes(50));\n  drawAngleLabel(65, 165, 204, selectedAngles.includes(65));\n  drawAngleLabel(missingAngle !== null ? missingAngle : '?', 138, 88, false, true);\n\n  fill(60);\n  noStroke();\n  textSize(13);\n  text('Seçilenler:', 28, 78);\n  let selText = selectedAngles.length ? selectedAngles.map(a => a + '°').join(' + ') : '—';\n  text(selText, 28, 98);\n  textSize(15);\n  text('Bir üçgende iç açılar toplamı 180°', 28, 124);\n}\n\nfunction drawAngleLabel(value, x, y, selected, isMissing = false) {\n  push();\n  translate(x, y);\n  fill(isMissing ? color(255, 240, 200) : selected ? color(210, 240, 220) : 255);\n  stroke(selected ? color(60, 160, 90) : 120);\n  rect(0, 0, 50, 28, 8);\n  fill(30);\n  noStroke();\n  textAlign(CENTER, CENTER);\n  textSize(14);\n  text(String(value), 25, 14);\n  pop();\n}\n\nfunction drawControls() {\n  fill(255);\n  stroke(210);\n  rect(384, 56, 160, 220, 10);\n  fill(30);\n  textSize(13);\n  text('Kontrol', 398, 78);\n\n  for (let b of angleButtons) {\n    let over = mouseX >= b.x && mouseX <= b.x + b.w && mouseY >= b.y && mouseY <= b.y + b.h;\n    fill(over ? color(230, 235, 255) : 245);\n    stroke(120);\n    rect(b.x, b.y, b.w, b.h, 8);\n    fill(20);\n    noStroke();\n    textAlign(CENTER, CENTER);\n    textSize(15);\n    text(b.label, b.x + b.w / 2, b.y + b.h / 2);\n  }\n\n  drawButton(calcBtn, 'Hesapla');\n  drawButton(resetBtn, 'Sıfırla');\n\n  fill(60);\n  textAlign(LEFT, TOP);\n  textSize(12);\n  text('İpucu:\\nÖnce toplamı bul.', 396, 244);\n}\n\nfunction drawButton(btn, label) {\n  let over = mouseX >= btn.x && mouseX <= btn.x + btn.w && mouseY >= btn.y && mouseY <= btn.y + btn.h;\n  fill(over ? color(255, 245, 210) : color(250));\n  stroke(120);\n  rect(btn.x, btn.y, btn.w, btn.h, 8);\n  fill(20);\n  noStroke();\n  textAlign(CENTER, CENTER);\n  textSize(14);\n  text(label, btn.x + btn.w / 2, btn.y + btn.h / 2);\n}\n\nfunction drawFeedback() {\n  fill(255);\n  stroke(210);\n  rect(16, 284, 528, 44, 10);\n  fill(30);\n  noStroke();\n  textAlign(LEFT, CENTER);\n  textSize(14);\n  text(feedbackText, 28, 306, 500, 22);\n}\n\nfunction mousePressed() {\n  for (let b of angleButtons) {\n    if (hit(b)) {\n      if (!selectedAngles.includes(b.value)) selectedAngles.push(b.value);\n      else selectedAngles = selectedAngles.filter(v => v !== b.value);\n      sumSelected = selectedAngles.reduce((a, v) => a + v, 0);\n      feedbackText = 'Seçilen toplam: ' + sumSelected + '°';\n      return;\n    }\n  }\n  if (hit(calcBtn)) {\n    if (selectedAngles.length < 2) {\n      feedbackText = 'İki açıyı da seçmelisin.';\n      return;\n    }\n    if (sumSelected === 115) {\n      missingAngle = 180 - sumSelected;\n      stage = 1;\n      feedbackText = 'Harika! Eksik açı ' + missingAngle + '°.';\n    } else {\n      feedbackText = 'Toplamı kontrol et. 180°’den çıkar.';\n    }\n    return;\n  }\n  if (hit(resetBtn)) {\n    resetGame();\n  }\n}\n\nfunction hit(b) {\n  return mouseX >= b.x && mouseX <= b.x + b.w && mouseY >= b.y && mouseY <= b.y + b.h;\n}\n",
+        "rationale": "Bu mikro-oyun, soru metnini tekrar etmeden aynı kavramı etkileşimle çalıştırır: öğrenci verilen iki açıya tıklayıp toplamı görür, ardından 180° ilişkisini kullanarak eksik açıyı çıkarır. Tek ana mekanik tıklama-temelli seçim ve kontrol olduğu için 5. sınıf düzeyinde basit, hızlı ve anlaşılırdır. Geri bildirimler, neden çıkarma yapıldığını vurgulayarak geometrik nicelikler kazanımını destekler.",
+        "state_model": {
+          "tracked_vars": [
+            "selected_angles",
+            "sum_selected",
+            "missing_angle",
+            "stage",
+            "feedback_text",
+            "triangle_angles"
+          ]
+        },
+        "layout_model": {
+          "boxes": [
+            {
+              "h": 36,
+              "w": 528,
+              "x": 16,
+              "y": 12,
+              "id": "title"
+            },
+            {
+              "h": 220,
+              "w": 360,
+              "x": 16,
+              "y": 56,
+              "id": "play_area"
+            },
+            {
+              "h": 220,
+              "w": 160,
+              "x": 384,
+              "y": 56,
+              "id": "controls"
+            },
+            {
+              "h": 44,
+              "w": 528,
+              "x": 16,
+              "y": 284,
+              "id": "feedback"
+            }
+          ],
+          "canvas_width": 560,
+          "target_panel": "top_right_30pct",
+          "canvas_height": 340
+        },
+        "learning_goal": "Öğrenci, bir üçgende iç açılar toplamının 180° olduğunu kullanarak verilen iki açının toplamını bulur ve üçüncü açıyı çıkarma ile keşfeder.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Harika! Üçgenin iç açıları 180° eder. Eksik açı 65°.",
+          "on_incorrect": "Bir üçgende toplam 180° olmalı. Önce iki açıyı topla, sonra 180°’den çıkar."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouse"
+          ],
+          "affordances": [
+            "Tıklanabilir açılar",
+            "Hesapla butonu",
+            "Sıfırla butonu"
+          ],
+          "user_actions": [
+            "50° ve 65° etiketlerine tıkla",
+            "Hesapla'ya bas",
+            "Gerekirse Sıfırla ile yeniden dene"
+          ]
+        },
+        "success_condition": "İki verilen açı seçilip toplamları hesaplandıktan sonra 180°'den çıkarılarak eksik açı 65° bulunur ve onaylanır.",
+        "instructions_short": "İki açıyı birleştir, sonra 180°’den çıkar. Eksik açıyı bul!"
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, üçgenin iç açıları toplamı bilgisini yalnızca sonuç olarak değil, ilişki kurarak kullanmayı ölçer. Öğrencinin neden çıkarma yaptığını açıklaması, geometrik nicelikler kazanımını destekler.",
+        "question_text": "Bir üçgende iki iç açının ölçüleri 50° ve 65°’tir. Üçüncü açının ölçüsünü bulmadan önce, neden bu açının diğer ikisiyle ilişkili olduğunu kısaca açıkla ve sonra üçüncü açıyı hesapla.",
+        "expected_answer": "Bir üçgenin iç açılarının toplamı 180° olduğu için 180° - 50° - 65° = 65° olur. Üçüncü açı 65°’tir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Üçgen iç açıları toplamı = 180°",
+            "description": "Bir üçgende üç iç açının toplamı her zaman 180°’dir. Bu yüzden üçüncü açı, verilen iki açının toplamını 180°’den çıkararak bulunur; yani diğer iki açıyla doğrudan ilişkilidir."
+          },
+          {
+            "expression": "50° + 65° = 115°",
+            "description": "Verilen açıları toplayalım: 50° + 65° = 115°."
+          },
+          {
+            "expression": "180° - 50° - 65° = 65°",
+            "description": "180°’den bu toplamı çıkaralım: 180° - 115° = 65°. Böylece üçüncü açı bulunur."
+          },
+          {
+            "expression": "3. açı = 65°",
+            "description": "Sonuç olarak üçüncü iç açı 65°’tir."
+          }
+        ],
+        "final_answer": "Üçüncü açı 65°’tir."
+      },
+      "request_id": "req_08367d33",
+      "assembled_at": "2026-05-11T00:20:41.841909+00:00"
+    }
+  },
+  {
+    "request_id": "req_0920a1c9",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "manipulation",
+        "p5_sketch": "let vertexX, vertexY;\nlet leftRayAngle, rightRayAngle;\nlet leftRayLength, rightRayLength;\nlet draggingHandle = null;\nlet mode = 'explore';\nlet angleDeg = 0;\nlet showHint = true;\nlet btnNew, btnReset;\nlet handleL, handleR;\n\nfunction setup() {\n  createCanvas(560, 340);\n  textFont('sans-serif');\n  initializeGame();\n}\n\nfunction initializeGame() {\n  resetGame();\n  btnNew = createButton('Yeni Çizim');\n  btnNew.position(400, 94);\n  btnNew.size(92, 28);\n  btnNew.mousePressed(() => {\n    leftRayAngle = random(-PI * 0.2, PI * 0.8);\n    rightRayAngle = leftRayAngle + random(PI * 0.5, PI * 1.4);\n    leftRayLength = random(70, 110);\n    rightRayLength = random(70, 110);\n    mode = 'explore';\n    showHint = false;\n  });\n\n  btnReset = createButton('Sıfırla');\n  btnReset.position(400, 132);\n  btnReset.size(92, 28);\n  btnReset.mousePressed(resetGame);\n}\n\nfunction resetGame() {\n  vertexX = 180;\n  vertexY = 166;\n  leftRayAngle = -PI / 6;\n  rightRayAngle = PI / 3;\n  leftRayLength = 100;\n  rightRayLength = 95;\n  draggingHandle = null;\n  mode = 'explore';\n  showHint = true;\n  angleDeg = abs(degrees((rightRayAngle - leftRayAngle + TWO_PI) % TWO_PI));\n  if (angleDeg > 180) angleDeg = 360 - angleDeg;\n}\n\nfunction draw() {\n  background(245);\n  drawTitle();\n  drawPlayArea();\n  drawControls();\n  drawFeedback();\n}\n\nfunction drawTitle() {\n  fill(30);\n  noStroke();\n  rect(16, 12, 528, 36, 8);\n  fill(255);\n  textSize(16);\n  textAlign(LEFT, CENTER);\n  text('Açıyı yönle keşfet', 28, 30);\n}\n\nfunction drawPlayArea() {\n  fill(255);\n  stroke(210);\n  rect(16, 56, 360, 220, 10);\n\n  fill(240);\n  noStroke();\n  ellipse(vertexX, vertexY, 10, 10);\n\n  let lx = vertexX + cos(leftRayAngle) * leftRayLength;\n  let ly = vertexY + sin(leftRayAngle) * leftRayLength;\n  let rx = vertexX + cos(rightRayAngle) * rightRayLength;\n  let ry = vertexY + sin(rightRayAngle) * rightRayLength;\n\n  stroke(60, 120, 255);\n  strokeWeight(4);\n  line(vertexX, vertexY, lx, ly);\n  stroke(255, 120, 60);\n  line(vertexX, vertexY, rx, ry);\n\n  handleL = { x: lx, y: ly };\n  handleR = { x: rx, y: ry };\n\n  noStroke();\n  fill(60, 120, 255);\n  ellipse(lx, ly, 14, 14);\n  fill(255, 120, 60);\n  ellipse(rx, ry, 14, 14);\n\n  let bis = (leftRayAngle + rightRayAngle) / 2;\n  if (abs(rightRayAngle - leftRayAngle) > PI) bis += PI;\n  let arcSize = abs(rightRayAngle - leftRayAngle);\n  if (arcSize > PI) arcSize = TWO_PI - arcSize;\n\n  noFill();\n  stroke(60, 160, 80);\n  strokeWeight(3);\n  arc(vertexX, vertexY, 70, 70, leftRayAngle, rightRayAngle, false);\n\n  fill(30);\n  noStroke();\n  textSize(13);\n  textAlign(LEFT, TOP);\n  text('Köşe', vertexX - 12, vertexY + 10);\n  text('Açı: ' + nf(degrees(arcSize), 0, 0) + '°', 34, 70);\n  text('Uzunluk değil, açıklık önemlidir.', 34, 90);\n\n  if (showHint) {\n    fill(0, 110, 0);\n    text('Uçları sürükle.', 34, 110);\n  }\n}\n\nfunction drawControls() {\n  fill(255);\n  stroke(210);\n  rect(384, 56, 160, 220, 10);\n  fill(40);\n  noStroke();\n  textSize(12);\n  textAlign(LEFT, TOP);\n  text('Deney: aynı köşe, farklı yön', 396, 64, 130, 40);\n  text('Sürüklenecek nokta: uçlar', 396, 108, 130, 40);\n  text('Amaç: açının boyunu değil yönü görmek', 396, 152, 128, 70);\n}\n\nfunction drawFeedback() {\n  fill(255);\n  stroke(210);\n  rect(16, 284, 528, 44, 10);\n  fill(30);\n  noStroke();\n  textSize(13);\n  textAlign(LEFT, CENTER);\n  let msg = 'Kolları çevir; köşeyi sabit tut.';\n  if (abs(degrees((rightRayAngle - leftRayAngle + TWO_PI) % TWO_PI) - 180) < 5) {\n    msg = 'Harika! Bu bir doğru açı. Yönler karşılıklı olduğunda 180° olur.';\n  }\n  text(msg, 28, 306, 500, 24);\n}\n\nfunction mousePressed() {\n  if (dist(mouseX, mouseY, handleL.x, handleL.y) < 12) draggingHandle = 'left';\n  else if (dist(mouseX, mouseY, handleR.x, handleR.y) < 12) draggingHandle = 'right';\n}\n\nfunction mouseDragged() {\n  if (!draggingHandle) return;\n  let a = atan2(mouseY - vertexY, mouseX - vertexX);\n  if (draggingHandle === 'left') leftRayAngle = a;\n  if (draggingHandle === 'right') rightRayAngle = a;\n  angleDeg = abs(degrees((rightRayAngle - leftRayAngle + TWO_PI) % TWO_PI));\n  if (angleDeg > 180) angleDeg = 360 - angleDeg;\n}\n\nfunction mouseReleased() {\n  draggingHandle = null;\n}\n\nfunction touchStarted() {\n  mousePressed();\n  return false;\n}\n\nfunction touchMoved() {\n  mouseDragged();\n  return false;\n}\n\nfunction touchEnded() {\n  mouseReleased();\n  return false;\n}\n",
+        "rationale": "Bu mikro-oyun, öğrenciye açının tanımını metinle ezberletmek yerine iki ışının uçlarını sürükleyerek keşfettirir. Köşe noktası sabit tutulur, böylece açı büyüklüğünün ışın uzunluğuna değil yönler arasındaki açıklığa bağlı olduğu doğrudan gözlenir. Kısa butonlar, sıfırlama ve yeni çizim ile tekrar deneme sağlar; böylece 5. sınıf düzeyinde tek kavram, tek ana mekanik ve anlık geri bildirimle öğrenme desteklenir.",
+        "state_model": {
+          "tracked_vars": [
+            "leftRayAngle",
+            "rightRayAngle",
+            "leftRayLength",
+            "rightRayLength",
+            "vertexX",
+            "vertexY",
+            "draggingHandle",
+            "mode",
+            "angleDeg",
+            "showHint"
+          ]
+        },
+        "layout_model": {
+          "boxes": [
+            {
+              "h": 36,
+              "w": 528,
+              "x": 16,
+              "y": 12,
+              "id": "title"
+            },
+            {
+              "h": 220,
+              "w": 360,
+              "x": 16,
+              "y": 56,
+              "id": "play_area"
+            },
+            {
+              "h": 220,
+              "w": 160,
+              "x": 384,
+              "y": 56,
+              "id": "controls"
+            },
+            {
+              "h": 44,
+              "w": 528,
+              "x": 16,
+              "y": 284,
+              "id": "feedback"
+            }
+          ],
+          "canvas_width": 560,
+          "target_panel": "top_right_30pct",
+          "canvas_height": 340
+        },
+        "learning_goal": "Öğrenci, açının ortak köşe noktasından çıkan iki ışınla oluştuğunu ve açının büyüklüğünün ışın uzunluğuna değil, aralarındaki açıklığa bağlı olduğunu keşfeder.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Aferin! Köşe sabit, yön değişince açı değişiyor. Uzunluk değil açıklık belirliyor.",
+          "on_incorrect": "Kolların boyu değil yönü önemli. Uçları biraz çevir ve köşeyi sabit bırak."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouse drag",
+            "mouse click"
+          ],
+          "affordances": [
+            "ışın uçlarını sürükleme",
+            "Yeni Çizim butonu",
+            "Sıfırla butonu"
+          ],
+          "user_actions": [
+            "Kolların uçlarını sürükleyerek açıyı büyütüp küçültür.",
+            "Yeni Çizim ile farklı yönler dener.",
+            "Sıfırla ile başlangıç durumuna döner."
+          ]
+        },
+        "success_condition": "Öğrenci, en az bir kez iki farklı ışın uzunluğunda aynı açının oluşabildiğini veya aynı uzunlukta farklı açıların oluşabildiğini gözlemleyip 'köşe + iki ışın + açıklık' ilişkisini doğru konuma getirir; açı göstergesi 180° çizgisini de doğru keşfeder.",
+        "instructions_short": "İki ışının yönünü değiştir. Köşeyi sabit tut. Aynı uzunlukta olsalar bile açının değiştiğini gör."
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, geometrik niceliklerde açının tanımını ve açının ölçüsünün hangi özellikten etkilendiğini kavratır. Öğrencinin yalnız sonucu değil, açı büyüklüğünün ışın uzunluğuyla değil yönler arasındaki açıklıkla ilişkili olduğunu gerekçelendirmesini hedefler.",
+        "question_text": "Bir öğrenci, cetvelle çizdiği iki ışının oluşturduğu açıyı ölçmek istiyor. Ölçüm yapmadan önce, açının neden köşe noktasından ve ışınların yönünden oluştuğunu açıklaması gerekiyor. Sen bu öğrenciye, açının hangi parçalarla tanımlandığını ve neden yalnızca ışın uzunluklarına bakarak açının büyüklüğünün bulunamayacağını kısa bir gerekçeyle anlatır mısın?",
+        "expected_answer": "Açı, ortak bir köşe noktasından çıkan iki ışının oluşturduğu açıklıktır. Açının büyüklüğü ışınların uzunluğuna değil, aralarındaki açıklığa bağlıdır; çünkü aynı uzunluktaki ışınlar farklı açılar oluşturabilir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Açı = köşe noktası + ortak başlangıçlı 2 ışın",
+            "description": "Açı, tek bir noktadan başlayan iki ışının oluşturduğu açıklıktır. Bu ortak nokta açının köşe noktasıdır; ışınlar ise açının kollarıdır."
+          },
+          {
+            "expression": "Açının ölçüsü ∝ ışınlar arasındaki açıklık, uzunluk değil",
+            "description": "Açının büyüklüğünü belirleyen şey ışınların uzunluğu değil, aralarındaki açıklıktır. Çünkü iki ışın aynı uzunlukta olsa bile farklı yönlere bakıyorsa farklı açılar oluşur."
+          },
+          {
+            "expression": "Doğru açı = 180°; ölçüyü belirleyen = yönler arasındaki açıklık",
+            "description": "Bu yüzden açı ölçerken cetvelle ışınların boyuna değil, açıölçerle köşeden başlayıp iki ışın arasındaki yön farkına bakılır. Doğru açı örneğinde de iki zıt yönlü ışın 180° oluşturur; burada belirleyici olan yine uzunluk değil yön ve açıklıktır."
+          }
+        ],
+        "final_answer": "Açı, ortak bir köşe noktasından çıkan iki ışının oluşturduğu açıklıktır. Açının büyüklüğü ışınların uzunluğuna değil, aralarındaki açıklığa bağlıdır."
+      },
+      "request_id": "req_0920a1c9",
+      "assembled_at": "2026-05-11T00:21:20.127257+00:00"
+    }
+  },
+  {
+    "request_id": "req_109456cf",
+    "topic": "Geometrik Şekiller",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "manipulation",
+        "p5_sketch": "let lineType = 0; // 0=segment, 1=ray, 2=line\nlet draggingLeft = false;\nlet draggingRight = false;\nlet leftEndpointX = 180;\nlet rightEndpointX = 420;\nlet y = 220;\nlet selected = false;\nlet attemptCount = 0;\nlet hintState = 0;\n\nfunction setup() {\n  createCanvas(640, 360);\n  textAlign(CENTER, CENTER);\n  textSize(18);\n}\n\nfunction draw() {\n  background(245, 248, 255);\n\n  drawUI();\n  drawConstruction();\n  drawButtons();\n  drawFeedback();\n}\n\nfunction drawUI() {\n  fill(40);\n  noStroke();\n  text('Uçları incele: iki ucu da görünen çizgiyi bul.', width / 2, 30);\n  text('Sürükle, değiştir ve gözlemle.', width / 2, 54);\n}\n\nfunction drawConstruction() {\n  stroke(50);\n  strokeWeight(4);\n\n  if (lineType === 0) {\n    line(leftEndpointX, y, rightEndpointX, y);\n    drawEndpoints(true, true);\n  } else if (lineType === 1) {\n    line(leftEndpointX, y, width - 40, y);\n    drawEndpoints(true, false);\n    drawArrow(width - 40, y, 1);\n  } else {\n    line(40, y, width - 40, y);\n    drawEndpoints(false, false);\n    drawArrow(40, y, -1);\n    drawArrow(width - 40, y, 1);\n  }\n\n  if (selected) {\n    noFill();\n    stroke(60, 170, 90);\n    strokeWeight(3);\n    ellipse((leftEndpointX + rightEndpointX) / 2, y, 300, 70);\n  }\n}\n\nfunction drawEndpoints(showLeft, showRight) {\n  noStroke();\n  fill(255, 120, 80);\n  if (showLeft) ellipse(leftEndpointX, y, 16, 16);\n  if (showRight) ellipse(rightEndpointX, y, 16, 16);\n  if (lineType === 0) {\n    fill(70);\n    text('A', leftEndpointX, y - 22);\n    text('B', rightEndpointX, y - 22);\n  }\n}\n\nfunction drawArrow(x, y, dir) {\n  stroke(50);\n  strokeWeight(3);\n  line(x, y, x + dir * 18, y - 8);\n  line(x, y, x + dir * 18, y + 8);\n}\n\nfunction drawButtons() {\n  drawButton(70, 300, 160, 42, 'ÇİZGİYİ DEĞİŞTİR');\n  drawButton(260, 300, 160, 42, 'SEÇ / KONTROL ET');\n  drawButton(450, 300, 120, 42, 'SIFIRLA');\n}\n\nfunction drawButton(x, y, w, h, label) {\n  stroke(120);\n  fill(255);\n  rect(x, y, w, h, 10);\n  noStroke();\n  fill(40);\n  text(label, x + w / 2, y + h / 2);\n}\n\nfunction drawFeedback() {\n  fill(70);\n  noStroke();\n  let msg = '';\n  if (selected) {\n    msg = 'Tebrikler! İki ucu belli olan çizgi doğru parçasıdır.';\n    fill(40, 130, 70);\n  } else if (attemptCount > 0) {\n    msg = 'Uçlara bak: tek yönde uzuyorsa ışın, iki yönde uzuyorsa doğru, iki uçluysa doğru parçası.';\n    fill(180, 90, 30);\n  } else {\n    msg = 'İpucu: Uçların ikisini de görebiliyor musun?';\n  }\n  text(msg, width / 2, 88);\n}\n\nfunction mousePressed() {\n  if (dist(mouseX, mouseY, leftEndpointX, y) < 18) draggingLeft = true;\n  if (dist(mouseX, mouseY, rightEndpointX, y) < 18) draggingRight = true;\n\n  if (insideRect(mouseX, mouseY, 70, 300, 160, 42)) {\n    lineType = (lineType + 1) % 3;\n    selected = false;\n    attemptCount++;\n  } else if (insideRect(mouseX, mouseY, 260, 300, 160, 42)) {\n    attemptCount++;\n    selected = (lineType === 0);\n  } else if (insideRect(mouseX, mouseY, 450, 300, 120, 42)) {\n    resetGame();\n  }\n}\n\nfunction mouseDragged() {\n  if (draggingLeft && lineType === 0) {\n    leftEndpointX = constrain(mouseX, 60, rightEndpointX - 30);\n  }\n  if (draggingRight && lineType === 0) {\n    rightEndpointX = constrain(mouseX, leftEndpointX + 30, width - 60);\n  }\n}\n\nfunction mouseReleased() {\n  draggingLeft = false;\n  draggingRight = false;\n}\n\nfunction keyPressed() {\n  if (key === 'r' || key === 'R') resetGame();\n}\n\nfunction resetGame() {\n  lineType = 0;\n  leftEndpointX = 180;\n  rightEndpointX = 420;\n  selected = false;\n  attemptCount = 0;\n  hintState = 0;\n}\n\nfunction insideRect(px, py, x, y, w, h) {\n  return px >= x && px <= x + w && py >= y && py <= y + h;\n}\n",
+        "rationale": "Öğrenci, üç farklı çizgi türünün uç davranışlarını sürükleyerek ve butonla değiştirerek doğrudan gözlemliyor. Böylece kavramı ezberlemeden, iki ucu belli olan çizginin doğru parçası olduğunu etkileşimle keşfediyor. Tek bir doğru cevabı yazdırmak yerine, uçlar ve uzama yönü üzerinden karşılaştırmalı öğrenme sağlanıyor.",
+        "state_model": {
+          "tracked_vars": [
+            "lineType",
+            "leftEndpointX",
+            "rightEndpointX",
+            "selected",
+            "attemptCount",
+            "hintState"
+          ]
+        },
+        "learning_goal": "İki nokta arasındaki, iki ucu belli düz çizginin doğru parçası olduğunu keşfetmek; doğru, ışın ve doğru parçasını uç özelliklerine göre ayırt etmek.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Harika! İki ucu belli olduğu için bu bir doğru parçası.",
+          "on_incorrect": "Bir uç kayıyorsa ya da çizgi tek yönde uzuyorsa doğru parçası değildir. Uçların ikisinin de belli olup olmadığına bak."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouse/touch drag",
+            "mouse/touch click",
+            "keyboard: r ile sıfırla"
+          ],
+          "affordances": [
+            "iki uç tutamağı sürükleme",
+            "çizgi tipini anlık değiştiren buton",
+            "vurgulu geri bildirim halkası"
+          ],
+          "user_actions": [
+            "Uçlardan birini sürükleyerek şeklin uzamasını veya kısalmasını dene",
+            "Butona basarak çizgi türünü değiştir ve uçların davranışını gözlemle",
+            "İki ucu sabit görünen şekli bulunca onayla"
+          ]
+        },
+        "success_condition": "Kullanıcı, iki ucu da görünen ve yalnızca iki nokta arasında duran şekli seçtiğinde başarı kazanır.",
+        "instructions_short": "Uçları sürükle. Çizgiyi incele: iki ucu da görünür ve sabit kalıyorsa hedefe ulaşırsın."
+      },
+      "count": 1,
+      "topic": "Geometrik Şekiller",
+      "failures": [],
+      "question": {
+        "rationale": "İki nokta arasındaki en kısa düz yol, iki ucu belli olan bir çizimdir. Bu tanım doğru parçasına aittir. Doğru ise iki yönde sonsuza uzar, ışın ise bir noktadan başlayıp tek yönde sonsuza gider.",
+        "question_text": "Bir şehir planı üzerinde A ve B noktaları arasına cetvelle çizilen ve iki ucu da görünen düz çizgiye ne ad verilir?",
+        "expected_answer": "Doğru parçası"
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "A ile B arasındaki iki ucu belli düz çizgi = doğru parçası",
+            "description": "A ve B noktaları arasındaki çizgi, iki ucu da görünen ve cetvelle çizilen düz bir parçadır."
+          },
+          {
+            "expression": "İki ucu belli olan çizgi → doğru parçası",
+            "description": "Doğru parçasının özelliğini hatırlayalım: iki noktayı birleştirir ve iki ucu da bellidir."
+          }
+        ],
+        "final_answer": "Doğru parçası"
+      },
+      "request_id": "req_109456cf",
+      "assembled_at": "2026-05-09T22:51:28.129039+00:00"
+    }
+  },
+  {
+    "request_id": "req_176c631b",
+    "topic": "Geometrik Şekiller",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "p5_sketch": "let vertices = [];\nlet selected = 1; // 0 kare, 1 üçgen, 2 beşgen, 3 altıgen\nlet shapes = [4, 3, 5, 6];\nlet names = ['Kare', 'Üçgen', 'Beşgen', 'Altıgen'];\nlet answers = ['360°', '180°', '540°', '720°'];\n\nfunction setup() {\n  createCanvas(900, 650);\n  textFont('Arial');\n}\n\nfunction draw() {\n  background(248);\n  drawTitle();\n  drawQuestionCard();\n  drawShapePanel();\n  drawOptions();\n  drawExplanation();\n}\n\nfunction drawTitle() {\n  fill(30);\n  textAlign(CENTER, CENTER);\n  textSize(26);\n  text('İç Açılar Toplamı: Hangi Şekil 180°?', width/2, 32);\n}\n\nfunction drawQuestionCard() {\n  fill(255);\n  stroke(220);\n  rect(40, 60, 820, 110, 14);\n  noStroke();\n  fill(40);\n  textAlign(LEFT, TOP);\n  textSize(18);\n  text('Aşağıdaki geometrik şekillerden hangisinin iç açıları toplamı her zaman 180 derecedir?', 60, 85, 780, 60);\n  textSize(16);\n  fill(80);\n  text('Doğru cevabı bulmak için şekilleri inceleyin.', 60, 130);\n}\n\nfunction drawShapePanel() {\n  fill(255);\n  stroke(220);\n  rect(40, 190, 820, 260, 14);\n  noStroke();\n  textAlign(CENTER, CENTER);\n  textSize(16);\n  fill(40);\n  text('Şekiller', width/2, 210);\n\n  let centers = [160, 360, 560, 760];\n  for (let i = 0; i < 4; i++) {\n    let x = centers[i];\n    let y = 330;\n    drawPolygon(x, y, 70, shapes[i], i === selected);\n    fill(30);\n    text(names[i], x, 420);\n    fill(90);\n    text(answers[i], x, 440);\n  }\n}\n\nfunction drawPolygon(cx, cy, r, n, highlighted) {\n  push();\n  translate(cx, cy);\n  if (highlighted) {\n    noFill();\n    stroke(255, 180, 0);\n    strokeWeight(4);\n    ellipse(0, 0, 170, 170);\n  }\n  stroke(60);\n  strokeWeight(3);\n  fill(highlighted ? color(255, 248, 210) : color(235));\n  beginShape();\n  for (let i = 0; i < n; i++) {\n    let angle = TWO_PI * i / n - HALF_PI;\n    vertex(cos(angle) * r, sin(angle) * r);\n  }\n  endShape(CLOSE);\n  pop();\n}\n\nfunction drawOptions() {\n  fill(255);\n  stroke(220);\n  rect(40, 470, 820, 80, 14);\n  noStroke();\n  fill(40);\n  textAlign(LEFT, CENTER);\n  textSize(18);\n  text('Seçenekler:', 60, 505);\n  textSize(17);\n  let opts = ['A) Kare', 'B) Üçgen', 'C) Beşgen', 'D) Altıgen'];\n  let x = 180;\n  for (let i = 0; i < opts.length; i++) {\n    fill(i === selected ? color(0, 120, 220) : 60);\n    text(opts[i], x + i * 170, 505);\n  }\n}\n\nfunction drawExplanation() {\n  fill(255);\n  stroke(220);\n  rect(40, 565, 820, 70, 14);\n  noStroke();\n  textAlign(LEFT, CENTER);\n  textSize(16);\n  fill(30, 120, 60);\n  text('Doğru cevap: B) Üçgen — Üçgenin iç açıları toplamı her zaman 180°dir.', 60, 600);\n}\n",
+        "rationale": "İstenen içerik 5. sınıf matematikte çokgenlerin iç açıları toplamını görselleştiren, özellikle üçgenin 180° olduğunu vurgulayan etkileşimli bir p5.js sahnesi için uygundur. Kod; soru kartı, seçenekler, dört şeklin görsel gösterimi ve doğru cevabı vurgulayan açıklama bölümünü içerir. ",
+        "should_render": true
+      },
+      "count": 1,
+      "topic": "Geometrik Şekiller",
+      "failures": [],
+      "question": {
+        "rationale": "Üçgenin iç açıları toplamı her zaman 180 derecedir. Kare, beşgen ve altıgenin iç açıları toplamı ise 180 derece değildir. Bu nedenle doğru cevap üçgendir.",
+        "question_text": "Aşağıdaki geometrik şekillerden hangisinin iç açıları toplamı her zaman 180 derecedir?\n\nA) Kare\nB) Üçgen\nC) Beşgen\nD) Altıgen",
+        "expected_answer": "B) Üçgen"
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Üçgen → 180°",
+            "description": "Bir çokgenin iç açıları toplamını düşünelim. Üçgenin iç açıları toplamı her zaman 180 derecedir."
+          },
+          {
+            "expression": "Kare ≠ 180°, Beşgen ≠ 180°, Altıgen ≠ 180°",
+            "description": "Seçenekleri kontrol edelim. Kare 360°, beşgen 540°, altıgen 720° iç açı toplamına sahiptir."
+          },
+          {
+            "expression": "Doğru cevap: B) Üçgen",
+            "description": "Bu yüzden iç açıları toplamı her zaman 180 derece olan şekil üçgendir."
+          }
+        ],
+        "final_answer": "B) Üçgen"
+      },
+      "request_id": "req_176c631b",
+      "assembled_at": "2026-05-09T22:33:03.803681+00:00"
+    }
+  },
+  {
+    "request_id": "req_1af69b9d",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, çevre ile alan arasındaki farkı kavratmayı ve aynı çevreye sahip şekillerin farklı alanlar oluşturabileceğini fark ettirmeyi hedefler. Öğrenci, ezber yerine ilişki kurarak neden çevrenin alanı tek başına belirleyemediğini açıklamaya yönlendirilir.",
+        "question_text": "Kenar uzunlukları 4 m ve 7 m olan bir dikdörtgen bahçenin çevresi ile alanı karşılaştırılıyor. Bu bahçe için sadece çevreyi bilmenin alanı bulmaya neden yetmediğini kendi sözlerinle açıkla. Sonra, aynı çevreye sahip ama alanı farklı olabilecek başka bir dikdörtgen örneği ver.",
+        "expected_answer": "Çevre, bahçenin etrafındaki sınır uzunluğudur; alan ise iç yüzeyde kapladığı yerdir. Aynı çevreye sahip dikdörtgenlerin kenar uzunlukları farklı olabildiği için alanları da farklı olabilir. Örneğin çevresi aynı olan 5 m ve 6 m kenarlı başka bir dikdörtgen, 4 m ve 7 m kenarlı dikdörtgenden farklı alana sahip olabilir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Çevre = 2 × (uzun kenar + kısa kenar)",
+            "description": "Önce çevrenin neyi gösterdiğini düşünelim: çevre, dikdörtgenin etrafındaki toplam uzunluktur. Bu yüzden sadece dış sınırı anlatır, içeride ne kadar yer kapladığını söylemez."
+          },
+          {
+            "expression": "Alan = uzun kenar × kısa kenar",
+            "description": "Alan ise dikdörtgenin iç yüzeyini gösterir. Alanı bulmak için iki kenarın da bilinmesi gerekir; çünkü alan, kenarların çarpımıyla bulunur. Sadece çevreyi bilirsek bu iki kenarın hangi değerler olduğunu tek başına anlayamayız."
+          },
+          {
+            "expression": "2 × (4 + 7) = 22, 4 × 7 = 28; 2 × (5 + 6) = 22, 5 × 6 = 30",
+            "description": "Örneğin 4 m ve 7 m kenarlı dikdörtgenin çevresi 2 × (4 + 7) = 22 m, alanı ise 4 × 7 = 28 m² olur. Aynı çevreye sahip başka bir dikdörtgen olarak 5 m ve 6 m kenarlı bir dikdörtgen alırsak çevresi yine 2 × (5 + 6) = 22 m olur ama alanı 5 × 6 = 30 m² olur. Yani çevre aynı olsa da alan değişebilir."
+          },
+          {
+            "expression": "Aynı çevre → farklı kenar uzunlukları → farklı alanlar",
+            "description": "Sonuç olarak, çevre sadece dış sınırı verdiği için alanı tek başına belirlemeye yetmez; aynı çevreye sahip farklı dikdörtgenler farklı alanlara sahip olabilir."
+          }
+        ],
+        "final_answer": "Çevre, dış sınırın uzunluğudur; alan ise içte kaplanan yerdir. Bu yüzden sadece çevreyi bilmek alanı bulmaya yetmez. Örneğin 4 m ve 7 m kenarlı dikdörtgen ile 5 m ve 6 m kenarlı dikdörtgenin çevreleri 22 m’dir ama alanları farklıdır."
+      },
+      "request_id": "req_1af69b9d",
+      "assembled_at": "2026-05-10T22:50:37.518904+00:00"
+    }
+  },
+  {
+    "request_id": "req_2a6a543c",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": null,
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [
+        "solver:gave_up"
+      ],
+      "question": {
+        "rationale": "Bu soru, öğrencinin açı kavramını saat üzerinde ilişkilendirerek anlamasını hedefler. Doğrudan sonuç ezberletmek yerine, konum değişiminin açının büyüklüğünü nasıl etkilediğini açıklatır.",
+        "question_text": "Bir sınıfta duvara asılan saat 12.00’de tam yukarıyı gösteriyor. Öğretmen, akrep ile yelkovan arasındaki açının 3.00’te neden daha büyük olduğunu soruyor. Saat 12.00 ile 3.00 arasındaki konumu düşünerek, bu açının nasıl oluştuğunu kısa bir gerekçeyle açıklayınız.",
+        "expected_answer": "12.00’de akrep ve yelkovan aynı doğrultudadır, bu yüzden açı 0° olur. 3.00’te yelkovan 12’nin üzerinde, akrep 3’ün üzerinde olduğundan aralarında çeyrek tur vardır ve açı 90°’dir; bu yüzden açı daha büyüktür."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "12.00 → 0°",
+            "description": "12.00’de akrep ile yelkovan aynı doğrultudadır. Aynı doğrultudaki iki kol arasında açı oluşmaz, yani açı 0°’dir."
+          },
+          {
+            "expression": "360° ÷ 4 = 90°",
+            "description": "3.00’te yelkovan 12’nin üzerinde, akrep 3’ün üzerindedir. Saatin bir çeyreği kadar yer değiştirme vardır; tam tur 360° olduğuna göre çeyrek tur 360° / 4 = 90° olur."
+          },
+          {
+            "expression": "0° < 90°",
+            "description": "Bu nedenle 12.00’deki 0° açıya göre 3.00’teki açı daha büyüktür. Açının büyümesi, akrebin 12’den 3’e ilerlemesiyle iki kol arasındaki açıklığın artmasından kaynaklanır."
+          }
+        ],
+        "final_answer": "12.00’de açı 0°’dir, 3.00’te ise çeyrek tur olduğu için 90° olur; bu yüzden 3.00’teki açı daha büyüktür."
+      },
+      "request_id": "req_2a6a543c",
+      "assembled_at": "2026-05-11T00:22:37.563283+00:00"
+    }
+  },
+  {
+    "request_id": "req_327299f9",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, öğrencinin üçgende iç açılar toplamı kuralını kullanmasını ve eksik açıyı bulurken neden bu işlemi yaptığını açıklamasını ölçer. Geometrik nicelikler içinde açıların ilişkisini kavrama kazanımını hedefler.",
+        "question_text": "Bir üçgenin iki iç açısı 50° ve 60°’dir. Bu üçgende üçüncü iç açının kaç derece olduğunu bulunuz ve neden böyle olduğunu kısaca açıklayınız.",
+        "expected_answer": "Üçgenin iç açılarının toplamı 180° olduğu için üçüncü açı 180° - 50° - 60° = 70° olur."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "50° + 60° = 110°",
+            "description": "Üçgende iç açılar toplamı her zaman 180°’dir. Bu kuralı kullanarak verilen iki açının toplamını buluruz."
+          },
+          {
+            "expression": "180° - 110° = 70°",
+            "description": "Üçgenin tüm iç açıları 180° olduğuna göre, üçüncü açıyı bulmak için 180°’den bulunan toplamı çıkarırız."
+          },
+          {
+            "expression": "3. iç açı = 70°",
+            "description": "Sonucu yazıp kısaca nedeni belirtiriz: Üçgenin iç açıları toplamı 180° olduğu için eksik açı bu şekilde bulunur."
+          }
+        ],
+        "final_answer": "Üçüncü iç açı 70°’dir; çünkü üçgende iç açılar toplamı 180°’dir."
+      },
+      "request_id": "req_327299f9",
+      "assembled_at": "2026-05-11T00:05:02.412250+00:00"
+    }
+  },
+  {
+    "request_id": "req_34da7f68",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, çevre ile alanın farklı nicelikler olduğunu ve çevre aynıyken alanın değişebileceğini kavratmayı hedefler. Öğrencinin yalnızca işlem yapması değil, kenar toplamı ile kenar çarpımı arasındaki farkı açıklaması beklenir.",
+        "question_text": "Kısa kenarı 4 cm, uzun kenarı 7 cm olan bir dikdörtgen ile kısa kenarı 5 cm, uzun kenarı 6 cm olan başka bir dikdörtgen düşün. Bu iki dikdörtgenin çevreleri neden aynı olabilir? Alanlarının neden aynı olmadığını kısa bir gerekçeyle açıkla.",
+        "expected_answer": "Her iki dikdörtgende de kısa ve uzun kenarların toplamı 11 cm’dir; bu yüzden çevreleri 2 × 11 = 22 cm olur. Ancak alanlar farklıdır: 4 × 7 = 28 cm², 5 × 6 = 30 cm². Yani çevre aynı olsa da kenar uzunluklarının çarpımı değiştiği için alan aynı olmaz."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "2 × (4 + 7) = 2 × 11 = 22 cm",
+            "description": "İlk dikdörtgenin çevresini bulmak için kısa ve uzun kenarı toplarız. Dikdörtgende çevre formülü 2 × (kısa kenar + uzun kenar) şeklindedir."
+          },
+          {
+            "expression": "2 × (5 + 6) = 2 × 11 = 22 cm",
+            "description": "İkinci dikdörtgen için de aynı kuralı kullanırız. Kısa ve uzun kenarların toplamı yine 11 cm olduğu için çevre aynı çıkar."
+          },
+          {
+            "expression": "4 × 7 = 28 cm², 5 × 6 = 30 cm²",
+            "description": "Alan ise kenarların çarpımıyla bulunur. Bu yüzden iki dikdörtgenin alanlarını hesaplayalım; çarpımlar farklı olduğu için alanlar da farklıdır."
+          },
+          {
+            "expression": "22 cm = 22 cm, ama 28 cm² ≠ 30 cm²",
+            "description": "Sonuç olarak çevrelerin aynı olmasının nedeni kenar toplamlarının aynı olmasıdır; alanların aynı olmamasının nedeni ise kenar çarpımlarının farklı olmasıdır."
+          }
+        ],
+        "final_answer": "Çevreleri aynıdır çünkü her iki dikdörtgende de kısa ve uzun kenarların toplamı 11 cm’dir; bu yüzden çevre 22 cm olur. Alanları aynı değildir çünkü alan kenarların çarpımıdır: 4 × 7 = 28 cm², 5 × 6 = 30 cm²."
+      },
+      "request_id": "req_34da7f68",
+      "assembled_at": "2026-05-10T23:04:12.015667+00:00"
+    }
+  },
+  {
+    "request_id": "req_3531f54f",
+    "topic": "Geometrik Şekiller",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Şekiller",
+      "failures": [],
+      "question": {
+        "rationale": "Üçgenin iç açıları toplamı 180°’dir. Verilen iki açı 65° + 45° = 110° eder. 180° - 110° = 70° bulunur. Bu nedenle üçüncü iç açı 70°’dir.",
+        "question_text": "Bir öğrencinin çizdiği üçgende iki iç açı 65° ve 45°’tir. Buna göre bu üçgenin üçüncü iç açısı kaç derecedir?",
+        "expected_answer": "70°"
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "65° + 45° + ? = 180°",
+            "description": "Üçgenin iç açılar toplamının 180° olduğunu hatırlarız."
+          },
+          {
+            "expression": "65° + 45° = 110°",
+            "description": "Verilen iki açıyı toplarız."
+          },
+          {
+            "expression": "180° - 110° = 70°",
+            "description": "Toplamdan bu açılar çıkarılır."
+          }
+        ],
+        "final_answer": "Üçgenin üçüncü iç açısı 70°’dir."
+      },
+      "request_id": "req_3531f54f",
+      "assembled_at": "2026-05-09T22:29:16.094202+00:00"
+    }
+  },
+  {
+    "request_id": "req_59c0714e",
+    "topic": "Geometrik Şekiller",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Şekiller",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, çokgen ve üçgen türlerini yalnızca adlandırmayı değil, kenar uzunlukları ve açı özelliklerine göre ayırt etmeyi ölçer. Öğrencinin şeklin adını seçerken hangi özelliğe baktığını açıklaması, ezberden çok gerekçe kurma becerisini destekler.",
+        "question_text": "Bir öğrenci aynı üç geometrik şekli çizerken şu gözlemleri yapıyor: Birinci şeklin bütün kenar uzunlukları ve bütün iç açıları eşit. İkinci şeklin üç kenarı farklı uzunlukta. Üçüncü şeklin iki kenarı eşit, bir kenarı farklı. Bu üç şekli adlandırırken öğrenci nasıl düşünmelidir? Her birinin adını, nedenini de kısaca açıklayarak yazınız.",
+        "expected_answer": "Birinci şekil düzgün çokgendir çünkü bütün kenarları ve iç açıları eşittir. İkinci şekil çeşitkenar üçgendir çünkü üç kenarı da farklıdır. Üçüncü şekil ikizkenar üçgendir çünkü iki kenarı eşittir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Bütün kenarlar eşit + bütün iç açılar eşit = düzgün çokgen",
+            "description": "Birinci şeklin bütün kenar uzunlukları ve bütün iç açıları eşit verilmiş. Böyle şekillere düzgün çokgen denir; çünkü hem kenarları hem de açıları eşittir."
+          },
+          {
+            "expression": "3 farklı kenar uzunluğu = çeşitkenar üçgen",
+            "description": "İkinci şeklin üç kenarı da farklı uzunluktadır. Üç kenarı da farklı olan üçgen, çeşitkenar üçgendir."
+          },
+          {
+            "expression": "2 eşit kenar + 1 farklı kenar = ikizkenar üçgen",
+            "description": "Üçüncü şeklin iki kenarı eşit, bir kenarı farklı verilmiş. İki kenarı eşit olan üçgen ikizkenar üçgendir."
+          }
+        ],
+        "final_answer": "Birinci şekil düzgün çokgendir; ikinci şekil çeşitkenar üçgendir; üçüncü şekil ikizkenar üçgendir."
+      },
+      "request_id": "req_59c0714e",
+      "assembled_at": "2026-05-09T23:06:12.478534+00:00"
+    }
+  },
+  {
+    "request_id": "req_6590b1c6",
+    "topic": "Geometrik Şekiller",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "p5_sketch": "let tri;\nlet showStep = 0;\nlet steps;\n\nfunction setup() {\n  createCanvas(800, 520);\n  textFont('Arial');\n  steps = [\n    { title: '1) Kenarları incele', text: 'Üçgenin kenarları 6 cm, 6 cm ve 8 cm.' },\n    { title: '2) Eşit kenar var mı?', text: 'İki kenar eşit: 6 cm = 6 cm.' },\n    { title: '3) Sonuç', text: 'İki kenarı eşit olan üçgen ikizkenar üçgendir.' }\n  ];\n}\n\nfunction draw() {\n  background(248);\n  drawHeader();\n  drawTriangle();\n  drawInfoPanel();\n  drawStepButtons();\n}\n\nfunction drawHeader() {\n  fill(30);\n  noStroke();\n  textSize(24);\n  textStyle(BOLD);\n  text('Kenarlarına Göre Üçgen Türü', 24, 34);\n  textStyle(NORMAL);\n  textSize(14);\n  fill(70);\n  text('Soruda verilen 6 cm, 6 cm ve 8 cm kenarlarına göre üçgeni inceleyelim.', 24, 58);\n}\n\nfunction drawTriangle() {\n  // Triangle area\n  const ax = 140, ay = 360;\n  const bx = 300, by = 360;\n  const cx = 220, cy = 190;\n\n  // Triangle\n  stroke(40);\n  strokeWeight(3);\n  fill(255, 245, 200);\n  triangle(ax, ay, bx, by, cx, cy);\n\n  // Vertex labels\n  noStroke();\n  fill(20);\n  textSize(16);\n  text('A', ax - 18, ay + 20);\n  text('B', bx + 8, by + 20);\n  text('C', cx - 6, cy - 10);\n\n  // Side labels with colored highlights\n  strokeWeight(2);\n  stroke(220, 70, 70);\n  line(ax, ay, cx, cy);\n  stroke(220, 70, 70);\n  line(bx, by, cx, cy);\n  stroke(70, 130, 220);\n  line(ax, ay, bx, by);\n\n  noStroke();\n  fill(220, 70, 70);\n  textSize(18);\n  text('6 cm', 150, 250);\n  text('6 cm', 248, 250);\n  fill(70, 130, 220);\n  text('8 cm', 198, 385);\n\n  // Equal marks on equal sides\n  stroke(220, 70, 70);\n  strokeWeight(2);\n  line(178, 288, 170, 300);\n  line(186, 282, 178, 294);\n  line(222, 288, 230, 300);\n  line(214, 282, 222, 294);\n}\n\nfunction drawInfoPanel() {\n  const x = 420, y = 110, w = 340, h = 310;\n  noStroke();\n  fill(255);\n  rect(x, y, w, h, 18);\n\n  fill(40);\n  textSize(20);\n  textStyle(BOLD);\n  text('Adım Adım Çözüm', x + 20, y + 35);\n  textStyle(NORMAL);\n\n  const s = steps[showStep];\n  fill(60);\n  textSize(18);\n  text(s.title, x + 20, y + 80);\n\n  fill(30);\n  textSize(16);\n  textLeading(24);\n  text(s.text, x + 20, y + 120, w - 40, 120);\n\n  // Key rule box\n  fill(240, 248, 255);\n  stroke(150, 190, 230);\n  strokeWeight(1.5);\n  rect(x + 20, y + 220, w - 40, 65, 12);\n  noStroke();\n  fill(35, 90, 150);\n  textSize(16);\n  text('Kural: En az iki kenar eşitse → ikizkenar üçgen', x + 35, y + 250, w - 70, 40);\n}\n\nfunction drawStepButtons() {\n  const baseY = 450;\n  for (let i = 0; i < 3; i++) {\n    const bx = 120 + i * 150;\n    const bw = 120;\n    const bh = 34;\n    const active = (i === showStep);\n    stroke(active ? color(60, 130, 220) : color(180));\n    strokeWeight(active ? 2.5 : 1);\n    fill(active ? color(220, 235, 255) : color(245));\n    rect(bx, baseY, bw, bh, 10);\n    noStroke();\n    fill(30);\n    textAlign(CENTER, CENTER);\n    textSize(14);\n    text('Adım ' + (i + 1), bx + bw / 2, baseY + bh / 2 + 1);\n  }\n  textAlign(LEFT, BASELINE);\n\n  fill(90);\n  textSize(13);\n  text('Adımlar arasında geçiş için klavyeden 1, 2, 3 tuşlarını kullanın.', 24, 494);\n}\n\nfunction keyPressed() {\n  if (key === '1') showStep = 0;\n  if (key === '2') showStep = 1;\n  if (key === '3') showStep = 2;\n}\n",
+        "rationale": "Soruda iki kenarı eşit olan (6 cm ve 6 cm) bir üçgen verildiği için türü ikizkenar üçgendir. p5.js görselleştirmesi, kenar eşitliğini renk ve işaretlerle vurgulayıp adım adım çözümü destekler.",
+        "should_render": true
+      },
+      "count": 1,
+      "topic": "Geometrik Şekiller",
+      "failures": [],
+      "question": {
+        "rationale": "İkizkenar üçgende iki kenarın uzunluğu eşittir. Soruda iki kenar 6 cm ve 6 cm olarak verilmiştir. Üçüncü kenarın 8 cm olması bu durumu değiştirmez. Bu nedenle üçgen kenarlarına göre ikizkenardır.",
+        "question_text": "Bir öğrenci, cetvel ve pergel kullanarak bir üçgen oluşturuyor. Üçgenin iki kenarı 6 cm ve 6 cm olarak çiziliyor, üçüncü kenar ise 8 cm oluyor. Buna göre bu üçgenin kenarlarına göre türü nedir?",
+        "expected_answer": "İkizkenar üçgendir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "6 = 6",
+            "description": "Üçgenin kenar uzunluklarına bakalım: 6 cm, 6 cm ve 8 cm."
+          },
+          {
+            "expression": "İki kenar eşitse → ikizkenar üçgen",
+            "description": "Kenarlarına göre üçgen türünü belirlemek için en az iki kenarın eşit olup olmadığına bakarız."
+          },
+          {
+            "expression": "6 cm ve 6 cm eşit olduğu için üçgen ikizkenardır.",
+            "description": "Soruda iki kenar eşit olduğu için bu üçgen ikizkenardır."
+          }
+        ],
+        "final_answer": "İkizkenar üçgendir."
+      },
+      "request_id": "req_6590b1c6",
+      "assembled_at": "2026-05-09T22:28:20.790503+00:00"
+    }
+  },
+  {
+    "request_id": "req_65a48504",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, kesişen doğrularda oluşan açıların özelliklerini ve diklik durumunda açı ilişkilerini anlamayı ölçer. Öğrencinin yalnızca sonucu değil, komşu ve karşılıklı açıların neden o değeri aldığını açıklaması beklenir.",
+        "question_text": "Bir öğrencinin defterinde çizilmiş iki doğru birbirini dik kesiyor. Öğrenci, kesişim noktasında oluşan açılardan birini 90° olarak ölçüyor. Bu durumda komşu açılar ve karşılıklı açılar hakkında ne söylenebilir? Nedenini kısaca açıklayınız.",
+        "expected_answer": "Dik kesişen doğrularda komşu açılar da 90° olur; karşılıklı açılar ise birbirine eşittir ve burada her biri 90°’dir. Çünkü kesişen doğrularda komşu açılar toplamı 180° eder, 90°’nin komşusu da 90° olur."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "1 açı = 90°",
+            "description": "İki doğru birbirini dik kesiyorsa, kesişme noktasında oluşan açılardan biri 90° olur. Dik kesişen doğrularda bu dört açının hepsi dik açı özelliği gösterir."
+          },
+          {
+            "expression": "180° - 90° = 90°",
+            "description": "Komşu açılar bir doğru üzerinde yan yana bulunduğu için toplamları 180° olur. Bu durumda 90° olan açının komşusu da 180° - 90° = 90° olur."
+          },
+          {
+            "expression": "Karşılıklı açılar = eşit ⇒ 90° ve 90°",
+            "description": "Karşılıklı açılar kesişen doğrularda her zaman birbirine eşittir. Bir açı 90° ise karşısındaki açı da 90° olur."
+          }
+        ],
+        "final_answer": "Komşu açılar 90° olur, karşılıklı açılar da birbirine eşit olup 90°’dir."
+      },
+      "request_id": "req_65a48504",
+      "assembled_at": "2026-05-11T00:06:34.980938+00:00"
+    }
+  },
+  {
+    "request_id": "req_6a40a798",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "manipulation",
+        "p5_sketch": "let draggableAngle;\nlet targetAngle;\nlet isMatched;\nlet feedbackText;\nlet attempts;\nlet dragging;\nlet controlBtn;\nlet resetBtn;\nlet centerX = 196;\nlet centerY = 166;\nlet radius = 78;\n\nfunction setup() {\n  createCanvas(560, 340);\n  initializeGame();\n}\n\nfunction initializeGame() {\n  targetAngle = radians(35);\n  draggableAngle = radians(130);\n  isMatched = false;\n  feedbackText = 'Mavi kolu sürükle.';\n  attempts = 0;\n  dragging = false;\n  controlBtn = {x: 406, y: 118, w: 112, h: 32, label: 'Kontrol'};\n  resetBtn = {x: 406, y: 164, w: 112, h: 32, label: 'Sıfırla'};\n}\n\nfunction resetGame() {\n  initializeGame();\n}\n\nfunction draw() {\n  background(248);\n  drawLayout();\n  drawTitle();\n  drawPlayArea();\n  drawControls();\n  drawFeedback();\n}\n\nfunction drawLayout() {\n  noFill();\n  stroke(220);\n  rect(16, 56, 360, 220, 10);\n  rect(384, 56, 160, 220, 10);\n  rect(16, 284, 528, 44, 10);\n}\n\nfunction drawTitle() {\n  noStroke();\n  fill(30);\n  textSize(16);\n  textAlign(LEFT, CENTER);\n  text('Karşılıklı Açı Eşleştirme', 24, 30);\n}\n\nfunction drawPlayArea() {\n  push();\n  translate(centerX, centerY);\n  stroke(60);\n  strokeWeight(4);\n  line(-110, 0, 110, 0);\n  line(0, -88, 0, 88);\n  strokeWeight(7);\n  stroke(90, 150, 255);\n  line(0, 0, cos(draggableAngle) * radius, sin(draggableAngle) * radius);\n  stroke(255, 150, 70);\n  line(0, 0, cos(targetAngle) * radius, sin(targetAngle) * radius);\n  noStroke();\n  fill(90, 150, 255);\n  ellipse(cos(draggableAngle) * radius, sin(draggableAngle) * radius, 14, 14);\n  fill(255, 150, 70);\n  ellipse(cos(targetAngle) * radius, sin(targetAngle) * radius, 14, 14);\n  fill(255, 255, 255, 220);\n  stroke(180);\n  strokeWeight(1);\n  ellipse(0, 0, 18, 18);\n  pop();\n\n  fill(60);\n  noStroke();\n  textSize(12);\n  textAlign(LEFT, TOP);\n  text('Mavi kolu sürükle.', 28, 68);\n  text('Turuncu kol sabit.', 28, 84);\n}\n\nfunction drawControls() {\n  drawButton(controlBtn, color(70, 130, 220));\n  drawButton(resetBtn, color(120));\n  fill(60);\n  noStroke();\n  textSize(12);\n  textAlign(LEFT, TOP);\n  text('Amaç: tam karşıya getir.', 398, 78, 128, 36);\n}\n\nfunction drawButton(btn, c) {\n  fill(c);\n  stroke(255);\n  rect(btn.x, btn.y, btn.w, btn.h, 8);\n  noStroke();\n  fill(255);\n  textAlign(CENTER, CENTER);\n  textSize(13);\n  text(btn.label, btn.x + btn.w / 2, btn.y + btn.h / 2);\n}\n\nfunction drawFeedback() {\n  noStroke();\n  fill(30);\n  textSize(13);\n  textAlign(LEFT, CENTER);\n  text(feedbackText, 24, 306, 520, 24);\n}\n\nfunction mousePressed() {\n  if (overButton(controlBtn, mouseX, mouseY)) {\n    attempts++;\n    checkMatch();\n    return;\n  }\n  if (overButton(resetBtn, mouseX, mouseY)) {\n    resetGame();\n    return;\n  }\n  if (dist(mouseX, mouseY, centerX + cos(draggableAngle) * radius, centerY + sin(draggableAngle) * radius) < 16) {\n    dragging = true;\n  }\n}\n\nfunction mouseDragged() {\n  if (dragging) {\n    draggableAngle = atan2(mouseY - centerY, mouseX - centerX);\n    isMatched = false;\n    feedbackText = 'Şimdi tam karşıya getir.';\n  }\n}\n\nfunction mouseReleased() {\n  dragging = false;\n}\n\nfunction touchStarted() {\n  mousePressed();\n  return false;\n}\n\nfunction touchMoved() {\n  mouseDragged();\n  return false;\n}\n\nfunction touchEnded() {\n  mouseReleased();\n  return false;\n}\n\nfunction overButton(btn, mx, my) {\n  return mx >= btn.x && mx <= btn.x + btn.w && my >= btn.y && my <= btn.y + btn.h;\n}\n\nfunction checkMatch() {\n  let diff = angleDifference(draggableAngle, targetAngle + PI);\n  if (diff < 0.16) {\n    isMatched = true;\n    feedbackText = 'Tebrikler! Karşılıklı açılar eşittir.';\n  } else {\n    isMatched = false;\n    feedbackText = 'Tam karşıya getir. Karşılıklı açılar eşit olur.';\n  }\n}\n\nfunction angleDifference(a, b) {\n  let d = abs(a - b) % TWO_PI;\n  return min(d, TWO_PI - d);\n}\n",
+        "rationale": "Bu mikro-oyun, kesişen iki doğrunun oluşturduğu karşılıklı açıların eşitliğini doğrudan eşleştirme yoluyla sezdirir. Validator geri bildirimine uygun olarak turuncu kol sabit bırakılmış, başlangıçta yanlış konuma yerleştirilmiş ve öğrenci mavi kolu gerçekten sürükleyerek karşısına getirmek zorunda bırakılmıştır. Kontrol butonu yalnızca eşleşme doğruluğunu denetler; böylece başarı koşulu netleşir. Sıfırla butonu etkileşimli yeniden başlatma sağlar. Sağ panel kısa tutuldu; düzen 5. sınıf seviyesine uygun, tek kavramlı ve kısa geri bildirimlidir.",
+        "state_model": {
+          "tracked_vars": [
+            "draggableAngle",
+            "targetAngle",
+            "angleDiff",
+            "isMatched",
+            "feedbackText",
+            "attempts"
+          ]
+        },
+        "layout_model": {
+          "boxes": [
+            {
+              "h": 36,
+              "w": 528,
+              "x": 16,
+              "y": 12,
+              "id": "title"
+            },
+            {
+              "h": 220,
+              "w": 360,
+              "x": 16,
+              "y": 56,
+              "id": "play_area"
+            },
+            {
+              "h": 220,
+              "w": 160,
+              "x": 384,
+              "y": 56,
+              "id": "controls"
+            },
+            {
+              "h": 44,
+              "w": 528,
+              "x": 16,
+              "y": 284,
+              "id": "feedback"
+            }
+          ],
+          "canvas_width": 560,
+          "target_panel": "top_right_30pct",
+          "canvas_height": 340
+        },
+        "learning_goal": "Kesişen iki doğru üzerinde karşılıklı açıların eşit olduğunu, bir açıyı karşısındaki açıyla eşleştirerek keşfetme.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Tebrikler! Karşılıklı açılar eşittir.",
+          "on_incorrect": "Tam karşıya getir. Karşılıklı açılar aynı doğrultuda, ama zıt yönde olmalı."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouse_drag",
+            "mouse_click",
+            "touch_drag",
+            "touch_tap"
+          ],
+          "affordances": [
+            "sürüklenebilir mavi kol",
+            "sabit turuncu kol",
+            "Kontrol butonu",
+            "Sıfırla butonu"
+          ],
+          "user_actions": [
+            "Mavi kolu döndürerek turuncu kolun tam karşısına getirir.",
+            "Kontrol butonuna basarak eşleşmeyi doğrular.",
+            "Sıfırla ile oyunu baştan başlatır."
+          ]
+        },
+        "success_condition": "Mavi kol ile turuncu kolun yönleri birbirine tam karşı olduğunda ve kullanıcı Kontrol’e bastığında başarı sağlanır.",
+        "instructions_short": "Mavi kolu sürükle. Turuncu kolun tam karşısına gelince Kontrol’e bas."
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, kesişen doğrularda oluşan karşılıklı açıların eşitliğini kavratmayı hedefler. Öğrenciden yalnız sonucu değil, kuralın nedenini ilişkilendirerek açıklaması beklenir.",
+        "question_text": "Bir öğrencinin çizdiği şeklide iki doğru kesişiyor ve oluşan açılardan biri 68° ölçülüyor. Öğrenci, bu açının karşısındaki açının neden aynı ölçüde olduğunu kendi cümleleriyle açıklamak istiyor. Karşılıklı açılarla ilgili kuralı kullanarak bu açının ölçüsünü ve nedenini yazınız.",
+        "expected_answer": "Karşılıklı açılar birbirine eşittir; bu yüzden karşısındaki açı da 68° olur. Çünkü kesişen iki doğru, karşılıklı açılarda aynı açıklığı oluşturur."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Karşılıklı açılar eşittir.",
+            "description": "İki doğru kesiştiğinde oluşan karşılıklı açılar, birbirine eşittir. Bu kuralı kullanırız."
+          },
+          {
+            "expression": "68° = 68°",
+            "description": "Verilen açı 68° olduğuna göre, karşısındaki açı da aynı ölçüde olur."
+          },
+          {
+            "expression": "Karşılıklı açı = 68°",
+            "description": "Bu eşitliğin nedeni, kesişen iki doğrunun karşılıklı açılarda aynı açıklığı oluşturmasıdır. İsterseniz komşu açıların 180° yaptığı da bilinmelidir; ancak burada aranan kural karşılıklı açılar eşitliğidir."
+          }
+        ],
+        "final_answer": "Karşısındaki açı 68°’dir; çünkü karşılıklı açılar birbirine eşittir."
+      },
+      "request_id": "req_6a40a798",
+      "assembled_at": "2026-05-11T00:22:20.407053+00:00"
+    }
+  },
+  {
+    "request_id": "req_7b917edb",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, üçgenin iç açılar toplamı kuralını kullanmayı ve eksik açıyı muhakeme ederek bulmayı ölçer. Öğrenci yalnızca işlem yapmaz, neden 180°’den çıkarma yaptığını da açıklar.",
+        "question_text": "Bir üçgende iki iç açının ölçüleri 48° ve 67°’dir. Üçüncü açının ölçüsünü bulun ve neden bu sonucu bulduğunuzu kısaca açıklayın.",
+        "expected_answer": "Üçgenin iç açılar toplamı 180° olduğu için 48° + 67° = 115° eder. 180° - 115° = 65° olur; üçüncü açı 65°’dir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "48° + 67° = 115°",
+            "description": "Üçgende iç açılar toplamı her zaman 180°’dir. Bu yüzden verilen iki açıyı toplarız."
+          },
+          {
+            "expression": "180° - 115° = 65°",
+            "description": "Bulduğumuz toplamı 180°’den çıkararak üçüncü açıyı buluruz. Çünkü üç açının toplamı 180° olmalıdır."
+          },
+          {
+            "expression": "Üçüncü açı = 65°",
+            "description": "Sonuç olarak üçüncü iç açının ölçüsü 65°’tir."
+          }
+        ],
+        "final_answer": "Üçüncü açı 65°’dir; çünkü üçgenin iç açılar toplamı 180°’dir."
+      },
+      "request_id": "req_7b917edb",
+      "assembled_at": "2026-05-11T00:03:36.176276+00:00"
+    }
+  },
+  {
+    "request_id": "req_84b70aba",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "manipulation",
+        "p5_sketch": "let angleA, angleB, angleC;\nlet dragMode = null;\nlet checked = false;\nlet gameWon = false;\nlet message = 'Açıları ayarla.';\nlet checkBtn, resetBtn;\n\nfunction setup() {\n  createCanvas(560, 340);\n  textFont('sans-serif');\n  initializeGame();\n}\n\nfunction initializeGame() {\n  angleA = 40;\n  angleB = 40;\n  angleC = 40;\n  checked = false;\n  gameWon = false;\n  message = 'Açıları ayarla.';\n  checkBtn = { x: 402, y: 104, w: 120, h: 30, label: 'Kontrol' };\n  resetBtn = { x: 402, y: 144, w: 120, h: 30, label: 'Sıfırla' };\n}\n\nfunction resetGame() {\n  initializeGame();\n}\n\nfunction draw() {\n  background(245);\n\n  fill(30);\n  textSize(16);\n  text('Üçgenin açılarını tamamla', 24, 34);\n\n  drawTriangle();\n  drawAngleControls();\n  drawControlButtons();\n  drawFeedback();\n}\n\nfunction drawTriangle() {\n  push();\n  translate(70, 85);\n  stroke(60);\n  strokeWeight(2);\n  fill(255);\n  triangle(60, 130, 10, 20, 210, 165);\n\n  noStroke();\n  fill(80);\n  textSize(13);\n  text('A', 48, 152);\n  text('B', 8, 15);\n  text('C', 214, 168);\n\n  fill(255, 230, 120);\n  arc(60, 130, 48, 48, radians(300), radians(20));\n  arc(10, 20, 48, 48, radians(20), radians(95));\n  arc(210, 165, 48, 48, radians(165), radians(260));\n\n  fill(20);\n  textSize(12);\n  textAlign(CENTER, CENTER);\n  text('48°', 38, 118);\n  text('67°', 24, 42);\n  text(angleC + '°', 230, 145);\n  pop();\n}\n\nfunction drawAngleControls() {\n  fill(255);\n  stroke(200);\n  rect(392, 62, 144, 30, 6);\n  rect(392, 206, 144, 30, 6);\n\n  fill(30);\n  noStroke();\n  textSize(12);\n  textAlign(LEFT, CENTER);\n  text('Kalan açı: ' + angleC + '°', 402, 77);\n  text('Hedef: 180°', 402, 221);\n\n  stroke(180);\n  line(404, 174, 520, 174);\n  fill(90, 160, 255);\n  noStroke();\n  let x = map(angleC, 30, 90, 404, 520);\n  ellipse(x, 174, 18, 18);\n  fill(50);\n  textAlign(CENTER, CENTER);\n  text('Sürükle', 462, 190);\n}\n\nfunction drawControlButtons() {\n  drawButton(checkBtn, checked ? color(220) : color(90, 170, 255));\n  drawButton(resetBtn, color(230));\n}\n\nfunction drawButton(btn, col) {\n  fill(col);\n  stroke(150);\n  rect(btn.x, btn.y, btn.w, btn.h, 8);\n  noStroke();\n  fill(20);\n  textAlign(CENTER, CENTER);\n  textSize(13);\n  text(btn.label, btn.x + btn.w / 2, btn.y + btn.h / 2);\n}\n\nfunction drawFeedback() {\n  fill(255);\n  stroke(220);\n  rect(16, 284, 528, 44, 8);\n  noStroke();\n  fill(gameWon ? color(20, 120, 60) : color(50));\n  textAlign(LEFT, CENTER);\n  textSize(13);\n  text(message, 28, 306, 500, 24);\n}\n\nfunction mousePressed() {\n  if (inside(mouseX, mouseY, checkBtn)) {\n    checked = true;\n    let sum = 48 + 67 + angleC;\n    if (angleC === 65 && sum === 180) {\n      gameWon = true;\n      message = 'Harika! 48° + 67° = 115° ve kalan 65° olur. Üçgen tamamlandı.';\n    } else {\n      gameWon = false;\n      message = 'Henüz tamamlanmadı. Üç açının toplamı 180° olmalı. Kalan açıyı tekrar dene.';\n    }\n  } else if (inside(mouseX, mouseY, resetBtn)) {\n    resetGame();\n  } else if (dist(mouseX, mouseY, map(angleC, 30, 90, 404, 520), 174) < 14) {\n    dragMode = 'angleC';\n  }\n}\n\nfunction mouseDragged() {\n  if (dragMode === 'angleC') {\n    angleC = round(constrain(map(mouseX, 404, 520, 30, 90), 30, 90));\n    checked = false;\n    gameWon = false;\n    message = 'Kalan açıyı ayarla.';\n  }\n}\n\nfunction mouseReleased() {\n  dragMode = null;\n}\n\nfunction touchStarted() {\n  mousePressed();\n  return false;\n}\n\nfunction inside(x, y, b) {\n  return x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h;\n}\n",
+        "rationale": "Bu mikro-oyun, sonucu doğrudan söylemek yerine öğrencinin eksik açıyı sürükleyerek keşfetmesini sağlar. Tek ana mekanik olarak açı kaydırıcısı kullanıldı; böylece 180° toplamı ve kalan açı ilişkisi görsel olarak anlaşılır. Başlangıçta çözülmüş durum yoktur: öğrenci önce ayarlama yapar, sonra Kontrol ile doğrular. Sıfırla butonu gerçek state değiştirir ve tekrar deneme imkânı verir.",
+        "state_model": {
+          "tracked_vars": [
+            "angleA",
+            "angleB",
+            "angleC",
+            "sumAngles",
+            "checked",
+            "message",
+            "gameWon"
+          ]
+        },
+        "layout_model": {
+          "boxes": [
+            {
+              "h": 36,
+              "w": 528,
+              "x": 16,
+              "y": 12,
+              "id": "title"
+            },
+            {
+              "h": 220,
+              "w": 360,
+              "x": 16,
+              "y": 56,
+              "id": "play_area"
+            },
+            {
+              "h": 220,
+              "w": 160,
+              "x": 384,
+              "y": 56,
+              "id": "controls"
+            },
+            {
+              "h": 44,
+              "w": 528,
+              "x": 16,
+              "y": 284,
+              "id": "feedback"
+            }
+          ],
+          "canvas_width": 560,
+          "target_panel": "top_right_30pct",
+          "canvas_height": 340
+        },
+        "learning_goal": "Öğrenci, bir üçgende iki açının toplamını görüp eksik açıyı bulmak için 180° kuralını keşfeder.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Harika! 48° + 67° = 115° ve kalan 65° olur. Üçgen tamamlandı.",
+          "on_incorrect": "Henüz tamamlanmadı. Üç açının toplamı 180° olmalı. Kalan açıyı tekrar dene."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouseDragged",
+            "mousePressed",
+            "touchStarted"
+          ],
+          "affordances": [
+            "Sürüklenebilir açı kaydırıcısı",
+            "Kontrol butonu",
+            "Sıfırla butonu"
+          ],
+          "user_actions": [
+            "İki verilen açıyı doğru yerlere getirir",
+            "Üçüncü açıyı kalan boşluğa ayarlar",
+            "Kontrol ile sonucu doğrular",
+            "Sıfırla ile yeniden dener"
+          ]
+        },
+        "success_condition": "İki verilen açı 48° ve 67° olarak yerleştirildiğinde, üçüncü açı 65° ayarlanmış ve Kontrol’e basılmış olmalı.",
+        "instructions_short": "Açıları sürükle. 180°’yi tamamlayan üçüncü açıyı bul. Sonra Kontrol’e bas."
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, üçgende iç açılar toplamı kuralını kavratmayı ve öğrencinin sonucu bulmadan önce neden bu işlemi yaptığını açıklamasını hedefler. Ezber yerine ilişki kurma ve muhakeme becerisini ölçer.",
+        "question_text": "Bir öğrencinin çizdiği üçgende iki iç açının ölçüleri 48° ve 67°’dir. Üçüncü açıyı bulurken yalnızca işlemi yazmak yerine, üçgenin açıları arasında nasıl bir ilişki olduğunu düşünerek açıklayınız. Üçüncü açı kaç derecedir?",
+        "expected_answer": "Üçgende iç açılar toplamı 180°’dir. 48° + 67° = 115° olduğuna göre üçüncü açı 180° − 115° = 65° olur."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "48° + 67° = 115°",
+            "description": "Üçgende iç açılar toplamının 180° olduğunu hatırlarız. Bu yüzden verilen iki açıyı toplayıp üçüncü açı için kalan kısmı bulacağız."
+          },
+          {
+            "expression": "180° - 115° = 65°",
+            "description": "Toplam 180° olduğuna göre, üçüncü açı için 180°’den bulunan toplamı çıkarırız. Böylece üçgenin tüm açıları tamamlanmış olur."
+          },
+          {
+            "expression": "48° + 67° + 65° = 180°",
+            "description": "Kontrol ederiz: 48° + 67° + 65° = 180° eder. Bu da üçgenin iç açılar toplamı kuralıyla uyumludur."
+          }
+        ],
+        "final_answer": "Üçüncü açı 65°’dir."
+      },
+      "request_id": "req_84b70aba",
+      "assembled_at": "2026-05-11T01:18:43.899915+00:00"
+    }
+  },
+  {
+    "request_id": "req_a273a35b",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": null,
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [
+        "solver:gave_up"
+      ],
+      "question": {
+        "rationale": "Bu soru, öğrencinin açı türlerini ölçüye göre ayırt etme ve 90° ile dik açı arasındaki ilişkiyi açıklama kazanımını yoklar. Ezberden çok, neden-sonuç kurarak açı adlandırmasını gerektirir.",
+        "question_text": "Bir sınıfta duvarın iki kenarı bir köşe oluşturuyor. Öğretmen, bu köşedeki açının 90° olduğunu söylüyor. Buna göre bu köşeye nasıl bir açı denir ve neden böyle adlandırılır?",
+        "expected_answer": "Bu açı dik açıdır; çünkü ölçüsü 90° olduğu için iki kenar birbirine dik olacak şekilde birleşmiştir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "m(∠) = 90°",
+            "description": "Bir açının ölçüsüne bakarak türünü belirleriz. Eğer açı 90° ise bu açıya dik açı denir."
+          },
+          {
+            "expression": "90° → dik açı",
+            "description": "90° olan açıda iki kenar birbirine bir köşe noktasında, birbirini dik kesecek şekilde yerleşir. Bu yüzden bu açı dik açı olarak adlandırılır."
+          },
+          {
+            "expression": "∠ = 90° ⇒ açı türü = dik açı",
+            "description": "Soruda köşedeki açının 90° olduğu söylendiğine göre, bu köşe dik açıdır. Gerekçe: 90° ölçüsü dik açının tanımıdır."
+          }
+        ],
+        "final_answer": "Bu açı dik açıdır; çünkü ölçüsü 90° olduğu için bu açıya dik açı denir."
+      },
+      "request_id": "req_a273a35b",
+      "assembled_at": "2026-05-11T00:06:48.990665+00:00"
+    }
+  },
+  {
+    "request_id": "req_d32683be",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, üçgenin iç açılar toplamı kuralını kullanmayı ve işlem adımlarını gerekçelendirmeyi ölçer. Öğrencinin sadece sonucu değil, neden o sonuca ulaştığını açıklaması hedeflenir.",
+        "question_text": "Bir üçgenin iki iç açısı 48° ve 67° ise, üçüncü açının kaç derece olduğunu bul ve nasıl bulduğunu kısaca açıkla.",
+        "expected_answer": "Üçgenin iç açıları toplamı 180° olduğundan önce 48° + 67° = 115° bulunur. 180° - 115° = 65° olduğu için üçüncü açı 65°'tir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "48° + 67° = 115°",
+            "description": "Üçgenin iç açıları toplamı 180°'dir. Önce verilen iki açıyı toplayalım: 48° + 67° = 115°."
+          },
+          {
+            "expression": "180° - 115° = 65°",
+            "description": "Üçgende üç açının toplamı 180° olduğuna göre, üçüncü açıyı bulmak için 180°'den bulunan toplamı çıkarırız: 180° - 115° = 65°."
+          },
+          {
+            "expression": "Üçüncü açı = 65°",
+            "description": "Sonuç olarak üçüncü iç açı 65° olur."
+          }
+        ],
+        "final_answer": "Üçüncü açı 65°'tir."
+      },
+      "request_id": "req_d32683be",
+      "assembled_at": "2026-05-11T01:23:10.947110+00:00"
+    }
+  },
+  {
+    "request_id": "req_d45ed785",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, çevre ile alanın farklı nicelikler olduğunu ve aynı alan için farklı kenar çiftlerinin farklı çevreler oluşturduğunu ölçer. Öğrenciye sadece hesap değil, ilişki kurma ve neden-sonuç açıklama becerisi kazandırır.",
+        "question_text": "Bir dikdörtgen bahçenin kısa kenarı 6 m, uzun kenarı 10 m’dir. Bu bahçenin etrafına tel çekilecektir. Aynı alanı koruyup tel uzunluğunu azaltmak için kenar uzunluklarını nasıl değiştirmek gerektiğini açıklayın. Neden böyle bir değişiklik tel uzunluğunu etkiler?",
+        "expected_answer": "Bahçenin alanı değişmeden kenar uzunlukları birbirine yaklaşırsa dikdörtgen kareye yaklaşır; bu durumda çevre genellikle azalır. Çünkü aynı alanı veren dikdörtgenlerde kenarlar eşitlendikçe çevre küçülür, uzun ve ince oldukça çevre büyür."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Alan = 6 × 10 = 60 m²",
+            "description": "Önce bahçenin alanını bulalım. Dikdörtgende alan kısa kenar ile uzun kenarın çarpımıdır. 6 m ve 10 m için alan değişmezse, yeni kenarların çarpımı yine aynı olmalıdır."
+          },
+          {
+            "expression": "Çevre = 2 × (6 + 10) = 32 m",
+            "description": "Tel uzunluğu çevredir. Dikdörtgende çevre, iki kısa kenar ve iki uzun kenarın toplamıdır. Kenarlar birbirine yaklaştıkça, aynı alanı koruyan dikdörtgen daha çok kareye benzer ve çevre genelde azalır."
+          },
+          {
+            "expression": "Kenarlar birbirine yaklaşırsa çevre azalır; kareye yaklaştıkça çevre daha küçük olur.",
+            "description": "Aynı alanı korurken tel uzunluğunu azaltmak için 6 m ve 10 m gibi birbirinden uzak kenarları daha yakın sayılara dönüştürmek gerekir. Örneğin 6 ve 10 yerine 7,5 ve 8 gibi daha eşit kenarlar seçilirse alan 60 m² kalabilir ve çevre küçülür. Çünkü aynı alanı veren dikdörtgenlerde kenarlar eşitlendikçe çevre azalır; uzun ve ince olursa çevre büyür."
+          }
+        ],
+        "final_answer": "Alan aynı kalacaksa kenar uzunlukları birbirine yaklaştırılmalı, yani dikdörtgen kareye yaklaştırılmalıdır. Bu, tel uzunluğunu azaltır çünkü aynı alanı veren dikdörtgenlerde kenarlar eşitlendikçe çevre küçülür."
+      },
+      "request_id": "req_d45ed785",
+      "assembled_at": "2026-05-10T23:05:46.430951+00:00"
+    }
+  },
+  {
+    "request_id": "req_d5802112",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "mixed",
+        "p5_sketch": "let cards = [];\\nlet slots = [];\\nlet buttons = [];\\nlet feedbackMsg = 'Kartları sürükle.';\\nlet placedAngles = [];\\nlet placedSum = 0;\\nlet missingAngle = null;\\nlet isChecked = false;\\nlet completed = false;\\nlet activeCard = null;\\n\\nfunction setup() {\\n  createCanvas(560, 340);\\n  textFont('sans-serif');\\n  initializeGame();\\n}\\n\\nfunction initializeGame() {\\n  resetGame();\\n}\\n\\nfunction resetGame() {\\n  cards = [\\n    { id: 50, x: 396, y: 96, w: 56, h: 34, homeX: 396, homeY: 96, placed: false },\\n    { id: 60, x: 462, y: 96, w: 56, h: 34, homeX: 462, homeY: 96, placed: false }\\n  ];\\n  slots = [{ x: 86, y: 120, w: 110, h: 56, angle: null }, { x: 208, y: 120, w: 110, h: 56, angle: null }];\\n  buttons = [\\n    { label: 'Kontrol', x: 404, y: 154, w: 112, h: 30 },\\n    { label: 'Sıfırla', x: 404, y: 192, w: 112, h: 30 }\\n  ];\\n  feedbackMsg = 'Kartları sürükle.';\\n  placedAngles = [];\\n  placedSum = 0;\\n  missingAngle = null;\\n  isChecked = false;\\n  completed = false;\\n  activeCard = null;\\n}\\n\\nfunction draw() {\\n  background(248);\\n  drawTitle();\\n  drawPlayArea();\\n  drawControls();\\n  drawFeedback();\\n  updateState();\\n}\\n\\nfunction drawTitle() {\\n  fill(30);\\n  noStroke();\\n  textSize(16);\\n  textAlign(LEFT, CENTER);\\n  text('Açı Topla, Eksik Köşeyi Bul', 18, 30);\\n}\\n\\nfunction drawPlayArea() {\\n  fill(255);\\n  stroke(210);\\n  rect(16, 56, 360, 220, 10);\\n\\n  // triangle\\n  noFill();\\n  stroke(60);\\n  strokeWeight(2);\\n  triangle(86, 220, 186, 90, 286, 220);\\n  strokeWeight(1);\\n\\n  // angle target slots\\n  for (let s of slots) {\\n    fill(250);\\n    stroke(180);\\n    rect(s.x, s.y, s.w, s.h, 8);\\n    noStroke();\\n    fill(100);\\n    textSize(13);\\n    textAlign(CENTER, CENTER);\\n    text(s.angle === null ? 'Yerleştir' : s.angle + '°', s.x + s.w / 2, s.y + s.h / 2);\\n  }\\n\\n  // sum bar\\n  fill(240);\\n  stroke(210);\\n  rect(58, 192, 250, 34, 8);\\n  noStroke();\\n  fill(40);\\n  textSize(13);\\n  textAlign(LEFT, CENTER);\\n  text('Toplam: ' + placedSum + '° / 180°', 70, 209);\\n\\n  if (missingAngle !== null) {\\n    fill(20, 120, 60);\\n    textAlign(CENTER, CENTER);\\n    textSize(18);\\n    text('Eksik açı: ' + missingAngle + '°', 186, 99);\\n  } else {\\n    fill(120);\\n    textAlign(CENTER, CENTER);\\n    textSize(12);\\n    text('Toplamı 180° yap', 186, 99);\\n  }\\n\\n  for (let c of cards) {\\n    fill(c.placed ? color(220, 245, 230) : color(255, 236, 210));\\n    stroke(120);\\n    rect(c.x, c.y, c.w, c.h, 8);\\n    noStroke();\\n    fill(30);\\n    textSize(16);\\n    textAlign(CENTER, CENTER);\\n    text(c.id + '°', c.x + c.w / 2, c.y + c.h / 2);\\n  }\\n}\\n\\nfunction drawControls() {\\n  fill(255);\\n  stroke(210);\\n  rect(384, 56, 160, 220, 10);\\n  fill(40);\\n  noStroke();\\n  textAlign(LEFT, TOP);\\n  textSize(13);\\n  text('Amaç:\\nİki açıyı topla.', 398, 70);\\n  for (let b of buttons) {\\n    fill(70, 130, 220);\\n    rect(b.x, b.y, b.w, b.h, 8);\\n    fill(255);\\n    textAlign(CENTER, CENTER);\\n    textSize(14);\\n    text(b.label, b.x + b.w / 2, b.y + b.h / 2);\\n  }\\n}\\n\\nfunction drawFeedback() {\\n  fill(245);\\n  stroke(210);\\n  rect(16, 284, 528, 44, 10);\\n  noStroke();\\n  fill(30);\\n  textAlign(LEFT, CENTER);\\n  textSize(14);\\n  text(feedbackMsg, 28, 306, 500, 28);\\n}\\n\\nfunction updateState() {\\n  placedAngles = [];\\n  placedSum = 0;\\n  for (let s of slots) {\\n    if (s.angle !== null) {\\n      placedAngles.push(s.angle);\\n      placedSum += s.angle;\\n    }\\n  }\\n  missingAngle = placedSum > 0 ? 180 - placedSum : null;\\n  completed = placedSum === 110;\\n}\\n\\nfunction mousePressed() {\\n  for (let b of buttons) {\\n    if (inside(mouseX, mouseY, b.x, b.y, b.w, b.h)) {\\n      if (b.label === 'Kontrol') {\\n        isChecked = true;\\n        if (completed) {\\n          feedbackMsg = 'Harika! 50° + 60° = 110°. Eksik açı 70°.';\\n        } else {\\n          feedbackMsg = 'Henüz tamam değil. 50° ve 60° kartlarını yerleştir.';\\n        }\\n      } else {\\n        initializeGame();\\n      }\\n      return;\\n    }\\n  }\\n\\n  for (let i = cards.length - 1; i >= 0; i--) {\\n    let c = cards[i];\\n    if (inside(mouseX, mouseY, c.x, c.y, c.w, c.h)) {\\n      activeCard = c;\\n      c.dragOffX = mouseX - c.x;\\n      c.dragOffY = mouseY - c.y;\\n      return;\\n    }\\n  }\\n}\\n\\nfunction mouseDragged() {\\n  if (activeCard) {\\n    activeCard.x = mouseX - activeCard.dragOffX;\\n    activeCard.y = mouseY - activeCard.dragOffY;\\n  }\\n}\\n\\nfunction mouseReleased() {\\n  if (!activeCard) return;\\n  let placed = false;\\n  for (let s of slots) {\\n    if (dist(activeCard.x + activeCard.w / 2, activeCard.y + activeCard.h / 2, s.x + s.w / 2, s.y + s.h / 2) < 45 && s.angle === null) {\\n      s.angle = activeCard.id;\\n      activeCard.placed = true;\\n      activeCard.x = s.x + 27;\\n      activeCard.y = s.y + 11;\\n      placed = true;\\n      feedbackMsg = 'Güzel! Şimdi diğer açıyı ekle.';\\n      break;\\n    }\\n  }\\n  if (!placed) {\\n    activeCard.x = activeCard.homeX;\\n    activeCard.y = activeCard.homeY;\\n    activeCard.placed = false;\\n    feedbackMsg = 'Kartı kutunun üstüne bırak.';\\n  }\\n  activeCard = null;\\n}\\n\\nfunction inside(px, py, x, y, w, h) {\\n  return px >= x && px <= x + w && py >= y && py <= y + h;\\n}\\n",
+        "rationale": "Bu mikro-oyun, üçgende iç açılar toplamı 180° kuralını doğrudan manipülasyonla keşfettirir. Öğrenci 50° ve 60° kartlarını sürükleyip toplamı görür, ardından eksik açının 70° olduğunu anlık geri bildirimle doğrular. Tek kavram, tek ana mekanik ve kısa butonlarla 5. sınıf düzeyine uygundur; reset ve kontrol etkileşimleri durum değiştirir ve öğrenmeyi pekiştirir.",
+        "state_model": {
+          "tracked_vars": [
+            "placedAngles",
+            "placedSum",
+            "missingAngle",
+            "isChecked",
+            "completed"
+          ]
+        },
+        "layout_model": {
+          "boxes": [
+            {
+              "h": 36,
+              "w": 528,
+              "x": 16,
+              "y": 12,
+              "id": "title"
+            },
+            {
+              "h": 220,
+              "w": 360,
+              "x": 16,
+              "y": 56,
+              "id": "play_area"
+            },
+            {
+              "h": 220,
+              "w": 160,
+              "x": 384,
+              "y": 56,
+              "id": "controls"
+            },
+            {
+              "h": 44,
+              "w": 528,
+              "x": 16,
+              "y": 284,
+              "id": "feedback"
+            }
+          ],
+          "canvas_width": 560,
+          "target_panel": "top_right_30pct",
+          "canvas_height": 340
+        },
+        "learning_goal": "Üçgende iki açıyı toplayıp 180°'den çıkararak eksik açıyı bulma.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Harika! 50° + 60° = 110° oldu. Eksik açı 70°.",
+          "on_incorrect": "Henüz 180° tamamlanmadı. Kartları yerleştir ve toplamı 110° yapınca eksik açı 70° olur."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouse drag",
+            "mouse click"
+          ],
+          "affordances": [
+            "sürüklenebilir açı kartları",
+            "Kontrol butonu",
+            "Sıfırla butonu",
+            "anlık geri bildirim"
+          ],
+          "user_actions": [
+            "50° kartını ve 60° kartını üçgenin toplam alanına sürükle",
+            "Kontrol'e bas",
+            "yanlışsa kartları değiştirip tekrar dene",
+            "Sıfırla ile yeniden başla"
+          ]
+        },
+        "success_condition": "Toplanan açılar 110° olduğunda eksik açı 70° olarak görünür ve kullanıcı Kontrol'e bastığında doğru durum doğrulanır.",
+        "instructions_short": "Açı parçalarını sürükle. Toplam 180° olunca üçüncü açı ortaya çıksın. Gerekirse Sıfırla."
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, üçgende iç açıların toplamı kuralını kullanmayı ölçer. Öğrencinin sadece sonucu değil, sonuca nasıl ulaştığını da açıklaması istenir.",
+        "question_text": "Bir üçgende iki iç açının ölçüleri 50° ve 60°'dir. Üçüncü açıyı bulurken nasıl düşünürsün? Sonucu yaz ve nedenini kısaca açıkla.",
+        "expected_answer": "Üçüncü açı 70°'dir; çünkü üçgenin iç açılarının toplamı 180° olduğundan 180 - 50 - 60 = 70 bulunur."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "∠A + ∠B + ∠C = 180°",
+            "description": "Üçgenin iç açılarının toplamının 180° olduğunu hatırlarız."
+          },
+          {
+            "expression": "50° + 60° = 110°",
+            "description": "Verilen iki açıyı toplarız: 50° ve 60°."
+          },
+          {
+            "expression": "180° - 110° = 70°",
+            "description": "180°'den bu toplamı çıkararak üçüncü açıyı buluruz."
+          }
+        ],
+        "final_answer": "Üçüncü açı 70°'dir; çünkü üçgende iç açılar toplamı 180°'dir."
+      },
+      "request_id": "req_d5802112",
+      "assembled_at": "2026-05-11T01:21:24.463110+00:00"
+    }
+  },
+  {
+    "request_id": "req_da426411",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "manipulation",
+        "p5_sketch": "let pieces = [];\\nlet slots = [];\\nlet buttons = [];\\nlet feedbackMsg = 'İki açıyı üçgene taşı.';\\nlet totalAngle = 0;\\nlet thirdAngle = null;\\nlet checked = false;\\nlet success = false;\\nlet draggingPiece = null;\\nlet offsetX = 0;\\nlet offsetY = 0;\\n\\nfunction setup() {\\n  createCanvas(560, 340);\\n  textFont('sans-serif');\\n  initializeGame();\\n}\\n\\nfunction initializeGame() {\\n  resetGame();\\n  buttons = [\\n    { label: 'Kontrol', x: 404, y: 92, w: 120, h: 34, action: 'check' },\\n    { label: 'Sıfırla', x: 404, y: 136, w: 120, h: 34, action: 'reset' }\\n  ];\\n}\\n\\nfunction resetGame() {\\n  pieces = [\\n    { id: 'p48', value: 48, x: 408, y: 200, w: 52, h: 34, homeX: 408, homeY: 200, placed: false, target: 0 },\\n    { id: 'p67', value: 67, x: 470, y: 200, w: 52, h: 34, homeX: 470, homeY: 200, placed: false, target: 1 }\\n  ];\\n  slots = [\\n    { x: 100, y: 118, w: 90, h: 90, value: null },\\n    { x: 210, y: 118, w: 90, h: 90, value: null }\\n  ];\\n  totalAngle = 0;\\n  thirdAngle = null;\\n  checked = false;\\n  success = false;\\n  feedbackMsg = 'İki açıyı üçgene taşı.';\\n}\\n\\nfunction draw() {\\n  background(248);\\n  drawTitle();\\n  drawPlayArea();\\n  drawControls();\\n  drawFeedback();\\n}\\n\\nfunction drawTitle() {\\n  fill(30);\\n  noStroke();\\n  textSize(18);\\n  text('Üçgenin Kalan Açısı', 20, 36);\\n}\\n\\nfunction drawPlayArea() {\\n  fill(255);\\n  stroke(210);\\n  rect(16, 56, 360, 220, 10);\\n\\n  noFill();\\n  stroke(180);\\n  strokeWeight(2);\\n  triangle(78, 232, 208, 86, 304, 232);\\n\\n  noStroke();\\n  fill(80);\\n  textSize(12);\\n  text('48°', 88, 108);\\n  text('67°', 236, 108);\\n  text('?', 180, 198);\\n\\n  for (let s of slots) {\\n    fill(245);\\n    stroke(170);\\n    rect(s.x, s.y, s.w, s.h, 10);\\n    noStroke();\\n    fill(120);\\n    textAlign(CENTER, CENTER);\\n    textSize(16);\\n    if (s.value !== null) text(s.value + '°', s.x + s.w / 2, s.y + s.h / 2);\\n    else text('Bırak', s.x + s.w / 2, s.y + s.h / 2);\\n  }\\n\\n  for (let p of pieces) drawPiece(p);\\n\\n  if (checked) {\\n    fill(success ? color(225, 248, 225) : color(255, 235, 235));\\n    stroke(success ? color(90, 170, 90) : color(220, 100, 100));\\n    rect(90, 166, 230, 44, 8);\\n    noStroke();\\n    fill(40);\\n    textAlign(CENTER, CENTER);\\n    textSize(16);\\n    text('Kalan açı: ' + thirdAngle + '°', 205, 188);\\n  }\\n}\\n\\nfunction drawPiece(p) {\\n  fill(p.placed ? color(220, 240, 255) : color(255, 250, 220));\\n  stroke(150);\\n  rect(p.x, p.y, p.w, p.h, 8);\\n  noStroke();\\n  fill(30);\\n  textAlign(CENTER, CENTER);\\n  textSize(18);\\n  text(p.value + '°', p.x + p.w / 2, p.y + p.h / 2);\\n}\\n\\nfunction drawControls() {\\n  fill(255);\\n  stroke(210);\\n  rect(384, 56, 160, 220, 10);\\n  fill(40);\\n  noStroke();\\n  textAlign(LEFT, TOP);\\n  textSize(14);\\n  text('Kontrol paneli', 396, 70);\\n\\n  for (let b of buttons) {\\n    fill(235);\\n    stroke(160);\\n    rect(b.x, b.y, b.w, b.h, 8);\\n    noStroke();\\n    fill(30);\\n    textAlign(CENTER, CENTER);\\n    textSize(16);\\n    text(b.label, b.x + b.w / 2, b.y + b.h / 2);\\n  }\\n\\n  fill(60);\\n  textAlign(LEFT, TOP);\\n  textSize(12);\\n  text('İpucu:\\nİki açı + kalan açı = 180°', 396, 182);\\n}\\n\\nfunction drawFeedback() {\\n  fill(255);\\n  stroke(210);\\n  rect(16, 284, 528, 44, 10);\\n  noStroke();\\n  fill(success ? color(30, 130, 60) : color(70));\\n  textAlign(LEFT, CENTER);\\n  textSize(14);\\n  text(feedbackMsg, 28, 306, 500, 24);\\n}\\n\\nfunction mousePressed() {\\n  if (handleButtons(mouseX, mouseY)) return;\\n  for (let i = pieces.length - 1; i >= 0; i--) {\\n    let p = pieces[i];\\n    if (mouseX >= p.x && mouseX <= p.x + p.w && mouseY >= p.y && mouseY <= p.y + p.h) {\\n      draggingPiece = p;\\n      offsetX = mouseX - p.x;\\n      offsetY = mouseY - p.y;\\n      p.placed = false;\\n      if (slots[p.target].value === p.value) slots[p.target].value = null;\\n      return;\\n    }\\n  }\\n}\\n\\nfunction mouseDragged() {\\n  if (draggingPiece) {\\n    draggingPiece.x = mouseX - offsetX;\\n    draggingPiece.y = mouseY - offsetY;\\n  }\\n}\\n\\nfunction mouseReleased() {\\n  if (!draggingPiece) return;\\n  let p = draggingPiece;\\n  draggingPiece = null;\\n  let placed = false;\\n  for (let i = 0; i < slots.length; i++) {\\n    let s = slots[i];\\n    if (mouseX > s.x && mouseX < s.x + s.w && mouseY > s.y && mouseY < s.y + s.h && s.value === null) {\\n      p.x = s.x + 19;\\n      p.y = s.y + 28;\\n      s.value = p.value;\\n      p.placed = true;\\n      p.target = i;\\n      placed = true;\\n      break;\\n    }\\n  }\\n  if (!placed) {\\n    p.x = p.homeX;\\n    p.y = p.homeY;\\n  }\\n}\\n\\nfunction handleButtons(x, y) {\\n  for (let b of buttons) {\\n    if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) {\\n      if (b.action === 'check') checkAnswer();\\n      if (b.action === 'reset') initializeGame();\\n      return true;\\n    }\\n  }\\n  return false;\\n}\\n\\nfunction checkAnswer() {\\n  checked = true;\\n  let a = slots[0].value;\\n  let b = slots[1].value;\\n  if (a === 48 && b === 67 || a === 67 && b === 48) {\\n    totalAngle = 115;\\n    thirdAngle = 65;\\n    success = true;\\n    feedbackMsg = 'Harika! İki açı 115° etti, kalan açı 65°.';\\n  } else if (a !== null && b !== null) {\\n    totalAngle = (a || 0) + (b || 0);\\n    thirdAngle = 180 - totalAngle;\\n    success = false;\\n    feedbackMsg = 'Henüz olmadı. İki açının toplamını kontrol et ve üçgenin 180° olduğunu hatırla.';\\n  } else {\\n    success = false;\\n    thirdAngle = null;\\n    feedbackMsg = 'Önce iki açıyı da üçgene yerleştir.';\\n  }\\n}\\n\\nfunction touchStarted() {\\n  mousePressed();\\n  return false;\\n}\\n\\nfunction touchMoved() {\\n  mouseDragged();\\n  return false;\\n}\\n\\nfunction touchEnded() {\\n  mouseReleased();\\n  return false;\\n}",
+        "rationale": "Bu mikro-oyun, üçgenin iç açılar toplamı kuralını doğrudan tekrar ettirmek yerine öğrencinin iki açıyı yerleştirip kalan ölçüyü keşfetmesini sağlar. Sürükle-bırak mekaniği, 48° ve 67°'nin toplamının 115° olduğunu ve 180°'den çıkarınca 65° kaldığını etkileşimle görünür hale getirir. Kontrol ve Sıfırla butonları, kısa geri bildirimle birlikte öğrenmeyi pekiştirir. Oyun 5. sınıf düzeyine uygun, tek kavramlı ve kısa UI'lıdır.",
+        "state_model": {
+          "tracked_vars": [
+            "placed_48",
+            "placed_67",
+            "total_angle",
+            "third_angle",
+            "checked",
+            "success",
+            "dragging_piece",
+            "piece_positions"
+          ]
+        },
+        "layout_model": {
+          "boxes": [
+            {
+              "h": 36,
+              "w": 528,
+              "x": 16,
+              "y": 12,
+              "id": "title"
+            },
+            {
+              "h": 220,
+              "w": 360,
+              "x": 16,
+              "y": 56,
+              "id": "play_area"
+            },
+            {
+              "h": 220,
+              "w": 160,
+              "x": 384,
+              "y": 56,
+              "id": "controls"
+            },
+            {
+              "h": 44,
+              "w": 528,
+              "x": 16,
+              "y": 284,
+              "id": "feedback"
+            }
+          ],
+          "canvas_width": 560,
+          "target_panel": "top_right_30pct",
+          "canvas_height": 340
+        },
+        "learning_goal": "Öğrenci, bir üçgende iki açıyı toplayıp 180°'ye tamamlayarak üçüncü açıyı keşfeder ve bunun neden kalan ölçü olduğunu anlar.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Harika! İki açı 115° etti, kalan açı 65°.",
+          "on_incorrect": "Henüz olmadı. İki açının toplamını kontrol et ve üçgenin 180° olduğunu hatırla."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouseDragged",
+            "mousePressed",
+            "touchStarted"
+          ],
+          "affordances": [
+            "sürükle-bırak açı parçaları",
+            "Kontrol butonu",
+            "Sıfırla butonu"
+          ],
+          "user_actions": [
+            "48° ve 67° parçalarını üçgene sürükle",
+            "Kontrol butonuna tıkla",
+            "İstersen Sıfırla ile yeniden dene"
+          ]
+        },
+        "success_condition": "48° ve 67° doğru yuvalara bırakıldığında ve Kontrol'e basıldığında kalan açı 65° olarak gösterilir.",
+        "instructions_short": "Sürükleyerek iki açıyı yerleştir. Sonra Kontrol'e bas ve kalan açıyı bul."
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, üçgenin iç açılar toplamı kuralını sadece hatırlamayı değil, neden üçüncü açının böyle bulunduğunu açıklamayı ölçer. Öğrencinin geometrik nicelikler arasında ilişki kurmasını hedefler.",
+        "question_text": "Bir üçgende iki iç açının ölçüleri 48° ve 67°’dir. Üçüncü açının neden bu ikisinden farklı olduğunu düşünerek bul ve kısa bir gerekçe yaz.",
+        "expected_answer": "Üçgenin iç açılarının toplamı 180° olduğu için üçüncü açı 180° - 48° - 67° = 65° olur. Bu açı diğerlerinden farklıdır çünkü üç açının ölçüleri toplamı 180°’yi tamamlamak zorundadır."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "48° + 67° = 115°",
+            "description": "Üçgenin iç açılarının toplamı her zaman 180°’dir. Bu yüzden verilen iki açının toplamını buluruz."
+          },
+          {
+            "expression": "180° - 115° = 65°",
+            "description": "Üçüncü açıyı bulmak için 180°’den bulunan toplamı çıkarırız. Çünkü üç açının toplamı 180° olmalıdır."
+          },
+          {
+            "expression": "48° + 67° + 65° = 180°",
+            "description": "Bu açı diğerlerinden farklıdır; çünkü üçgenin iç açıları toplamı 180°’yi tamamlayacak şekilde belirlenir ve üçüncü açı, kalan ölçüdür."
+          }
+        ],
+        "final_answer": "Üçüncü açı 65°’dir; çünkü üçgenin iç açıları toplamı 180° olur."
+      },
+      "request_id": "req_da426411",
+      "assembled_at": "2026-05-11T01:19:12.773312+00:00"
+    }
+  },
+  {
+    "request_id": "req_db02e581",
+    "topic": "Geometrik Şekiller",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Şekiller",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, çokgen kavramını sadece ad olarak değil; kapalı olma, kenar ve köşe özellikleriyle ilişkilendirmeyi hedefler. Öğrencinin üçgenin temel özelliğini gerekçesiyle açıklaması beklenir.",
+        "question_text": "Bir öğrenci, uç uca eklediği üç doğru parçasıyla kapalı bir şekil oluşturuyor. Bu şeklin üç köşesi ve üç kenarı vardır. Öğrenci, bu şeklin neden çokgen olduğunu kısa bir gerekçeyle açıklasın ve bu şeklin hangi adla anıldığını yazsın.",
+        "expected_answer": "Bu şekil çokgendir; çünkü doğru parçaları uç uca eklenerek kapalı bir şekil oluşturmuştur. Üç kenarı ve üç köşesi olduğuna göre bu şekle üçgen denir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Doğru parçaları uç uca + kapalı şekil = çokgen",
+            "description": "Önce şeklin çokgen olup olmadığına bakılır. Çokgen, doğru parçalarının uç uca eklenmesiyle oluşan kapalı şekildir. Burada üç doğru parçası uç uca eklenerek kapalı bir şekil oluşturulmuş."
+          },
+          {
+            "expression": "3 kenar ve 3 köşe",
+            "description": "Şeklin kaç kenarı ve kaç köşesi olduğuna bakılır. Verilen bilgiye göre bu şeklin 3 kenarı ve 3 köşesi vardır. Çokgenler kenar sayılarına göre adlandırılır."
+          },
+          {
+            "expression": "3 kenarlı çokgen = üçgen; iç açılar toplamı = 180°",
+            "description": "3 kenarlı çokgen, üçgen olarak adlandırılır. Üçgenin bir özelliği de iç açılarının toplamının 180° olmasıdır; bu da onun bir üçgen olduğunu doğrulayan önemli bir kuraldır."
+          }
+        ],
+        "final_answer": "Bu şekil çokgendir; çünkü doğru parçaları uç uca eklenerek kapalı bir şekil oluşturmuştur. Üç kenarı ve üç köşesi olduğuna göre bu şekle üçgen denir."
+      },
+      "request_id": "req_db02e581",
+      "assembled_at": "2026-05-09T23:17:50.037681+00:00"
+    }
+  },
+  {
+    "request_id": "req_e3c756f0",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "mixed",
+        "p5_sketch": "let cards = [];\nlet slots = [];\nlet draggingId = null;\nlet dragOffsetX = 0;\nlet dragOffsetY = 0;\nlet slot45Filled = false;\nlet slot65Filled = false;\nlet sumValue = null;\nlet missingAngleGuess = 60;\nlet checked = false;\nlet isCorrect = false;\nlet feedbackText = 'Kartları yerleştir.';\n\nfunction setup() {\n  createCanvas(560, 340);\n  textFont('sans-serif');\n  initializeGame();\n}\n\nfunction initializeGame() {\n  resetGame();\n}\n\nfunction resetGame() {\n  cards = [\n    { id: 'c45', value: 45, x: 394, y: 92, w: 64, h: 34, placed: false },\n    { id: 'c65', value: 65, x: 468, y: 92, w: 64, h: 34, placed: false }\n  ];\n  slots = [\n    { id: 's1', x: 72, y: 96, w: 120, h: 42, label: 'Açı 1' },\n    { id: 's2', x: 202, y: 96, w: 120, h: 42, label: 'Açı 2' }\n  ];\n  draggingId = null;\n  dragOffsetX = 0;\n  dragOffsetY = 0;\n  slot45Filled = false;\n  slot65Filled = false;\n  sumValue = null;\n  missingAngleGuess = 60;\n  checked = false;\n  isCorrect = false;\n  feedbackText = 'Kartları yerleştir.';\n}\n\nfunction draw() {\n  background(248);\n  drawTitle();\n  drawPlayArea();\n  drawControls();\n  drawFeedback();\n}\n\nfunction drawTitle() {\n  fill(30);\n  textSize(16);\n  textAlign(LEFT, CENTER);\n  text('Üçgeni Tamamla', 22, 30);\n}\n\nfunction drawPlayArea() {\n  fill(255);\n  stroke(200);\n  rect(16, 56, 360, 220, 10);\n\n  fill(245, 250, 255);\n  stroke(120, 160, 210);\n  triangle(120, 240, 285, 240, 200, 96);\n\n  for (let s of slots) {\n    fill(250);\n    stroke(180);\n    rect(s.x, s.y, s.w, s.h, 8);\n    fill(90);\n    noStroke();\n    textSize(12);\n    textAlign(CENTER, CENTER);\n    text(s.label, s.x + s.w / 2, s.y + s.h / 2 - 7);\n  }\n\n  drawCardValueInSlot('c45', slots[0].x + 30, slots[0].y + 28);\n  drawCardValueInSlot('c65', slots[1].x + 30, slots[1].y + 28);\n\n  fill(50);\n  textAlign(CENTER, CENTER);\n  textSize(13);\n  text('Toplam: ' + (sumValue === null ? '??' : sumValue + '°'), 202, 176);\n\n  fill(50);\n  text('Eksik açı: ' + missingAngleGuess + '°', 202, 200);\n\n  for (let c of cards) {\n    if (!c.placed || draggingId === c.id) {\n      drawCard(c);\n    }\n  }\n}\n\nfunction drawCard(c) {\n  fill(255, 236, 190);\n  stroke(190, 140, 40);\n  rect(c.x, c.y, c.w, c.h, 8);\n  fill(70);\n  noStroke();\n  textAlign(CENTER, CENTER);\n  textSize(16);\n  text(c.value + '°', c.x + c.w / 2, c.y + c.h / 2);\n}\n\nfunction drawCardValueInSlot(id, x, y) {\n  let c = cards.find(v => v.id === id);\n  if (c && c.placed) {\n    fill(255, 236, 190);\n    stroke(190, 140, 40);\n    rect(x - 30, y - 18, 60, 34, 8);\n    fill(70);\n    noStroke();\n    textSize(16);\n    textAlign(CENTER, CENTER);\n    text(c.value + '°', x, y);\n  }\n}\n\nfunction drawControls() {\n  fill(255);\n  stroke(200);\n  rect(384, 56, 160, 220, 10);\n\n  fill(60);\n  noStroke();\n  textAlign(LEFT, TOP);\n  textSize(12);\n  text('Sürükle ve bırak', 396, 68);\n\n  drawButton(404, 140, 112, 30, 'Kontrol');\n  drawButton(404, 180, 112, 30, 'Sıfırla');\n\n  fill(80);\n  textSize(12);\n  text('İpucu: İki açı\\n180° ye tamamlanır.', 396, 104);\n\n  fill(40);\n  text('Tahmin: ' + missingAngleGuess + '°', 404, 224);\n}\n\nfunction drawButton(x, y, w, h, label) {\n  fill(235);\n  stroke(160);\n  rect(x, y, w, h, 8);\n  fill(40);\n  noStroke();\n  textAlign(CENTER, CENTER);\n  textSize(13);\n  text(label, x + w / 2, y + h / 2);\n}\n\nfunction drawFeedback() {\n  fill(isCorrect ? color(230, 255, 230) : color(255, 245, 225));\n  stroke(210);\n  rect(16, 284, 528, 44, 10);\n  fill(40);\n  noStroke();\n  textAlign(LEFT, CENTER);\n  textSize(13);\n  text(feedbackText, 28, 306, 500, 24);\n}\n\nfunction mousePressed() {\n  if (hitButton(404, 140, 112, 30)) {\n    checked = true;\n    updateCheck();\n    return;\n  }\n  if (hitButton(404, 180, 112, 30)) {\n    resetGame();\n    return;\n  }\n  if (hitTriangleGuessArea()) {\n    missingAngleGuess = cycleGuess(missingAngleGuess);\n    feedbackText = 'Tahmin değişti: ' + missingAngleGuess + '°';\n    return;\n  }\n  for (let i = cards.length - 1; i >= 0; i--) {\n    let c = cards[i];\n    if (mouseX > c.x && mouseX < c.x + c.w && mouseY > c.y && mouseY < c.y + c.h) {\n      draggingId = c.id;\n      dragOffsetX = mouseX - c.x;\n      dragOffsetY = mouseY - c.y;\n      c.placed = false;\n      return;\n    }\n  }\n}\n\nfunction mouseDragged() {\n  if (draggingId) {\n    let c = cards.find(v => v.id === draggingId);\n    c.x = mouseX - dragOffsetX;\n    c.y = mouseY - dragOffsetY;\n  }\n}\n\nfunction mouseReleased() {\n  if (!draggingId) return;\n  let c = cards.find(v => v.id === draggingId);\n  if (overSlot(c, slots[0])) {\n    c.x = slots[0].x + 28;\n    c.y = slots[0].y + 4;\n    c.placed = true;\n  } else if (overSlot(c, slots[1])) {\n    c.x = slots[1].x + 28;\n    c.y = slots[1].y + 4;\n    c.placed = true;\n  } else {\n    c.placed = false;\n  }\n  draggingId = null;\n  sumValue = null;\n  updateSlotState();\n}\n\nfunction touchStarted() { mousePressed(); return false; }\nfunction touchMoved() { mouseDragged(); return false; }\nfunction touchEnded() { mouseReleased(); return false; }\n\nfunction updateSlotState() {\n  slot45Filled = cards.find(c => c.id === 'c45').placed;\n  slot65Filled = cards.find(c => c.id === 'c65').placed;\n  if (slot45Filled && slot65Filled) {\n    sumValue = 110;\n    feedbackText = 'İki açıyı gördün. Şimdi 180° den çıkar.';\n  } else {\n    feedbackText = 'Kartları üçgene bırak.';\n  }\n}\n\nfunction updateCheck() {\n  updateSlotState();\n  if (slot45Filled && slot65Filled) {\n    let correctGuess = missingAngleGuess === 70;\n    isCorrect = correctGuess;\n    if (correctGuess) {\n      feedbackText = 'Harika! 45° + 65° = 110°. 180° - 110° = 70°.';\n    } else {\n      feedbackText = 'Toplam doğru, ama eksik açı 70° olmalı.';\n    }\n  } else {\n    isCorrect = false;\n    feedbackText = 'Önce iki kartı yerleştir.';\n  }\n}\n\nfunction hitButton(x, y, w, h) {\n  return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;\n}\n\nfunction hitTriangleGuessArea() {\n  return mouseX >= 64 && mouseX <= 320 && mouseY >= 150 && mouseY <= 240;\n}\n\nfunction cycleGuess(v) {\n  let arr = [30, 40, 50, 60, 70, 80, 90];\n  let i = arr.indexOf(v);\n  return arr[(i + 1) % arr.length];\n}\n\nfunction overSlot(c, s) {\n  return c.x + c.w / 2 > s.x && c.x + c.w / 2 < s.x + s.w && c.y + c.h / 2 > s.y && c.y + c.h / 2 < s.y + s.h;\n}\n",
+        "rationale": "Bu mikro-oyun, üçgende iç açılar toplamını ezberletmek yerine iki açıyı yerleştirip toplamı görselleştirerek keşfettirir. Sürükle-bırak mekaniğiyle öğrencinin önce 45° ve 65° kartlarını doğru konuma getirmesi, ardından eksik açıyı 70° olarak tahmin edip Kontrol ile doğrulaması gerekir. Başlangıç durumu çözülmüş değildir; tahmin, yerleşim ve kontrol adımları etkileşimle ilerler. Sıfırla butonu gerçek state sıfırlaması yapar, geri bildirimler de kısa ve düzelticidir.",
+        "state_model": {
+          "tracked_vars": [
+            "slot45Filled",
+            "slot65Filled",
+            "sumValue",
+            "missingAngleGuess",
+            "checked",
+            "isCorrect",
+            "feedbackText",
+            "draggingCardId",
+            "cardPositions"
+          ]
+        },
+        "layout_model": {
+          "boxes": [
+            {
+              "h": 36,
+              "w": 528,
+              "x": 16,
+              "y": 12,
+              "id": "title"
+            },
+            {
+              "h": 220,
+              "w": 360,
+              "x": 16,
+              "y": 56,
+              "id": "play_area"
+            },
+            {
+              "h": 220,
+              "w": 160,
+              "x": 384,
+              "y": 56,
+              "id": "controls"
+            },
+            {
+              "h": 44,
+              "w": 528,
+              "x": 16,
+              "y": 284,
+              "id": "feedback"
+            }
+          ],
+          "canvas_width": 560,
+          "target_panel": "top_right_30pct",
+          "canvas_height": 340
+        },
+        "learning_goal": "Öğrenci, üçgende iç açılar toplamının 180° olduğunu keşfeder; iki açının toplamını bulup eksik açıyı çıkararak tamamlar.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Harika! 45° + 65° = 110°. 180° - 110° = 70°.",
+          "on_incorrect": "Tekrar dene. Önce iki açıyı topla, sonra 180°'den çıkar."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouseDrag",
+            "mouseClick",
+            "touchDrag",
+            "touchTap"
+          ],
+          "affordances": [
+            "Sürüklenebilir açı kartları",
+            "Kontrol butonu",
+            "Sıfırla butonu",
+            "Anlık geri bildirim alanı"
+          ],
+          "user_actions": [
+            "45 ve 65 kartlarını üçgen içine bırak",
+            "Toplamı kontrol et",
+            "Eksik açıyı tahmin edip Kontrol'e bas",
+            "Yanlışsa kartları yeniden yerleştir"
+          ]
+        },
+        "success_condition": "Kullanıcı 45° ve 65° kartlarını doğru yuvalara yerleştirip toplamın 110° olduğunu gördükten sonra eksik açıyı 70° olarak doğrular.",
+        "instructions_short": "Açı kartlarını sürükle, toplamı 180° yap. Sonra eksik açıyı bul."
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, öğrencinin üçgende iç açılar toplamı bilgisini kullanmasını ve eksik açıyı çıkarma işlemiyle bulmasını ölçer. Ayrıca sonucu ezberlemeden gerekçelendirmesini ister.",
+        "question_text": "Bir üçgenin iki iç açısının ölçüleri 45° ve 65°'tir. Üçüncü açıyı bulurken nasıl düşündüğünü kısaca açıklayarak sonucu yaz.",
+        "expected_answer": "Üçgenin iç açılar toplamı 180° olduğundan 45° + 65° = 110° bulunur. 180° - 110° = 70° olur; üçüncü açı 70°'dir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "45° + 65° = 110°",
+            "description": "Üçgende iç açılar toplamı 180°'dir. Önce verilen iki açıyı toplarız: 45° + 65° = 110°."
+          },
+          {
+            "expression": "180° - 110° = 70°",
+            "description": "Üçgenin tüm açıları 180° olduğuna göre, üçüncü açıyı bulmak için 180°'den bulunan toplamı çıkarırız: 180° - 110° = 70°."
+          },
+          {
+            "expression": "Üçüncü açı = 70°",
+            "description": "Bulduğumuz değer üçüncü açıdır. Böylece üçgenin eksik açısı 70° olur."
+          }
+        ],
+        "final_answer": "Üçüncü açı 70°'dir."
+      },
+      "request_id": "req_e3c756f0",
+      "assembled_at": "2026-05-11T00:23:51.893291+00:00"
+    }
+  },
+  {
+    "request_id": "req_ecd752a3",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "game_type": "manipulation",
+        "p5_sketch": "let fixedAngle = 35;\nlet adjustableAngle = 90;\nlet sumAngle = 0;\nlet checked = false;\nlet isCorrect = false;\nlet handleX = 250;\nlet dragging = false;\n\nfunction setup() {\n  createCanvas(560, 340);\n  initializeGame();\n}\n\nfunction initializeGame() {\n  resetGame();\n}\n\nfunction resetGame() {\n  fixedAngle = 35;\n  adjustableAngle = 90;\n  sumAngle = fixedAngle + adjustableAngle;\n  checked = false;\n  isCorrect = false;\n  handleX = map(adjustableAngle, 10, 170, 150, 330);\n}\n\nfunction draw() {\n  background(248);\n  drawBoxes();\n  drawTitle();\n  drawPlayArea();\n  drawControls();\n  drawFeedback();\n}\n\nfunction drawBoxes() {\n  noFill();\n  stroke(210);\n  rect(16, 12, 528, 36, 8);\n  rect(16, 56, 360, 220, 8);\n  rect(384, 56, 160, 220, 8);\n  rect(16, 284, 528, 44, 8);\n}\n\nfunction drawTitle() {\n  noStroke();\n  fill(40);\n  textSize(15);\n  textAlign(LEFT, CENTER);\n  text('Düz çizgi yap: açıyı ayarla', 28, 30);\n}\n\nfunction drawPlayArea() {\n  push();\n  translate(46, 100);\n  stroke(70);\n  strokeWeight(4);\n  line(40, 120, 290, 120);\n\n  // fixed angle arc\n  noFill();\n  stroke(70, 120, 220);\n  strokeWeight(5);\n  let end1 = radians(180 - fixedAngle);\n  arc(40, 120, 90, 90, PI, end1);\n\n  // adjustable angle arc\n  stroke(230, 120, 60);\n  let adjEnd = radians(180 - fixedAngle - adjustableAngle);\n  if (adjEnd < 0) adjEnd = 0;\n  arc(40, 120, 120, 120, radians(180 - fixedAngle), radians(180));\n\n  // vertex\n  noStroke();\n  fill(40);\n  ellipse(40, 120, 10, 10);\n\n  // draggable handle on slider concept inside play area\n  fill(255);\n  stroke(120);\n  rect(120, 170, 180, 18, 9);\n  fill(80, 180, 100);\n  noStroke();\n  let barX = map(adjustableAngle, 10, 170, 120, 300);\n  rect(120, 170, barX - 120, 18, 9);\n  fill(255);\n  stroke(60);\n  ellipse(barX, 179, 22, 22);\n\n  fill(40);\n  noStroke();\n  textSize(13);\n  textAlign(LEFT, TOP);\n  text('Sabit açı: 35°', 150, 0);\n  text('Ayarlanabilir açı', 150, 18);\n  text('Toplam: ' + sumAngle + '°', 150, 36);\n  pop();\n\n  // draggable slider knob interaction hint\n  fill(60);\n  noStroke();\n  textSize(12);\n  textAlign(LEFT, CENTER);\n  text('Sürükle', 170, 247);\n}\n\nfunction drawControls() {\n  fill(40);\n  noStroke();\n  textSize(13);\n  textAlign(LEFT, TOP);\n  text('Hedef: 180°', 398, 70);\n  text('Bul: 145°', 398, 92);\n\n  drawButton(398, 122, 112, 34, 'Kontrol', color(70, 140, 220));\n  drawButton(398, 166, 112, 34, 'Sıfırla', color(200, 90, 90));\n\n  fill(60);\n  textSize(12);\n  text('İpucu: 180° - 35°', 398, 214);\n  text('=' + (180 - fixedAngle) + '°', 398, 232);\n}\n\nfunction drawButton(x, y, w, h, label, c) {\n  stroke(180);\n  fill(c);\n  rect(x, y, w, h, 8);\n  noStroke();\n  fill(255);\n  textAlign(CENTER, CENTER);\n  textSize(13);\n  text(label, x + w / 2, y + h / 2 + 1);\n}\n\nfunction drawFeedback() {\n  fill(40);\n  noStroke();\n  textAlign(LEFT, CENTER);\n  textSize(13);\n  let msg = 'Sürgüyü kullan, sonra Kontrol’e bas.';\n  if (checked) {\n    msg = isCorrect ? 'Harika! 35° + 145° = 180°.' : 'Tam olmadı. Toplam 180° olmalı.';\n  }\n  text(msg, 28, 306);\n}\n\nfunction mousePressed() {\n  if (mouseX > 398 && mouseX < 510 && mouseY > 122 && mouseY < 156) {\n    sumAngle = fixedAngle + adjustableAngle;\n    checked = true;\n    isCorrect = abs(sumAngle - 180) < 0.5;\n  } else if (mouseX > 398 && mouseX < 510 && mouseY > 166 && mouseY < 200) {\n    resetGame();\n  }\n\n  let barY = 279;\n  if (mouseX > 166 && mouseX < 346 && mouseY > 241 && mouseY < 261) {\n    dragging = true;\n    updateAdjustableFromMouse();\n  }\n}\n\nfunction mouseDragged() {\n  if (dragging) {\n    updateAdjustableFromMouse();\n  }\n}\n\nfunction mouseReleased() {\n  dragging = false;\n}\n\nfunction updateAdjustableFromMouse() {\n  adjustableAngle = constrain(round(map(mouseX, 166, 346, 10, 170)), 10, 170);\n  sumAngle = fixedAngle + adjustableAngle;\n  handleX = map(adjustableAngle, 10, 170, 166, 346);\n  checked = false;\n}\n\nfunction touchStarted() {\n  mousePressed();\n  return false;\n}\n\nfunction touchMoved() {\n  mouseDragged();\n  return false;\n}\n\nfunction touchEnded() {\n  mouseReleased();\n  return false;\n}\n",
+        "rationale": "Bu mikro-oyun, öğrencinin 35° sabit açıyı görüp ikinci açıyı sürükleyerek tamamlayıcı değeri keşfetmesini sağlar. Başlangıçta çözülmüş sonuç verilmez; öğrenci etkileşim kurmadan doğru state oluşmaz. Kontrol butonu toplamı doğrular, Sıfırla butonu güvenli biçimde başlangıç nötr durumuna döndürür. Böylece doğrusal komşu açıların 180° ilişkisi kısa ve etkileşimli biçimde kavratılır.",
+        "state_model": {
+          "tracked_vars": [
+            "fixedAngle",
+            "adjustableAngle",
+            "sumAngle",
+            "checked",
+            "isCorrect",
+            "handleX"
+          ]
+        },
+        "layout_model": {
+          "boxes": [
+            {
+              "h": 36,
+              "w": 528,
+              "x": 16,
+              "y": 12,
+              "id": "title"
+            },
+            {
+              "h": 220,
+              "w": 360,
+              "x": 16,
+              "y": 56,
+              "id": "play_area"
+            },
+            {
+              "h": 220,
+              "w": 160,
+              "x": 384,
+              "y": 56,
+              "id": "controls"
+            },
+            {
+              "h": 44,
+              "w": 528,
+              "x": 16,
+              "y": 284,
+              "id": "feedback"
+            }
+          ],
+          "canvas_width": 560,
+          "target_panel": "top_right_30pct",
+          "canvas_height": 340
+        },
+        "learning_goal": "Komşu iki açının doğru açı oluşturduğunda toplamlarının 180° olduğunu keşfetmek; verilen 35°'lik açıya göre tamamlayıcı açıyı 145° olarak bulmak.",
+        "should_render": true,
+        "feedback_model": {
+          "on_correct": "Harika! 35° ile 145° yan yana olunca 180° olur; yani doğru açı tamamlandı.",
+          "on_incorrect": "Henüz düz çizgi tamamlanmadı. İki açının toplamı 180° olmalı; sürgüyü biraz değiştirip tekrar dene."
+        },
+        "interaction_model": {
+          "inputs": [
+            "mouseDrag",
+            "touchDrag",
+            "click"
+          ],
+          "affordances": [
+            "sürüklenebilir açı kolu",
+            "Kontrol butonu",
+            "Sıfırla butonu",
+            "anlık geri bildirim alanı"
+          ],
+          "user_actions": [
+            "Açı kolunu sürükleyerek ikinci açıyı ayarlar",
+            "Kontrol ile toplamı dener",
+            "Sıfırla ile başlangıca döner"
+          ]
+        },
+        "success_condition": "Ayarlanan ikinci açı 145° olduğunda ve iki açı toplamı 180° olduğunda başarı durumu gösterilir.",
+        "instructions_short": "Sürgüyü hareket ettir ve iki açının birlikte düz çizgi yapmasını dene. Sonra Kontrol'e bas."
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, doğrusal komşu açıların toplamının 180° olduğunu kavratmayı hedefler. Öğrenciden yalnızca işlem yapması değil, açıların neden 180° ile ilişkilendirildiğini açıklaması beklenir.",
+        "question_text": "Bir tahtaya birbirine komşu iki açı çizildi. Bu açılardan biri 35° olduğuna göre, yanındaki açıyla birlikte doğru açı oluşturduklarını düşünerek diğer açının neden 145° olması gerektiğini açıklayınız.",
+        "expected_answer": "Doğru açı 180° olduğundan komşu açıların toplamı 180° olur. 180° - 35° = 145°; bu yüzden diğer açı 145°’dir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "komşu açılar toplamı = 180°",
+            "description": "Birbirine komşu iki açı yan yana gelip doğru açı oluşturuyorsa, bu iki açının toplamı 180° olur. Buna doğrusal komşu açılar denir."
+          },
+          {
+            "expression": "180° - 35° = 145°",
+            "description": "Açılardan biri 35° verildiğine göre, diğer açıyı bulmak için 180°’den 35° çıkarırız."
+          },
+          {
+            "expression": "35° + 145° = 180°",
+            "description": "Bulduğumuz sonuç, komşu açıların toplamını kontrol eder: 35° + 145° = 180°. Bu da doğru açı oluşturduğunu gösterir."
+          }
+        ],
+        "final_answer": "Diğer açı 145° olur; çünkü komşu açılar doğru açı oluşturduğunda toplamları 180°’dir."
+      },
+      "request_id": "req_ecd752a3",
+      "assembled_at": "2026-05-11T01:21:01.321309+00:00"
+    }
+  },
+  {
+    "request_id": "req_f4ba6b4c",
+    "topic": "Geometrik Nicelikler",
+    "count": 1,
+    "payload_json": {
+      "game": {
+        "rationale": "validator give_up: pedagogically useful visualization not produced",
+        "should_render": false
+      },
+      "count": 1,
+      "topic": "Geometrik Nicelikler",
+      "failures": [],
+      "question": {
+        "rationale": "Bu soru, öğrencinin saat üzerindeki açıları konumlarına göre yorumlama becerisini ölçer. Öğrenci sadece sonucu değil, neden 90 derece olduğunu ilişki kurarak açıklamalıdır.",
+        "question_text": "Saat tam 3.00 olduğunda saat üzerindeki akrep ile yelkovan arasında nasıl bir açı oluşur? Cevabını nedenini söyleyerek yaz.",
+        "expected_answer": "Saat 3.00’te yelkovan 12’nin, akrep 3’ün üzerindedir. Bu iki kol arasında 90 derecelik dik açı oluşur; çünkü saat üzerindeki çeyrek tur 90 derecedir."
+      },
+      "solution": {
+        "steps": [
+          {
+            "expression": "Yelkovan = 12, Akrep = 3",
+            "description": "Saat 3.00’te yelkovan 12’nin üzerinde, akrep ise 3’ün üzerindedir. Yani iki kol saat kadranında birbirine dik konumdadır."
+          },
+          {
+            "expression": "360° ÷ 12 = 30°",
+            "description": "Saat kadranı 360 derecedir ve 12 eşit parçaya bölünür. Bu yüzden iki sayı arası açı 360° / 12 = 30° olur."
+          },
+          {
+            "expression": "3 × 30° = 90°",
+            "description": "12 ile 3 arasında 3 eşit aralık vardır. Her aralık 30° olduğuna göre toplam açı 3 × 30° = 90° olur. Bu nedenle oluşan açı dik açıdır."
+          }
+        ],
+        "final_answer": "Saat 3.00’te akrep ile yelkovan arasında 90°’lik dik açı oluşur."
+      },
+      "request_id": "req_f4ba6b4c",
+      "assembled_at": "2026-05-11T00:02:23.287681+00:00"
+    }
+  }
+]

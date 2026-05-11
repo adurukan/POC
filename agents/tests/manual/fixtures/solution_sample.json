@@ -1,0 +1,9 @@
+{
+  "steps": [
+    {"description": "Kekin tamamı 8 dilime ayrılmıştır.", "expression": "tamam = 8/8"},
+    {"description": "Ali 3 dilim, Ayşe 2 dilim yedi. Toplam yenen dilim sayısı:", "expression": "3 + 2 = 5"},
+    {"description": "Geriye kalan dilim sayısı:", "expression": "8 - 5 = 3"},
+    {"description": "Kalan dilim oranı:", "expression": "3/8"}
+  ],
+  "final_answer": "3/8"
+}

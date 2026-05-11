@@ -3,9 +3,10 @@ import faviconUrl from '../assets/favicon.svg'
 
 interface Props {
   onLogin: (username: string) => void
+  onGoToTeacherLogin?: () => void
 }
 
-export default function LoginPage({ onLogin }: Props) {
+export default function LoginPage({ onLogin, onGoToTeacherLogin }: Props) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -66,6 +67,17 @@ export default function LoginPage({ onLogin }: Props) {
         <p style={{ fontSize: 12, color: 'var(--fg-3)', textAlign: 'center', margin: 0 }}>
           Hint: <code style={{ fontFamily: 'var(--font-mono)' }}>alpbek</code> / <code style={{ fontFamily: 'var(--font-mono)' }}>1234</code>
         </p>
+
+        {onGoToTeacherLogin && (
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={onGoToTeacherLogin}
+            style={{ fontSize: 12 }}
+          >
+            Öğretmen girişi →
+          </button>
+        )}
       </form>
     </div>
   )

@@ -1,0 +1,6 @@
+kesirler
+tam sayılar
+ondalık sayılar
+geometri: dörtgenler
+basit denklemler
+yüzde hesapları

@@ -99,11 +99,10 @@ body {
 .app-shell {
   height: 100vh;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  grid-template-rows: 1fr 280px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
   grid-template-areas:
-    "question visual"
-    "solution solution";
+    "question visual";
   gap: 16px;
   padding: 16px;
   background:
@@ -111,9 +110,14 @@ body {
     var(--bg);
 }
 
-.area-question { grid-area: question; }
-.area-visual   { grid-area: visual; }
-.area-solution { grid-area: solution; }
+.area-question { grid-area: question; min-height: 0; }
+.area-visual   { grid-area: visual; min-height: 0; }
+
+.lesson-divider {
+  border: none;
+  border-top: 1px solid var(--ink-100);
+  margin: 16px 0;
+}
 
 /* ============================================================
    PANEL
@@ -191,11 +195,39 @@ body {
 .selector-row {
   display: flex;
   gap: 10px;
-  flex: 1;
+  flex: 0 0 auto;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .selector-row .select { width: auto; flex: 1; max-width: 260px; }
+.selector-row .select-fixed-subject,
+.select-fixed-subject {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  flex: 0 0 auto;
+}
+
+.selector-row .select-fixed-question,
+.select-fixed-question {
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  flex: 0 0 auto;
+}
+
+.selector-row .select-fixed-grade,
+.select-fixed-grade {
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  flex: 0 0 auto;
+}
+
+.teacher-topbar .select-fixed-subject {
+  margin-right: 8px;
+}
 
 .q-text {
   max-width: 56ch;
@@ -232,6 +264,86 @@ body {
 
 .visual-canvas svg { max-width: 100%; max-height: 100%; height: auto; }
 
+/* Keep cards slightly larger than the target game canvas (560x340). */
+.lesson-panel-card,
+.visual-panel-card {
+  min-height: 420px;
+}
+
+/* Student view: question + game cards should be balanced around game size. */
+.app-shell .area-question.panel-card,
+.app-shell .area-question .lesson-panel-card,
+.app-shell .area-visual.visual-panel-card {
+  min-height: 420px;
+}
+
+/* Teacher view: first row (Soru + Oyun) should stay slightly larger than game. */
+.teacher-main-grid.has-visual > .lesson-panel-card,
+.teacher-main-grid.has-visual > .visual-panel-card {
+  min-height: 420px;
+}
+
+/* ============================================================
+   TEACHER STUDIO GRID
+   ============================================================ */
+
+.teacher-main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 16px;
+  align-items: stretch;
+}
+
+.teacher-main-grid.has-visual {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+/* Student grid area placement should not affect teacher grid layout. */
+.teacher-main-grid .area-visual {
+  grid-area: auto;
+  min-height: 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1080px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "question"
+      "visual";
+  }
+
+  .teacher-main-grid.has-visual {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-topbar {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+}
+
+@media (max-width: 720px) {
+  .selector-row {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .select-fixed-subject,
+  .select-fixed-question,
+  .select-fixed-grade {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
 /* ============================================================
    SOLUTION STEPS
    ============================================================ */
@@ -240,8 +352,9 @@ body {
 
 .step {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px 16px;
   padding: 12px 16px;
   border-radius: 10px;
   background: var(--bg-card);
@@ -268,14 +381,17 @@ body {
 
 .step.done .num { background: var(--violet-500); color: #fff; }
 
-.step .desc { flex: 1; font-size: var(--fs-14); color: var(--fg-2); }
+.step .desc { flex: 1 1 60%; min-width: 0; font-size: var(--fs-14); color: var(--fg-2); }
 
 .step .expr {
+  flex: 1 1 100%;
+  margin-left: 40px; /* align under desc, past the .num bubble */
   font-family: var(--font-mono);
   font-size: var(--fs-15);
   font-weight: 500;
-  color: var(--violet-600);
-  white-space: nowrap;
+  color: var(--fg-2);
+  white-space: normal;
+  word-break: break-word;
 }
 
 @keyframes step-rise {
@@ -288,9 +404,12 @@ body {
    ============================================================ */
 
 .pb-wrap {
-  position: relative;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 80;
   font-family: var(--font-body);
-  display: inline-block;
+  display: block;
 }
 
 /* ── Trigger: pill (Variant A) ───────────────────────────── */
@@ -573,4 +692,3 @@ body {
   outline: none;
   box-shadow: 0 0 0 2px var(--violet-100), 0 0 0 3px var(--violet-500);
 }
-

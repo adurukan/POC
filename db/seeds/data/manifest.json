@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "tables": {
+    "questions": {
+      "file": "questions.json",
+      "required": [
+        "id",
+        "subject_name",
+        "question_text",
+        "solution_steps"
+      ]
+    },
+    "documents": {
+      "file": "documents.json",
+      "required": [
+        "file_sha256",
+        "title",
+        "source_filename",
+        "source_path"
+      ]
+    },
+    "document_sections": {
+      "file": "document_sections.json",
+      "required": [
+        "document_file_sha256",
+        "slug",
+        "section_index",
+        "title",
+        "page_start",
+        "page_end"
+      ]
+    },
+    "section_knowledge_packs": {
+      "file": "section_knowledge_packs.json",
+      "required": [
+        "document_file_sha256",
+        "section_slug",
+        "slug",
+        "title",
+        "source_pages",
+        "markdown_content",
+        "markdown_file_path",
+        "review_status"
+      ]
+    },
+    "pending_questions": {
+      "file": "pending_questions.json",
+      "required": [
+        "request_id",
+        "grade",
+        "subject",
+        "topic"
+      ]
+    },
+    "problems": {
+      "file": "problems.json",
+      "required": [
+        "request_id",
+        "topic",
+        "count",
+        "payload_json"
+      ]
+    }
+  }
+}

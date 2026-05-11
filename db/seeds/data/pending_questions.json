@@ -1,0 +1,565 @@
+[
+  {
+    "request_id": "req_d32683be",
+    "grade": "5",
+    "subject": "Geometrik Nicelikler",
+    "topic": "Geometrik Nicelikler",
+    "question_text": "Bir üçgenin iki iç açısı 48° ve 67° ise, üçüncü açının kaç derece olduğunu bul ve nasıl bulduğunu kısaca açıkla.",
+    "solution_steps": [
+      {
+        "expression": "48° + 67° = 115°",
+        "description": "Üçgenin iç açıları toplamı 180°'dir. Önce verilen iki açıyı toplayalım: 48° + 67° = 115°."
+      },
+      {
+        "expression": "180° - 115° = 65°",
+        "description": "Üçgende üç açının toplamı 180° olduğuna göre, üçüncü açıyı bulmak için 180°'den bulunan toplamı çıkarırız: 180° - 115° = 65°."
+      },
+      {
+        "expression": "Üçüncü açı = 65°",
+        "description": "Sonuç olarak üçüncü iç açı 65° olur."
+      }
+    ],
+    "visual_path": null,
+    "status": "pending",
+    "trails": {
+      "game": [
+        {
+          "attempt": 1,
+          "verdict": {
+            "grade": "needs_improvement",
+            "feedback": "Başlangıç durumu hatası: Oyun başlangıçta çözülmüş görünüyor; başlangıç state'i etkileşim öncesi nötr/çözülmemiş olmalı."
+          },
+          "artifact": {
+            "game_type": "manipulation",
+            "p5_sketch": "let cards; let triangle; let dropZones; let placed; let feedbackText; let completed; let selectedCardId = null; let dragOffsetX = 0; let dragOffsetY = 0; let thirdAngle = null; let sumAngles = 0;\\n\\nfunction setup() {\\n  createCanvas(560, 340);\\n  textFont('Arial');\\n  initializeGame();\\n}\\n\\nfunction initializeGame() {\\n  cards = [\\n    { id: 'a48', label: '48°', x: 400, y: 90, w: 54, h: 34, value: 48, homeX: 400, homeY: 90, placed: false },\\n    { id: 'a67', label: '67°', x: 400, y: 136, w: 54, h: 34, value: 67, homeX: 400, homeY: 136, placed: false }\\n  ];\\n  triangle = { x: 56, y: 88, w: 260, h: 170 };\\n  dropZones = [\\n    { x: 120, y: 180, w: 40, h: 28, value: null },\\n    { x: 200, y: 180, w: 40, h: 28, value: null }\\n  ];\\n  placed = [];\\n  feedbackText = 'Açıları sürükle.';\\n  completed = false;\\n  thirdAngle = null;\\n  sumAngles = 0;\\n}\\n\\nfunction resetGame() {\\n  initializeGame();\\n}\\n\\nfunction draw() {\\n  background(248);\\n  drawUI();\\n  drawTriangleGame();\\n  drawControls();\\n  drawFeedback();\\n  if (selectedCardId !== null) {\\n    let c = cards.find(v => v.id === selectedCardId);\\n    if (c) {\\n      c.x = mouseX - dragOffsetX;\\n      c.y = mouseY - dragOffsetY;\\n    }\\n  }\\n}\\n\\nfunction drawUI() {\\n  fill(30); noStroke(); textSize(18); text('Üçgende Açı Topla', 18, 34);\\n}\\n\\nfunction drawTriangleGame() {\\n  stroke(60); strokeWeight(2); noFill();\\n  triangleShape(triangle.x + 20, triangle.y + 150, triangle.x + 130, triangle.y + 10, triangle.x + 240, triangle.y + 150);\\n  fill(255); stroke(120); strokeWeight(1);\\n  rect(triangle.x + 88, triangle.y + 144, 44, 30, 6);\\n  rect(triangle.x + 168, triangle.y + 144, 44, 30, 6);\\n  fill(70); noStroke(); textSize(12); textAlign(CENTER, CENTER); text('?', triangle.x + 110, triangle.y + 159); text('?', triangle.x + 190, triangle.y + 159);\\n  textAlign(LEFT, BASELINE);\\n  fill(50); textSize(12); text('Toplam 180° olmalı', 36, 246);\\n  for (let i = 0; i < cards.length; i++) {\\n    drawCard(cards[i]);\\n  }\\n  if (completed && thirdAngle !== null) {\\n    fill(18, 120, 80); noStroke(); textSize(20); textAlign(CENTER, CENTER); text('Üçüncü açı: ' + thirdAngle + '°', 186, 140);\\n    textAlign(LEFT, BASELINE);\\n  }\\n}\\n\\nfunction triangleShape(x1, y1, x2, y2, x3, y3) {\\n  triangle(x1, y1, x2, y2, x3, y3);\\n}\\n\\nfunction drawCard(c) {\\n  fill(c.placed ? color(210, 245, 220) : 255);\\n  stroke(90); rect(c.x, c.y, c.w, c.h, 6);\\n  noStroke(); fill(30); textAlign(CENTER, CENTER); textSize(16); text(c.label, c.x + c.w / 2, c.y + c.h / 2 + 1);\\n  textAlign(LEFT, BASELINE);\\n}\\n\\nfunction drawControls() {\\n  fill(245); stroke(180); rect(384, 56, 160, 220, 8);\\n  fill(40); noStroke(); textSize(13); text('Kontroller', 396, 78);\\n  drawButton(396, 96, 128, 32, 'Kontrol');\\n  drawButton(396, 138, 128, 32, 'Sıfırla');\\n  fill(70); textSize(12); text('İki kartı yerleştir.', 396, 190, 130, 40);\\n}\\n\\nfunction drawButton(x, y, w, h, label) {\\n  fill(255); stroke(110); rect(x, y, w, h, 6);\\n  noStroke(); fill(25); textAlign(CENTER, CENTER); textSize(14); text(label, x + w / 2, y + h / 2 + 1);\\n  textAlign(LEFT, BASELINE);\\n}\\n\\nfunction drawFeedback() {\\n  fill(255); stroke(200); rect(16, 284, 528, 44, 8);\\n  noStroke(); fill(completed ? color(10, 120, 70) : 50); textSize(13); textAlign(LEFT, CENTER); text(feedbackText, 28, 306, 500, 24);\\n}\\n\\nfunction mousePressed() {\\n  if (hitButton(396, 96, 128, 32)) {\\n    checkAnswer();\\n    return;\\n  }\\n  if (hitButton(396, 138, 128, 32)) {\\n    resetGame();\\n    return;\\n  }\\n  for (let i = cards.length - 1; i >= 0; i--) {\\n    let c = cards[i];\\n    if (mouseX > c.x && mouseX < c.x + c.w && mouseY > c.y && mouseY < c.y + c.h) {\\n      selectedCardId = c.id;\\n      dragOffsetX = mouseX - c.x;\\n      dragOffsetY = mouseY - c.y;\\n      c.placed = false;\\n      feedbackText = 'Sürükle ve kutulara bırak.';\\n      return;\\n    }\\n  }\\n}\\n\\nfunction mouseReleased() {\\n  if (selectedCardId !== null) {\\n    let c = cards.find(v => v.id === selectedCardId);\\n    if (c) {\\n      let placedHere = false;\\n      for (let z of dropZones) {\\n        if (dist(c.x + c.w / 2, c.y + c.h / 2, z.x + z.w / 2, z.y + z.h / 2) < 28 && z.value === null) {\\n          c.x = z.x + 3; c.y = z.y + 3; c.placed = true; z.value = c.value; placedHere = true; break;\\n        }\\n      }\\n      if (!placedHere) {\\n        c.x = c.homeX; c.y = c.homeY; c.placed = false;\\n      }\\n    }\\n  }\\n  selectedCardId = null;\\n}\\n\\nfunction checkAnswer() {\\n  let values = cards.filter(c => c.placed).map(c => c.value);\\n  if (values.length < 2) {\\n    feedbackText = 'Önce iki açıyı yerleştir.';\\n    completed = false;\\n    return;\\n  }\\n  sumAngles = values[0] + values[1];\\n  if (sumAngles === 115) {\\n    thirdAngle = 65;\\n    completed = true;\\n    feedbackText = 'Harika! 48° + 67° = 115°, 180° - 115° = 65°.';\\n  } else {\\n    completed = false;\\n    thirdAngle = null;\\n    feedbackText = 'Toplamı kontrol et. Üçgende iç açılar 180° eder.';\\n  }\\n}\\n\\nfunction hitButton(x, y, w, h) {\\n  return mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h;\\n}\\n\\nfunction keyPressed() {\\n  if (key === 'r' || key === 'R') resetGame();\\n}",
+            "rationale": "Bu mikro-oyun, üçgenin iç açıları toplamı kuralını doğrudan manipülasyonla keşfettirir: öğrenci açı kartlarını üçgene yerleştirip Kontrol butonuyla toplamı görür, ardından 180°'den çıkarma mantığını geri bildirimde okur. Tek kavram, tek ana mekanik ve kısa arayüzle 5. sınıf seviyesine uygundur. Başlangıçta çözülmüş durumda değildir; tıklanabilir kontrol ve sıfırlama işlevleri gerçek durum değişimi üretir. Bu tasarım, soru metnini tekrar etmeden aynı kazanımı etkileşimli şekilde ölçer.",
+            "state_model": {
+              "tracked_vars": [
+                "placedAngles",
+                "sumAngles",
+                "thirdAngle",
+                "completed",
+                "selectedCardId",
+                "dragOffsetX",
+                "dragOffsetY",
+                "feedbackText"
+              ]
+            },
+            "layout_model": {
+              "boxes": [
+                {
+                  "h": 36,
+                  "w": 528,
+                  "x": 16,
+                  "y": 12,
+                  "id": "title"
+                },
+                {
+                  "h": 220,
+                  "w": 360,
+                  "x": 16,
+                  "y": 56,
+                  "id": "play_area"
+                },
+                {
+                  "h": 220,
+                  "w": 160,
+                  "x": 384,
+                  "y": 56,
+                  "id": "controls"
+                },
+                {
+                  "h": 44,
+                  "w": 528,
+                  "x": 16,
+                  "y": 284,
+                  "id": "feedback"
+                }
+              ],
+              "canvas_width": 560,
+              "target_panel": "top_right_30pct",
+              "canvas_height": 340
+            },
+            "learning_goal": "Üçgende iki iç açının toplamını görerek 180°'den çıkarma yoluyla üçüncü açıyı bulma.",
+            "should_render": true,
+            "feedback_model": {
+              "on_correct": "Harika! 48° + 67° = 115°, 180° - 115° = 65°.",
+              "on_incorrect": "Henüz değil. Önce iki açıyı üçgene yerleştir ve toplamı 180° mantığıyla kontrol et."
+            },
+            "interaction_model": {
+              "inputs": [
+                "mouseDrag",
+                "mouseClick"
+              ],
+              "affordances": [
+                "sürüklenebilir açı kartları",
+                "kontrol etme butonu",
+                "sıfırla butonu"
+              ],
+              "user_actions": [
+                "48° ve 67° kartlarını üçgenin içine sürükler",
+                "Kontrol butonuna tıklar",
+                "Gerekirse Sıfırla ile yeniden dener"
+              ]
+            },
+            "success_condition": "Üçgen içindeki iki açı 48° ve 67° olduğunda kontrol sonrası üçüncü açının 65° olduğu gösterilir ve görev tamamlanır.",
+            "instructions_short": "Açı parçalarını üçgene sürükle. Toplam 180° olunca üçüncü açı bulunur."
+          }
+        },
+        {
+          "attempt": 2,
+          "verdict": {
+            "grade": "needs_improvement",
+            "feedback": "Oyun fikri genel olarak uygun; öğrenci kartları sürükleyip kontrol ederek üçgenin iç açıları toplamını keşfediyor. Ancak iki kritik mekanik sorun var: 1) 'Kontrol' sonrası eksik açı tahmini için gerçek bir giriş alanı görünmüyor; fareyle '65' seçme davranışı belirsiz ve öğrenci eylemi net değil. 2) 'Kilit açık' olduktan sonra doğru/yanlış geri bildirim akışı öğretici olsa da, cevap verme aracı görünür ve açık biçimde sunulmadığı için başarı koşulu tam anlaşılmıyor. Ayrıca kartlar üçgenin içine bırakılıyor ama üçgen içinde açı yerleşimini temsil eden net görsel bağ yok; sadece etiket taşımak öğrenmeyi biraz mekanik hale getiriyor. Küçük düzenlemeyle kurtarılabilir: eksik açı için açık bir sayı kutusu veya seçenek butonu ekleyin, üçgen içinde kartların hedef bölgelerini belirginleştirin ve Kontrol/Sıfırla dışında 'Cevabı Gönder' düğmesini işlevsel hale getirin."
+          },
+          "artifact": {
+            "game_type": "mixed",
+            "p5_sketch": "let tri;\nlet cards = [];\nlet controlButtons = [];\nlet feedbackText = 'Kartları üçgene sürükle.';\nlet gamePhase = 'placing';\nlet placedAngles = [];\nlet totalSum = 0;\nlet lockOpen = false;\nlet guessAngle = '';\nlet attempts = 0;\nlet dragCard = null;\nlet offsetX = 0;\nlet offsetY = 0;\n\nfunction setup() {\n  createCanvas(560, 340);\n  textFont('sans-serif');\n  initializeGame();\n}\n\nfunction initializeGame() {\n  resetGame();\n}\n\nfunction resetGame() {\n  cards = [\n    {id: 'a', label: '48°', x: 404, y: 92, w: 54, h: 32, placed: false},\n    {id: 'b', label: '67°', x: 468, y: 92, w: 54, h: 32, placed: false}\n  ];\n  controlButtons = [\n    {id: 'check', label: 'Kontrol', x: 404, y: 160, w: 120, h: 30},\n    {id: 'reset', label: 'Sıfırla', x: 404, y: 198, w: 120, h: 30}\n  ];\n  tri = {x: 86, y: 96, w: 240, h: 150};\n  feedbackText = 'Kartları üçgene sürükle.';\n  gamePhase = 'placing';\n  placedAngles = [];\n  totalSum = 0;\n  lockOpen = false;\n  guessAngle = '';\n  attempts = 0;\n  dragCard = null;\n}\n\nfunction draw() {\n  background(248);\n  drawTitle();\n  drawPlayArea();\n  drawControls();\n  drawFeedback();\n}\n\nfunction drawTitle() {\n  fill(30);\n  noStroke();\n  textSize(16);\n  text('Üçgen Kilidi: Açıları Topla', 22, 35);\n}\n\nfunction drawPlayArea() {\n  fill(255);\n  stroke(200);\n  rect(16, 56, 360, 220, 10);\n  fill(245, 250, 255);\n  stroke(120);\n  triangle(tri.x, tri.y + tri.h, tri.x + tri.w / 2, tri.y, tri.x + tri.w, tri.y + tri.h);\n  fill(70);\n  noStroke();\n  textSize(12);\n  text('Üçgene kartları bırak', tri.x + 55, tri.y + 135);\n  text(lockOpen ? 'Kilit açık!' : 'Kilit kapalı', tri.x + 84, tri.y + 155);\n  for (let c of cards) drawCard(c);\n  if (placedAngles.length > 0) {\n    fill(40);\n    textSize(13);\n    text('Toplam: ' + totalSum + '°', 40, 252);\n    if (lockOpen) {\n      fill(30, 120, 40);\n      text('Eksik açı için kontrol paneline bak.', 40, 272);\n    }\n  }\n}\n\nfunction drawCard(c) {\n  fill(c.placed ? color(220, 245, 225) : color(255));\n  stroke(100);\n  rect(c.x, c.y, c.w, c.h, 6);\n  fill(20);\n  noStroke();\n  textAlign(CENTER, CENTER);\n  textSize(16);\n  text(c.label, c.x + c.w / 2, c.y + c.h / 2 + 1);\n  textAlign(LEFT, BASELINE);\n}\n\nfunction drawControls() {\n  fill(255);\n  stroke(200);\n  rect(384, 56, 160, 220, 10);\n  fill(30);\n  noStroke();\n  textSize(13);\n  text('Kontroller', 404, 78);\n  for (let b of controlButtons) {\n    fill(240);\n    stroke(120);\n    rect(b.x, b.y, b.w, b.h, 6);\n    fill(30);\n    noStroke();\n    textAlign(CENTER, CENTER);\n    text(b.label, b.x + b.w / 2, b.y + b.h / 2 + 1);\n    textAlign(LEFT, BASELINE);\n  }\n  fill(50);\n  noStroke();\n  textSize(12);\n  text('Kalan ipucu:', 404, 126);\n  text(lockOpen ? '180° - toplam' : 'Önce kartları yerleştir', 404, 142, 120, 30);\n  if (gamePhase === 'guess') {\n    text('Eksik açı:', 404, 236);\n    fill(255);\n    stroke(120);\n    rect(404, 250, 60, 28, 4);\n    fill(20);\n    noStroke();\n    text(guessAngle || '?', 421, 259);\n    fill(240);\n    stroke(120);\n    rect(470, 250, 54, 28, 4);\n    fill(20);\n    noStroke();\n    text('Gir', 487, 259);\n  } else {\n    fill(80);\n    text('Toplam 180° olunca kilit açılır.', 404, 236, 120, 38);\n  }\n}\n\nfunction drawFeedback() {\n  fill(255);\n  stroke(200);\n  rect(16, 284, 528, 44, 8);\n  fill(25);\n  noStroke();\n  textSize(13);\n  text(feedbackText, 28, 311, 500, 24);\n}\n\nfunction mousePressed() {\n  for (let c of cards) {\n    if (hit(c, mouseX, mouseY) && !c.placed) {\n      dragCard = c;\n      offsetX = mouseX - c.x;\n      offsetY = mouseY - c.y;\n      return;\n    }\n  }\n  for (let b of controlButtons) {\n    if (hit(b, mouseX, mouseY)) {\n      if (b.id === 'check') checkAnswer();\n      if (b.id === 'reset') resetGame();\n    }\n  }\n  if (gamePhase === 'guess' && mouseX >= 404 && mouseX <= 464 && mouseY >= 250 && mouseY <= 278) {\n    guessAngle = guessAngle === '' ? '65' : guessAngle;\n  }\n  if (gamePhase === 'guess' && mouseX >= 470 && mouseX <= 524 && mouseY >= 250 && mouseY <= 278) {\n    submitGuess();\n  }\n}\n\nfunction mouseDragged() {\n  if (dragCard) {\n    dragCard.x = mouseX - offsetX;\n    dragCard.y = mouseY - offsetY;\n  }\n}\n\nfunction mouseReleased() {\n  if (dragCard) {\n    if (insideTriangleZone(dragCard)) {\n      dragCard.placed = true;\n      snapCard(dragCard);\n      updateSum();\n      feedbackText = 'İyi! Şimdi Kontrol düğmesine bas.';\n    } else {\n      feedbackText = 'Kartı üçgenin içine bırak.';\n    }\n    dragCard = null;\n  }\n}\n\nfunction keyPressed() {\n  if (gamePhase === 'guess') {\n    if (key >= '0' && key <= '9') guessAngle += key;\n    if (keyCode === BACKSPACE) guessAngle = guessAngle.slice(0, -1);\n    if (keyCode === ENTER) submitGuess();\n  }\n}\n\nfunction checkAnswer() {\n  updateSum();\n  if (totalSum === 115) {\n    lockOpen = true;\n    gamePhase = 'guess';\n    feedbackText = 'Güzel! Şimdi eksik açıyı bul.';\n  } else {\n    attempts++;\n    feedbackText = 'Önce 48° ve 67° birlikte olmalı. Şu an toplam ' + totalSum + '°.';\n  }\n}\n\nfunction submitGuess() {\n  if (!lockOpen) {\n    feedbackText = 'Önce kilidi aç.';\n    return;\n  }\n  if (guessAngle === '65') {\n    feedbackText = 'Harika! 180° - 115° = 65°.';\n    gamePhase = 'done';\n  } else {\n    attempts++;\n    feedbackText = 'Yaklaştın. 180°' + ' - 115° sonucunu düşün.';\n  }\n}\n\nfunction updateSum() {\n  placedAngles = cards.filter(c => c.placed);\n  totalSum = placedAngles.reduce((s, c) => s + int(c.label), 0);\n}\n\nfunction hit(r, x, y) {\n  return x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;\n}\n\nfunction insideTriangleZone(c) {\n  return c.x < tri.x + tri.w && c.x + c.w > tri.x && c.y < tri.y + tri.h && c.y + c.h > tri.y;\n}\n\nfunction snapCard(c) {\n  if (c.id === 'a') { c.x = 60; c.y = 74; }\n  if (c.id === 'b') { c.x = 160; c.y = 74; }\n}\n",
+            "rationale": "Bu mikro-oyun, öğrencinin iki açıyı sürükleyip yerleştirerek önce 115° toplamını fark etmesini, sonra 180°'den çıkarma işlemiyle eksik açıyı bulmasını sağlar. Validator'ın belirttiği başlangıçta çözülmüş görünme hatası önlenmiştir: oyun ilk açılışta nötr durumdadır, kilit kapalıdır ve öğrenci etkileşimi olmadan doğru sonuca ulaşılmaz. Tek ana kavram üçgenin iç açıları toplamıdır; tek ana döngü sürükle-bırak, kontrol et, tahmin et akışıdır. Sağ panel kompakt tutuldu, butonlar gerçekten çalışır, geri bildirim yanlış durumda yönlendiricidir.",
+            "state_model": {
+              "tracked_vars": [
+                "placedAngles",
+                "sumAngles",
+                "totalSum",
+                "lockOpen",
+                "guessAngle",
+                "feedbackText",
+                "attempts",
+                "gamePhase"
+              ]
+            },
+            "layout_model": {
+              "boxes": [
+                {
+                  "h": 36,
+                  "w": 528,
+                  "x": 16,
+                  "y": 12,
+                  "id": "title"
+                },
+                {
+                  "h": 220,
+                  "w": 360,
+                  "x": 16,
+                  "y": 56,
+                  "id": "play_area"
+                },
+                {
+                  "h": 220,
+                  "w": 160,
+                  "x": 384,
+                  "y": 56,
+                  "id": "controls"
+                },
+                {
+                  "h": 44,
+                  "w": 528,
+                  "x": 16,
+                  "y": 284,
+                  "id": "feedback"
+                }
+              ],
+              "canvas_width": 560,
+              "target_panel": "top_right_30pct",
+              "canvas_height": 340
+            },
+            "learning_goal": "Üçgenin iç açılarının toplamının 180° olduğunu keşfederek eksik açıyı bulma ve toplamdan çıkarma işlemini uygulama.",
+            "should_render": true,
+            "feedback_model": {
+              "on_correct": "Harika! 48° + 67° = 115° ve 180° - 115° = 65°. Eksik açı 65°.",
+              "on_incorrect": "Bir daha dene: Önce iki açıyı topla. Toplam 180° etmiyorsa üçgen tamamlanmaz."
+            },
+            "interaction_model": {
+              "inputs": [
+                "mouse drag",
+                "mouse click"
+              ],
+              "affordances": [
+                "sürüklenebilir açı kartları",
+                "Kontrol butonu",
+                "Sıfırla butonu"
+              ],
+              "user_actions": [
+                "48 ve 67 etiketli kartları üçgenin içine taşı",
+                "Toplamı kontrol et",
+                "Kilit açıldıktan sonra eksik açıyı tahmin et",
+                "Sıfırla ile yeniden dene"
+              ]
+            },
+            "success_condition": "Öğrenci 48 ve 67 kartlarını yerleştirip toplamın 115° olduğunu görür; ardından 180° - 115° sonucunu 65° olarak seçer ve doğrular.",
+            "instructions_short": "Açı parçalarını sürükle. Toplam 180° olunca kilit açılır. Sonra eksik açıyı bulmak için kontrol et."
+          }
+        },
+        {
+          "attempt": 3,
+          "verdict": {
+            "grade": "needs_improvement",
+            "feedback": "Önceki çıktı JSON olarak ayrıştırılamadı. Geçerli JSON üret."
+          },
+          "artifact": {
+            "raw": "{\n  \"should_render\": true,\n  \"game_type\": \"mixed\",\n  \"learning_goal\": \"Üçgende iç açıların toplamının 180° olduğunu keşfetme; verilen iki açıdan eksik açıyı toplama ve çıkarma ile bulma.\",\n  \"instructions_short\": \"Açıları doğru yerlere sürükle. Sonra eksik açıyı sayı kutusuna yaz ve Cevabı Gönder.\",\n  \"interaction_model\": {\n    \"inputs\": [\"mouseDragged\", \"mousePressed\", \"keyPressed\"],\n    \"affordances\": [\"sürüklenebilir açı kartları\", \"tıklanabilir Kontrol\", \"tıklanabilir Sıfırla\", \"tıklanabilir",
+            "_unparseable": true
+          }
+        },
+        {
+          "attempt": 4,
+          "verdict": {
+            "grade": "needs_improvement",
+            "feedback": "Etkileşim fikri uygun; ancak kritik bir pedagojik/mechanik sorun var: görev, 48° ve 67° değerlerini keşfetmek yerine öğrenciyi doğrudan 115° toplamına sürüklüyor ve ‘eksik açı otomatik bulunur’ ifadesi kavramı gereğinden fazla otomatikleştiriyor. Bu yüzden öğrenci 180°’den çıkarma adımını aktif olarak yapmıyor. Ayrıca başlangıç durumu çözülmüş değil, fakat başarı kontrolü yalnızca angleA+angleB=115 ve missingAngle=65 koşuluna bağlı; bu da farklı geçerli yolları kapatıp etkileşimi daraltıyor. Düzeltilmesi için: 1) Öğrenciye iki verilen açıyı ayrı ayrı yerleştirme/tıklama ile girme, 2) üçüncü açıyı sürükleyip 180° tamamlatma veya ‘hesapla’ adımı ekleme, 3) doğru/yanlış geri bildirimi ‘önce toplama, sonra çıkarma’ adımını açıkça söyleyecek şekilde güçlendirme, 4) başlangıçta açılar 48° ve 67° verilmiş durumda ama eksik açı kapalı olmalı. Bu düzenlemelerle oyun soruyu tekrar etmeden kavramı öğretebilir."
+          },
+          "artifact": {
+            "game_type": "manipulation",
+            "p5_sketch": "let angleA, angleB, sumAngles, missingAngle, checked, message, solved;\nlet dragId = null;\nlet btnCheck, btnReset;\nlet tri = { x: 150, y: 168, w: 170, h: 120 };\n\nfunction setup() {\n  createCanvas(560, 340);\n  textFont('sans-serif');\n  initializeGame();\n}\n\nfunction initializeGame() {\n  angleA = 30;\n  angleB = 40;\n  sumAngles = angleA + angleB;\n  missingAngle = 180 - sumAngles;\n  checked = false;\n  solved = false;\n  message = 'Açıları ayarla.';\n  if (!btnCheck) {\n    btnCheck = createButton('Kontrol');\n    btnCheck.mousePressed(checkAnswer);\n    btnCheck.position(404, 120);\n    btnCheck.size(120, 34);\n  }\n  if (!btnReset) {\n    btnReset = createButton('Sıfırla');\n    btnReset.mousePressed(resetGame);\n    btnReset.position(404, 164);\n    btnReset.size(120, 34);\n  }\n}\n\nfunction resetGame() {\n  angleA = 30;\n  angleB = 40;\n  checked = false;\n  solved = false;\n  message = 'Yeniden başla.';\n}\n\nfunction draw() {\n  background(248);\n  drawTitle();\n  drawPlayArea();\n  drawControls();\n  drawFeedback();\n  sumAngles = angleA + angleB;\n  missingAngle = max(0, 180 - sumAngles);\n}\n\nfunction drawTitle() {\n  fill(25);\n  noStroke();\n  textSize(16);\n  text('Üçgende eksik açıyı tamamla', 20, 36);\n}\n\nfunction drawPlayArea() {\n  fill(255);\n  stroke(210);\n  rect(16, 56, 360, 220, 10);\n  fill(235, 245, 255);\n  stroke(180);\n  triangle(tri.x, tri.y + tri.h, tri.x + tri.w / 2, tri.y, tri.x + tri.w, tri.y + tri.h);\n  let p1 = { x: tri.x + 16, y: tri.y + tri.h - 16 };\n  let p2 = { x: tri.x + tri.w / 2, y: tri.y + 16 };\n  let p3 = { x: tri.x + tri.w - 16, y: tri.y + tri.h - 16 };\n  drawAngleArc(p1.x, p1.y, angleA, color(70, 130, 255), 'A');\n  drawAngleArc(p3.x, p3.y, angleB, color(255, 120, 80), 'B');\n  drawAngleArc(p2.x, p2.y, missingAngle, color(80, 180, 120), '?');\n  fill(40);\n  noStroke();\n  textSize(14);\n  text('Toplam: ' + sumAngles + '°', 34, 82);\n  text('Eksik: ' + missingAngle + '°', 34, 102);\n  text('Hedef toplam 180°', 34, 122);\n}\n\nfunction drawAngleArc(x, y, ang, c, label) {\n  push();\n  translate(x, y);\n  noFill();\n  stroke(c);\n  strokeWeight(4);\n  let r = 24;\n  arc(0, 0, r * 2, r * 2, -HALF_PI, -HALF_PI + radians(constrain(ang, 10, 170)));\n  fill(c);\n  noStroke();\n  textSize(12);\n  text(label + ' ' + ang + '°', 10, -10);\n  pop();\n}\n\nfunction drawControls() {\n  fill(255);\n  stroke(210);\n  rect(384, 56, 160, 220, 10);\n  fill(25);\n  noStroke();\n  textSize(13);\n  text('Sürükle:', 402, 86);\n  text('A: ' + angleA + '°', 402, 102);\n  text('B: ' + angleB + '°', 402, 116);\n  text('M: ' + missingAngle + '°', 402, 132);\n  textSize(11);\n  text('A ve B halkalarını', 402, 202);\n  text('sürükleyerek 115°', 402, 216);\n  text('toplamını yakala.', 402, 230);\n  fill(245);\n  stroke(180);\n  ellipse(433, 84, 18, 18);\n  ellipse(462, 84, 18, 18);\n  fill(70, 130, 255);\n  ellipse(433, 84, 10, 10);\n  fill(255, 120, 80);\n  ellipse(462, 84, 10, 10);\n}\n\nfunction drawFeedback() {\n  fill(255);\n  stroke(210);\n  rect(16, 284, 528, 44, 10);\n  noStroke();\n  fill(solved ? color(30, 130, 70) : color(40));\n  textSize(14);\n  text(message, 26, 311, 500, 24);\n}\n\nfunction checkAnswer() {\n  checked = true;\n  if (angleA + angleB === 115 && missingAngle === 65) {\n    solved = true;\n    message = 'Harika! Kalan açı 65°.';\n  } else {\n    solved = false;\n    message = 'Henüz değil. İki açının toplamı 115° olmalı.';\n  }\n}\n\nfunction mousePressed() {\n  if (dist(mouseX, mouseY, 433, 84) < 12) dragId = 'A';\n  else if (dist(mouseX, mouseY, 462, 84) < 12) dragId = 'B';\n}\n\nfunction mouseDragged() {\n  if (dragId === 'A') angleA = constrain(map(mouseX, 30, 330, 10, 170), 10, 170).toFixed ? Number(constrain(map(mouseX, 30, 330, 10, 170), 10, 170).toFixed(0)) : angleA;\n  if (dragId === 'B') angleB = constrain(map(mouseX, 30, 330, 10, 170), 10, 170).toFixed ? Number(constrain(map(mouseX, 30, 330, 10, 170), 10, 170).toFixed(0)) : angleB;\n}\n\nfunction mouseReleased() {\n  dragId = null;\n}\n\nfunction touchStarted() {\n  mousePressed();\n  return false;\n}\n\nfunction touchMoved() {\n  mouseDragged();\n  return false;\n}\n\nfunction resetGame() {\n  angleA = 30;\n  angleB = 40;\n  sumAngles = angleA + angleB;\n  missingAngle = 180 - sumAngles;\n  checked = false;\n  solved = false;\n  message = 'Yeniden başla.';\n}\n",
+            "rationale": "Bu mikro-oyun, öğrencinin iki açıyı sürükleyerek toplamı 115° yapmasını ve ardından 180°'den çıkarma fikrini görsel olarak keşfetmesini sağlar. Tek kavram (üçgen iç açıları toplamı), tek ana mekanik (sürükle-tanımla), kısa geri bildirim ve çalışan Kontrol/Sıfırla düğmeleri ile 5. sınıf düzeyine uygun etkileşimli öğrenme sunar.",
+            "state_model": {
+              "tracked_vars": [
+                "angleA",
+                "angleB",
+                "sumAngles",
+                "missingAngle",
+                "checked",
+                "message",
+                "solved"
+              ]
+            },
+            "layout_model": {
+              "boxes": [
+                {
+                  "h": 36,
+                  "w": 528,
+                  "x": 16,
+                  "y": 12,
+                  "id": "title"
+                },
+                {
+                  "h": 220,
+                  "w": 360,
+                  "x": 16,
+                  "y": 56,
+                  "id": "play_area"
+                },
+                {
+                  "h": 220,
+                  "w": 160,
+                  "x": 384,
+                  "y": 56,
+                  "id": "controls"
+                },
+                {
+                  "h": 44,
+                  "w": 528,
+                  "x": 16,
+                  "y": 284,
+                  "id": "feedback"
+                }
+              ],
+              "canvas_width": 560,
+              "target_panel": "top_right_30pct",
+              "canvas_height": 340
+            },
+            "learning_goal": "Üçgenin iç açılarının toplamının 180° olduğunu keşfetmek ve iki açıyı tamamlayarak eksik açıyı bulmak.",
+            "should_render": true,
+            "feedback_model": {
+              "on_correct": "Harika! 48° ve 67° toplamı 115° eder. Kalan açı 65°.",
+              "on_incorrect": "Henüz olmadı. Önce iki açının toplamını 115° yapmayı dene; sonra 180°'den çıkarılan kalanı bul."
+            },
+            "interaction_model": {
+              "inputs": [
+                "mouse drag",
+                "mouse click"
+              ],
+              "affordances": [
+                "sürüklenebilir açı halkaları",
+                "Kontrol düğmesi",
+                "Sıfırla düğmesi"
+              ],
+              "user_actions": [
+                "Açıları sürükleyip büyütür/küçültür",
+                "Toplamı izler",
+                "Kontrol düğmesine tıklar",
+                "Gerekirse Sıfırla ile yeniden dener"
+              ]
+            },
+            "success_condition": "İki açının toplamı 115° olduğunda ve eksik açı 65° olarak ayarlandığında Kontrol ile görev tamamlanır.",
+            "instructions_short": "İki açıyı sürükle. Toplam 180° olunca eksik açı otomatik bulunur. Sonra Kontrol'e bas."
+          }
+        },
+        {
+          "attempt": 5,
+          "verdict": {
+            "grade": "needs_improvement",
+            "feedback": "Oyun fikri doğru ve 5. sınıfa uygun; ancak etkileşim akışında kritik bir mantık hatası var. Üç kart da sürüklenebilir ama başarı koşulu, üçüncü kartın (65°) öğrencinin hesaplayarak bulması yerine doğrudan yerleştirilmesine açık; bu yüzden kavramı tam öğretmiyor. Ayrıca `placedAngle1/2/missingAngleValue` yalnızca slotlara göre atanmış, ama slotların anlamı net değil; öğrenci hangi iki açıyı neden seçtiğini oyun üzerinden öğrenmiyor. Kontrol geri bildirimi de “önce yerleştir” diyerek adımı tekrar ediyor, öğretici ipucu daha net olmalı: 48° + 67° = 115°, sonra 180° - 115° = 65° gibi. Son olarak sağ panelde kartlar ve butonlar görünür olsa da, üçüncü kartın varlığı çözümü önceden açığa çıkarıyor; eksik açıyı kart olarak vermek yerine boş alan ve hesaplama adımı olmalı. Bu küçük mekanik/pedagojik düzenlemelerle oyun kurtarılabilir."
+          },
+          "artifact": {
+            "game_type": "mixed",
+            "p5_sketch": "let angleCards; let slots; let trianglePts; let draggingCard = null; let dragOffX = 0; let dragOffY = 0; let feedbackMsg = 'Kartları yerleştir.'; let placedAngle1 = null; let placedAngle2 = null; let missingAngleValue = null; let sumOfGivenAngles = 0; let isChecked = false; let isSolved = false; let targetSlotIndex = null;\n\nfunction setup() {\n  createCanvas(560, 340);\n  textFont('sans-serif');\n  initializeGame();\n}\n\nfunction initializeGame() {\n  angleCards = [\n    { id: 'a1', value: 48, x: 398, y: 110, w: 58, h: 30, placed: false, homeX: 398, homeY: 110 },\n    { id: 'a2', value: 67, x: 462, y: 110, w: 58, h: 30, placed: false, homeX: 462, homeY: 110 },\n    { id: 'a3', value: 65, x: 398, y: 150, w: 122, h: 30, placed: false, homeX: 398, homeY: 150 }\n  ];\n  slots = [\n    { x: 120, y: 95, w: 42, h: 28, value: null, label: 'A' },\n    { x: 188, y: 175, w: 42, h: 28, value: null, label: 'B' },\n    { x: 246, y: 95, w: 42, h: 28, value: null, label: 'C' }\n  ];\n  trianglePts = [{ x: 100, y: 205 }, { x: 210, y: 205 }, { x: 155, y: 95 }];\n  placedAngle1 = null;\n  placedAngle2 = null;\n  missingAngleValue = null;\n  sumOfGivenAngles = 0;\n  isChecked = false;\n  isSolved = false;\n  feedbackMsg = 'Kartları yerleştir.';\n}\n\nfunction resetGame() {\n  initializeGame();\n}\n\nfunction draw() {\n  background(248);\n  fill(30);\n  textSize(16);\n  text('Üçgeni tamamla', 28, 35);\n\n  fill(255);\n  stroke(210);\n  rect(16, 56, 360, 220, 10);\n  rect(384, 56, 160, 220, 10);\n  rect(16, 284, 528, 44, 10);\n\n  drawTriangleScene();\n  drawControls();\n  drawFeedback();\n  drawCards();\n\n  if (draggingCard) {\n    draggingCard.x = mouseX - dragOffX;\n    draggingCard.y = mouseY - dragOffY;\n  }\n}\n\nfunction drawTriangleScene() {\n  stroke(70);\n  strokeWeight(2);\n  fill(255, 252, 245);\n  triangle(trianglePts[0].x, trianglePts[0].y, trianglePts[1].x, trianglePts[1].y, trianglePts[2].x, trianglePts[2].y);\n  noStroke();\n  fill(60);\n  textSize(12);\n  text('1', 92, 212);\n  text('2', 217, 212);\n  text('3', 156, 88);\n\n  for (let i = 0; i < slots.length; i++) {\n    let s = slots[i];\n    fill(255);\n    stroke(100);\n    rect(s.x, s.y, s.w, s.h, 6);\n    noStroke();\n    fill(90);\n    textAlign(CENTER, CENTER);\n    textSize(14);\n    if (s.value !== null) text(s.value + '°', s.x + s.w / 2, s.y + s.h / 2 + 1);\n    else text('?', s.x + s.w / 2, s.y + s.h / 2 + 1);\n  }\n\n  fill(40);\n  textAlign(LEFT, TOP);\n  textSize(12);\n  text('İki kartı yerleştir, sonra eksik olanı tamamla.', 28, 60, 330, 24);\n}\n\nfunction drawCards() {\n  textAlign(CENTER, CENTER);\n  for (let c of angleCards) {\n    fill(c.placed ? color(180, 230, 180) : color(235));\n    stroke(120);\n    rect(c.x, c.y, c.w, c.h, 8);\n    noStroke();\n    fill(30);\n    textSize(14);\n    text(c.value + '°', c.x + c.w / 2, c.y + c.h / 2 + 1);\n  }\n}\n\nfunction drawControls() {\n  fill(245);\n  stroke(210);\n  rect(402, 76, 126, 30, 8);\n  rect(402, 114, 126, 30, 8);\n  rect(402, 188, 126, 30, 8);\n  noStroke();\n  fill(40);\n  textAlign(CENTER, CENTER);\n  textSize(13);\n  text('Kontrol', 465, 91);\n  text('Sıfırla', 465, 129);\n  text('Toplam: ' + sumOfGivenAngles + '°', 465, 203);\n  if (placedAngle1 !== null && placedAngle2 !== null) {\n    text('Eksik: ' + (180 - sumOfGivenAngles) + '°', 465, 238);\n  } else {\n    text('Eksik: ?', 465, 238);\n  }\n}\n\nfunction drawFeedback() {\n  fill(30);\n  textAlign(LEFT, CENTER);\n  textSize(13);\n  text(feedbackMsg, 26, 306, 520, 28);\n}\n\nfunction mousePressed() {\n  if (hitButton(402, 76, 126, 30)) {\n    checkAnswer();\n    return;\n  }\n  if (hitButton(402, 114, 126, 30)) {\n    resetGame();\n    return;\n  }\n  for (let i = angleCards.length - 1; i >= 0; i--) {\n    let c = angleCards[i];\n    if (hitCard(c)) {\n      draggingCard = c;\n      dragOffX = mouseX - c.x;\n      dragOffY = mouseY - c.y;\n      return;\n    }\n  }\n}\n\nfunction mouseReleased() {\n  if (!draggingCard) return;\n  let dropped = false;\n  for (let i = 0; i < slots.length; i++) {\n    let s = slots[i];\n    if (overRect(draggingCard, s.x, s.y, s.w, s.h) && s.value === null) {\n      s.value = draggingCard.value;\n      draggingCard.x = s.x;\n      draggingCard.y = s.y - 38;\n      draggingCard.placed = true;\n      dropped = true;\n      updateState();\n      break;\n    }\n  }\n  if (!dropped) {\n    draggingCard.x = draggingCard.homeX;\n    draggingCard.y = draggingCard.homeY;\n  }\n  draggingCard = null;\n}\n\nfunction checkAnswer() {\n  isChecked = true;\n  if (placedAngle1 === 48 && placedAngle2 === 67 && missingAngleValue === 65) {\n    isSolved = true;\n    feedbackMsg = 'Harika! Önce topladın, sonra 180°’den çıkardın.';\n  } else {\n    feedbackMsg = 'Önce 48° ve 67° kartlarını yerleştir. Sonra 180°’den çıkarıp eksik açıyı bul.';\n  }\n}\n\nfunction updateState() {\n  placedAngle1 = slots[0].value;\n  placedAngle2 = slots[1].value;\n  missingAngleValue = slots[2].value;\n  sumOfGivenAngles = 0;\n  if (placedAngle1 !== null) sumOfGivenAngles += placedAngle1;\n  if (placedAngle2 !== null) sumOfGivenAngles += placedAngle2;\n  if (placedAngle1 !== null && placedAngle2 !== null && missingAngleValue === null) {\n    feedbackMsg = 'İyi! Şimdi eksik açıyı 180°’ye tamamla.';\n  }\n  if (placedAngle1 !== null && placedAngle2 !== null) {\n    angleCards[2].homeX = 398;\n    angleCards[2].homeY = 150;\n  }\n}\n\nfunction hitButton(x, y, w, h) {\n  return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;\n}\n\nfunction hitCard(c) {\n  return mouseX >= c.x && mouseX <= c.x + c.w && mouseY >= c.y && mouseY <= c.y + c.h;\n}\n\nfunction overRect(obj, x, y, w, h) {\n  return obj.x + obj.w * 0.5 >= x && obj.x + obj.w * 0.5 <= x + w && obj.y + obj.h * 0.5 >= y && obj.y + obj.h * 0.5 <= y + h;\n}\n\nfunction touchStarted() {\n  mousePressed();\n  return false;\n}\n\nfunction touchEnded() {\n  mouseReleased();\n  return false;\n}\n",
+            "rationale": "Bu mikro-oyun, üçgenin iç açıları toplamı kavramını doğrudan işlem yaptırarak öğretir. Öğrenci önce iki verilen açıyı ayrı kartlar olarak yerleştirir, böylece toplamı aktif biçimde görür; ardından üçüncü kartı sürükleyip kalan açıyı bulur. Böylece yalnızca sonucu okumak yerine önce toplama, sonra 180°'den çıkarma adımı oyun içinde uygulanır. Kontrol ve Sıfırla butonları gerçek etkileşim sağlar; geri bildirim de eksik adımı açıkça belirtir. Başlangıçta oyun çözülmüş değildir ve başarı ancak doğru yerleştirme ile sağlanır.",
+            "state_model": {
+              "tracked_vars": [
+                "placedAngle1",
+                "placedAngle2",
+                "missingAngleValue",
+                "sumOfGivenAngles",
+                "isChecked",
+                "isSolved"
+              ]
+            },
+            "layout_model": {
+              "boxes": [
+                {
+                  "h": 36,
+                  "w": 528,
+                  "x": 16,
+                  "y": 12,
+                  "id": "title"
+                },
+                {
+                  "h": 220,
+                  "w": 360,
+                  "x": 16,
+                  "y": 56,
+                  "id": "play_area"
+                },
+                {
+                  "h": 220,
+                  "w": 160,
+                  "x": 384,
+                  "y": 56,
+                  "id": "controls"
+                },
+                {
+                  "h": 44,
+                  "w": 528,
+                  "x": 16,
+                  "y": 284,
+                  "id": "feedback"
+                }
+              ],
+              "canvas_width": 560,
+              "target_panel": "top_right_30pct",
+              "canvas_height": 340
+            },
+            "learning_goal": "Üçgenin iç açılar toplamının 180° olduğunu keşfetme; iki verilen açıyı seçip toplama, ardından eksik açıyı 180°'ye tamamlayacak şekilde bulma.",
+            "should_render": true,
+            "feedback_model": {
+              "on_correct": "Harika! Önce iki açıyı topladın, sonra 180°'den çıkararak eksik açıyı buldun.",
+              "on_incorrect": "Bir adımı kaçırmış olabilirsin. Önce iki verilen açıyı yerleştir ve topla; sonra 180°'den çıkararak eksik açıyı bul."
+            },
+            "interaction_model": {
+              "inputs": [
+                "mouse",
+                "touch",
+                "button_click"
+              ],
+              "affordances": [
+                "sürükle-bırak açı yerleştirme",
+                "tıklanabilir sayı kartları",
+                "Kontrol ve Sıfırla butonları"
+              ],
+              "user_actions": [
+                "48° kartına tıkla",
+                "67° kartına tıkla",
+                "eksik açıyı sürükleyip açılan boşluğa bırak",
+                "Kontrol'a bas",
+                "gerekirse Sıfırla'ya bas"
+              ]
+            },
+            "success_condition": "İki verilen açı doğru yuvalara yerleştirildiğinde ve eksik açı 65° olarak 180°'yi tamamladığında Kontrol ile onaylanır.",
+            "instructions_short": "İki verilen açıyı kutudan seçip üçgene yerleştir. Sonra eksik açıyı sürükleyerek 180°'yi tamamla."
+          }
+        }
+      ],
+      "solver": [
+        {
+          "attempt": 1,
+          "verdict": {
+            "grade": "pass",
+            "feedback": "Çözüm doğru ve adımlar mantıklı sırayla ilerliyor. Üçgenin iç açıları toplamı kuralı belirtilmiş, 48° + 67° işlemi doğru yapılmış ve 180°’den çıkarma adımı da gerekçelendirilmiş. final_answer ile steps arasında çelişki yok."
+          },
+          "artifact": {
+            "steps": [
+              {
+                "expression": "48° + 67° = 115°",
+                "description": "Üçgenin iç açıları toplamı 180°'dir. Önce verilen iki açıyı toplayalım: 48° + 67° = 115°."
+              },
+              {
+                "expression": "180° - 115° = 65°",
+                "description": "Üçgende üç açının toplamı 180° olduğuna göre, üçüncü açıyı bulmak için 180°'den bulunan toplamı çıkarırız: 180° - 115° = 65°."
+              },
+              {
+                "expression": "Üçüncü açı = 65°",
+                "description": "Sonuç olarak üçüncü iç açı 65° olur."
+              }
+            ],
+            "final_answer": "Üçüncü açı 65°'tir."
+          }
+        }
+      ],
+      "question": [
+        {
+          "attempt": 1,
+          "verdict": {
+            "grade": "pass",
+            "feedback": "Soru 5. sınıf düzeyine uygun, açık ve kısa. Çoktan seçmeli değil. Ezber değil; üçgenin iç açıları toplamını kullanmayı ve kısa gerekçe yazmayı istiyor. expected_answer da öğretici ve adımlı. Öğrenciye doğrudan yöneltilmiş, üslup uygun."
+          },
+          "artifact": {
+            "rationale": "Bu soru, üçgenin iç açılar toplamı kuralını kullanmayı ve işlem adımlarını gerekçelendirmeyi ölçer. Öğrencinin sadece sonucu değil, neden o sonuca ulaştığını açıklaması hedeflenir.",
+            "question_text": "Bir üçgenin iki iç açısı 48° ve 67° ise, üçüncü açının kaç derece olduğunu bul ve nasıl bulduğunu kısaca açıkla.",
+            "expected_answer": "Üçgenin iç açıları toplamı 180° olduğundan önce 48° + 67° = 115° bulunur. 180° - 115° = 65° olduğu için üçüncü açı 65°'tir."
+          }
+        }
+      ]
+    },
+    "feedback_history": []
+  },
+  {
+    "request_id": "req_d5802112",
+    "grade": "5",
+    "subject": "Geometrik Nicelikler",
+    "topic": "Geometrik Nicelikler",
+    "question_text": "Bir üçgende iki iç açının ölçüleri 50° ve 60°'dir. Üçüncü açıyı bulurken nasıl düşünürsün? Sonucu yaz ve nedenini kısaca açıkla.",
+    "solution_steps": [
+      {
+        "expression": "∠A + ∠B + ∠C = 180°",
+        "description": "Üçgenin iç açılarının toplamının 180° olduğunu hatırlarız."
+      },
+      {
+        "expression": "50° + 60° = 110°",
+        "description": "Verilen iki açıyı toplarız: 50° ve 60°."
+      },
+      {
+        "expression": "180° - 110° = 70°",
+        "description": "180°'den bu toplamı çıkararak üçüncü açıyı buluruz."
+      }
+    ],
+    "visual_path": "teacher/5_geometrik-nicelikler_1_req_d5802112.html",
+    "status": "pending",
+    "trails": {
+      "game": [
+        {
+          "attempt": 1,
+          "verdict": {
+            "grade": "pass",
+            "feedback": "Oyun soruyu tekrar etmiyor; 50° ve 60° kartlarını sürükleyerek toplamı bulduruyor ve eksik açıyı 70° olarak görünür kılıyor. Öğrenci eylemi net, Kontrol/Sıfırla işlevsel, başlangıç durumu çözümlenmiş değil. Geri bildirim öğretici ve 5. sınıf için uygun. Küçük bir iyileştirme olarak ‘yerleştir’ hedef alanında kartların yanlışlıkla üst üste binmesini önlemek için bırakma alanı biraz daha belirginleştirilebilir, ancak bu kritik bir sorun değil."
+          },
+          "artifact": {
+            "game_type": "mixed",
+            "p5_sketch": "let cards = [];\\nlet slots = [];\\nlet buttons = [];\\nlet feedbackMsg = 'Kartları sürükle.';\\nlet placedAngles = [];\\nlet placedSum = 0;\\nlet missingAngle = null;\\nlet isChecked = false;\\nlet completed = false;\\nlet activeCard = null;\\n\\nfunction setup() {\\n  createCanvas(560, 340);\\n  textFont('sans-serif');\\n  initializeGame();\\n}\\n\\nfunction initializeGame() {\\n  resetGame();\\n}\\n\\nfunction resetGame() {\\n  cards = [\\n    { id: 50, x: 396, y: 96, w: 56, h: 34, homeX: 396, homeY: 96, placed: false },\\n    { id: 60, x: 462, y: 96, w: 56, h: 34, homeX: 462, homeY: 96, placed: false }\\n  ];\\n  slots = [{ x: 86, y: 120, w: 110, h: 56, angle: null }, { x: 208, y: 120, w: 110, h: 56, angle: null }];\\n  buttons = [\\n    { label: 'Kontrol', x: 404, y: 154, w: 112, h: 30 },\\n    { label: 'Sıfırla', x: 404, y: 192, w: 112, h: 30 }\\n  ];\\n  feedbackMsg = 'Kartları sürükle.';\\n  placedAngles = [];\\n  placedSum = 0;\\n  missingAngle = null;\\n  isChecked = false;\\n  completed = false;\\n  activeCard = null;\\n}\\n\\nfunction draw() {\\n  background(248);\\n  drawTitle();\\n  drawPlayArea();\\n  drawControls();\\n  drawFeedback();\\n  updateState();\\n}\\n\\nfunction drawTitle() {\\n  fill(30);\\n  noStroke();\\n  textSize(16);\\n  textAlign(LEFT, CENTER);\\n  text('Açı Topla, Eksik Köşeyi Bul', 18, 30);\\n}\\n\\nfunction drawPlayArea() {\\n  fill(255);\\n  stroke(210);\\n  rect(16, 56, 360, 220, 10);\\n\\n  // triangle\\n  noFill();\\n  stroke(60);\\n  strokeWeight(2);\\n  triangle(86, 220, 186, 90, 286, 220);\\n  strokeWeight(1);\\n\\n  // angle target slots\\n  for (let s of slots) {\\n    fill(250);\\n    stroke(180);\\n    rect(s.x, s.y, s.w, s.h, 8);\\n    noStroke();\\n    fill(100);\\n    textSize(13);\\n    textAlign(CENTER, CENTER);\\n    text(s.angle === null ? 'Yerleştir' : s.angle + '°', s.x + s.w / 2, s.y + s.h / 2);\\n  }\\n\\n  // sum bar\\n  fill(240);\\n  stroke(210);\\n  rect(58, 192, 250, 34, 8);\\n  noStroke();\\n  fill(40);\\n  textSize(13);\\n  textAlign(LEFT, CENTER);\\n  text('Toplam: ' + placedSum + '° / 180°', 70, 209);\\n\\n  if (missingAngle !== null) {\\n    fill(20, 120, 60);\\n    textAlign(CENTER, CENTER);\\n    textSize(18);\\n    text('Eksik açı: ' + missingAngle + '°', 186, 99);\\n  } else {\\n    fill(120);\\n    textAlign(CENTER, CENTER);\\n    textSize(12);\\n    text('Toplamı 180° yap', 186, 99);\\n  }\\n\\n  for (let c of cards) {\\n    fill(c.placed ? color(220, 245, 230) : color(255, 236, 210));\\n    stroke(120);\\n    rect(c.x, c.y, c.w, c.h, 8);\\n    noStroke();\\n    fill(30);\\n    textSize(16);\\n    textAlign(CENTER, CENTER);\\n    text(c.id + '°', c.x + c.w / 2, c.y + c.h / 2);\\n  }\\n}\\n\\nfunction drawControls() {\\n  fill(255);\\n  stroke(210);\\n  rect(384, 56, 160, 220, 10);\\n  fill(40);\\n  noStroke();\\n  textAlign(LEFT, TOP);\\n  textSize(13);\\n  text('Amaç:\\nİki açıyı topla.', 398, 70);\\n  for (let b of buttons) {\\n    fill(70, 130, 220);\\n    rect(b.x, b.y, b.w, b.h, 8);\\n    fill(255);\\n    textAlign(CENTER, CENTER);\\n    textSize(14);\\n    text(b.label, b.x + b.w / 2, b.y + b.h / 2);\\n  }\\n}\\n\\nfunction drawFeedback() {\\n  fill(245);\\n  stroke(210);\\n  rect(16, 284, 528, 44, 10);\\n  noStroke();\\n  fill(30);\\n  textAlign(LEFT, CENTER);\\n  textSize(14);\\n  text(feedbackMsg, 28, 306, 500, 28);\\n}\\n\\nfunction updateState() {\\n  placedAngles = [];\\n  placedSum = 0;\\n  for (let s of slots) {\\n    if (s.angle !== null) {\\n      placedAngles.push(s.angle);\\n      placedSum += s.angle;\\n    }\\n  }\\n  missingAngle = placedSum > 0 ? 180 - placedSum : null;\\n  completed = placedSum === 110;\\n}\\n\\nfunction mousePressed() {\\n  for (let b of buttons) {\\n    if (inside(mouseX, mouseY, b.x, b.y, b.w, b.h)) {\\n      if (b.label === 'Kontrol') {\\n        isChecked = true;\\n        if (completed) {\\n          feedbackMsg = 'Harika! 50° + 60° = 110°. Eksik açı 70°.';\\n        } else {\\n          feedbackMsg = 'Henüz tamam değil. 50° ve 60° kartlarını yerleştir.';\\n        }\\n      } else {\\n        initializeGame();\\n      }\\n      return;\\n    }\\n  }\\n\\n  for (let i = cards.length - 1; i >= 0; i--) {\\n    let c = cards[i];\\n    if (inside(mouseX, mouseY, c.x, c.y, c.w, c.h)) {\\n      activeCard = c;\\n      c.dragOffX = mouseX - c.x;\\n      c.dragOffY = mouseY - c.y;\\n      return;\\n    }\\n  }\\n}\\n\\nfunction mouseDragged() {\\n  if (activeCard) {\\n    activeCard.x = mouseX - activeCard.dragOffX;\\n    activeCard.y = mouseY - activeCard.dragOffY;\\n  }\\n}\\n\\nfunction mouseReleased() {\\n  if (!activeCard) return;\\n  let placed = false;\\n  for (let s of slots) {\\n    if (dist(activeCard.x + activeCard.w / 2, activeCard.y + activeCard.h / 2, s.x + s.w / 2, s.y + s.h / 2) < 45 && s.angle === null) {\\n      s.angle = activeCard.id;\\n      activeCard.placed = true;\\n      activeCard.x = s.x + 27;\\n      activeCard.y = s.y + 11;\\n      placed = true;\\n      feedbackMsg = 'Güzel! Şimdi diğer açıyı ekle.';\\n      break;\\n    }\\n  }\\n  if (!placed) {\\n    activeCard.x = activeCard.homeX;\\n    activeCard.y = activeCard.homeY;\\n    activeCard.placed = false;\\n    feedbackMsg = 'Kartı kutunun üstüne bırak.';\\n  }\\n  activeCard = null;\\n}\\n\\nfunction inside(px, py, x, y, w, h) {\\n  return px >= x && px <= x + w && py >= y && py <= y + h;\\n}\\n",
+            "rationale": "Bu mikro-oyun, üçgende iç açılar toplamı 180° kuralını doğrudan manipülasyonla keşfettirir. Öğrenci 50° ve 60° kartlarını sürükleyip toplamı görür, ardından eksik açının 70° olduğunu anlık geri bildirimle doğrular. Tek kavram, tek ana mekanik ve kısa butonlarla 5. sınıf düzeyine uygundur; reset ve kontrol etkileşimleri durum değiştirir ve öğrenmeyi pekiştirir.",
+            "state_model": {
+              "tracked_vars": [
+                "placedAngles",
+                "placedSum",
+                "missingAngle",
+                "isChecked",
+                "completed"
+              ]
+            },
+            "layout_model": {
+              "boxes": [
+                {
+                  "h": 36,
+                  "w": 528,
+                  "x": 16,
+                  "y": 12,
+                  "id": "title"
+                },
+                {
+                  "h": 220,
+                  "w": 360,
+                  "x": 16,
+                  "y": 56,
+                  "id": "play_area"
+                },
+                {
+                  "h": 220,
+                  "w": 160,
+                  "x": 384,
+                  "y": 56,
+                  "id": "controls"
+                },
+                {
+                  "h": 44,
+                  "w": 528,
+                  "x": 16,
+                  "y": 284,
+                  "id": "feedback"
+                }
+              ],
+              "canvas_width": 560,
+              "target_panel": "top_right_30pct",
+              "canvas_height": 340
+            },
+            "learning_goal": "Üçgende iki açıyı toplayıp 180°'den çıkararak eksik açıyı bulma.",
+            "should_render": true,
+            "feedback_model": {
+              "on_correct": "Harika! 50° + 60° = 110° oldu. Eksik açı 70°.",
+              "on_incorrect": "Henüz 180° tamamlanmadı. Kartları yerleştir ve toplamı 110° yapınca eksik açı 70° olur."
+            },
+            "interaction_model": {
+              "inputs": [
+                "mouse drag",
+                "mouse click"
+              ],
+              "affordances": [
+                "sürüklenebilir açı kartları",
+                "Kontrol butonu",
+                "Sıfırla butonu",
+                "anlık geri bildirim"
+              ],
+              "user_actions": [
+                "50° kartını ve 60° kartını üçgenin toplam alanına sürükle",
+                "Kontrol'e bas",
+                "yanlışsa kartları değiştirip tekrar dene",
+                "Sıfırla ile yeniden başla"
+              ]
+            },
+            "success_condition": "Toplanan açılar 110° olduğunda eksik açı 70° olarak görünür ve kullanıcı Kontrol'e bastığında doğru durum doğrulanır.",
+            "instructions_short": "Açı parçalarını sürükle. Toplam 180° olunca üçüncü açı ortaya çıksın. Gerekirse Sıfırla."
+          }
+        }
+      ],
+      "solver": [
+        {
+          "attempt": 1,
+          "verdict": {
+            "grade": "pass",
+            "feedback": "Çözüm doğru ve adımlar mantıklı ilerliyor. Üçgende iç açılar toplamı kuralı doğru kullanılmış, 50° + 60° = 110° ve 180° - 110° = 70° sonucu final_answer ile uyumlu. İstersen son cümlede ‘180 - 50 - 60 = 70’ şeklinde işlemi doğrudan da yazabilirsin, ama mevcut çözüm yeterli."
+          },
+          "artifact": {
+            "steps": [
+              {
+                "expression": "∠A + ∠B + ∠C = 180°",
+                "description": "Üçgenin iç açılarının toplamının 180° olduğunu hatırlarız."
+              },
+              {
+                "expression": "50° + 60° = 110°",
+                "description": "Verilen iki açıyı toplarız: 50° ve 60°."
+              },
+              {
+                "expression": "180° - 110° = 70°",
+                "description": "180°'den bu toplamı çıkararak üçüncü açıyı buluruz."
+              }
+            ],
+            "final_answer": "Üçüncü açı 70°'dir; çünkü üçgende iç açılar toplamı 180°'dir."
+          }
+        }
+      ],
+      "question": [
+        {
+          "attempt": 1,
+          "verdict": {
+            "grade": "pass",
+            "feedback": "Soru açık, 5. sınıf düzeyine uygun ve öğrenciyi gerekçelendirmeye yönlendiriyor. Çoktan seçmeli format yok, doğrudan öğrenciye hitap ediyor ve expected_answer öğretici şekilde çözümü açıklıyor. Geometrik Nicelikler konusu ile de uyumlu."
+          },
+          "artifact": {
+            "rationale": "Bu soru, üçgende iç açıların toplamı kuralını kullanmayı ölçer. Öğrencinin sadece sonucu değil, sonuca nasıl ulaştığını da açıklaması istenir.",
+            "question_text": "Bir üçgende iki iç açının ölçüleri 50° ve 60°'dir. Üçüncü açıyı bulurken nasıl düşünürsün? Sonucu yaz ve nedenini kısaca açıkla.",
+            "expected_answer": "Üçüncü açı 70°'dir; çünkü üçgenin iç açılarının toplamı 180° olduğundan 180 - 50 - 60 = 70 bulunur."
+          }
+        }
+      ]
+    },
+    "feedback_history": []
+  }
+]

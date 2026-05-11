@@ -1,0 +1,25 @@
+# Books
+/books/*
+
+# Pipeline outputs
+/processed/
+
+# Python / uv
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+**/.venv/
+
+# Codex
+.codex
+
+# Transformers cache
+.hf-cache/
+
+# Env
+.env
+
+# Teacher Studio runtime artifacts
+/issues/
+/api/visuals/teacher/

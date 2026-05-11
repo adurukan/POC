@@ -1,0 +1,19 @@
+document: "matematik_5_1.pdf"
+title: "Matematik 5. Sınıf 1. Kitap"
+grade: "5"
+subject: "Matematik"
+language: "tr"
+
+sections:
+  - title: "Geometrik Şekiller"
+    slug: "geometrik_sekiller"
+    page_start: 14
+    page_end: 91
+  - title: "Sayılar ve Nicelikler: Doğal Sayılar ve İşlemler"
+    slug: "sayilar_ve_nicelikler_dogal_sayilar_ve_islemler"
+    page_start: 92
+    page_end: 137
+  - title: "Geometrik Nicelikler"
+    slug: "geometrik_nicelikler"
+    page_start: 138
+    page_end: 164

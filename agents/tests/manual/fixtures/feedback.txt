@@ -1,0 +1,6 @@
+# One feedback message per non-comment line.
+# Includes single-target and multi-target examples for try_feedback.
+Yaptığın oyun çalışmıyor.
+Çözüm adımlarında 3. adım eksik, onu ekle.
+Soruyu daha basit yap, sayılar küçük olsun.
+Yaptığın oyun çalışmıyor, verdiğin soruyu daha basit yap, çözüm adımlarında ikinci adım eksik onu ekle.

@@ -1,0 +1,5 @@
+{
+  "question_text": "Bir kek 8 eşit dilime kesilmiştir. Ali bu kekten 3 dilim, Ayşe ise 2 dilim yemiştir. Geriye kekin kaçta kaçı kalmıştır?",
+  "expected_answer": "3/8",
+  "rationale": "Toplam 8 dilim, yenen 5 dilim, kalan 3 dilim, yani 3/8."
+}

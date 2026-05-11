@@ -1,0 +1,12 @@
+[
+  {
+    "file_sha256": "bbf4acbf19259c25d1eebcc987699e0490208fffcc93e974a8fb1c1b6b173b2c",
+    "title": "Matematik 5. Sınıf 1. Kitap",
+    "source_filename": "matematik_5_1.pdf",
+    "source_path": "pipeline/processed/matematik_5_1/original/matematik_5_1.pdf",
+    "subject": "Matematik",
+    "grade": "5",
+    "language": "tr",
+    "metadata_json": null
+  }
+]

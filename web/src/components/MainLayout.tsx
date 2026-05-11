@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import type { QuestionResponse } from '../api/client'
 import QuestionPanel from './QuestionPanel'
-import VisualPanel from './VisualPanel'
-import SolutionPanel from './SolutionPanel'
 import UserAvatar from './UserAvatar'
+import VisualPanel from './VisualPanel'
 
 type Lang = 'tr' | 'en'
 
@@ -22,7 +21,6 @@ export default function MainLayout({ username, onLogout, lang, onLangChange }: P
       <UserAvatar username={username} onLogout={onLogout} lang={lang} onLangChange={onLangChange} />
       <QuestionPanel onQuestionSelect={setSelectedQuestion} />
       <VisualPanel question={selectedQuestion} />
-      <SolutionPanel question={selectedQuestion} />
     </div>
   )
 }
