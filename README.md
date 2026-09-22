@@ -18,6 +18,8 @@ TeachingAI/
     migrations/
     seed.py
     seeds/data/
+  limbas/
+    README.md
   books/
   processed/
   docker-compose.yml
@@ -38,16 +40,16 @@ All DB responsibilities are centralized in `db/`:
 
 Run all commands from repo root unless noted otherwise.
 
-### 1) Start Docker services (DB + bootstrap)
+### 1) Start Docker services (DB + bootstrap + admin panel)
 
 ```bash
-docker compose up -d --build                 # start PostgreSQL + one-shot db-bootstrap (migrations + seed)
+docker compose up -d --build                 # start PostgreSQL + db-bootstrap + Limbas admin panel
 ```
 
 ### 2) Verify Docker health
 
 ```bash
-docker compose ps                             # check that db is Up
+docker compose ps                             # check that db and limbas are Up
 docker compose ps -a db-bootstrap             # check that bootstrap exited successfully
 docker compose logs db-bootstrap              # inspect migration + seed logs
 ```
@@ -55,6 +57,7 @@ docker compose logs db-bootstrap              # inspect migration + seed logs
 What to check:
 
 - `db` is `Up`.
+- `limbas` is `Up` and healthy.
 - `db-bootstrap` finished with `Exit 0`.
 - Logs contain successful Alembic upgrade and `python -m db.seed all`.
 
@@ -109,6 +112,25 @@ docker compose down -v                        # remove containers + DB volume
 docker compose up -d --build                  # recreate DB and rerun bootstrap
 docker compose logs db-bootstrap              # verify migrations + seed again
 ```
+
+## Limbas Admin Panel
+
+Limbas is a self-hosted low-code database UI bundled as a Docker service. It connects directly to the `teachingai` PostgreSQL database and gives teachers and content admins a browser-based interface for managing the question bank, reviewing the AI-generated question queue, and monitoring ingestion runs — no CLI or SQL needed.
+
+**Access:** `http://localhost:8090`
+
+**First-run:** The first time you open Limbas you will see a setup wizard. Enter the DB credentials (`host: db`, `port: 5432`, `db: teachingai`, `user: app`, `pass: app`) and create an admin account. This is a one-time step; config is persisted in the `limbas_inc` Docker volume.
+
+See [`limbas/README.md`](limbas/README.md) for full setup instructions, recommended table configuration, and typical workflows.
+
+### Service ports
+
+| Service | URL |
+|---|---|
+| FastAPI backend | `http://localhost:8000` |
+| Vite frontend (dev) | `http://localhost:5173` |
+| Limbas admin panel | `http://localhost:8090` |
+| PostgreSQL | `localhost:5432` |
 
 ## Manual DB Commands
 
