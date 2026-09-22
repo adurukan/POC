@@ -30,5 +30,31 @@ services:
       sh -lc "uv run --no-project --with alembic --with sqlalchemy --with psycopg2-binary --with pgvector --with python-dotenv --with typer --with langgraph --with langgraph-checkpoint-postgres --with 'psycopg[binary]' alembic -c db/alembic.ini upgrade head && uv run --no-project --with sqlalchemy --with psycopg2-binary --with python-dotenv --with typer python -m db.seed all"
     restart: "no"
 
+  limbas:
+    image: limbas/limbas:latest
+    ports:
+      - "8090:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      LIMBAS_DB_HOST: db
+    volumes:
+      - limbas_extensions:/var/www/html/openlimbas/dependent/EXTENSIONS
+      - limbas_upload:/var/www/html/openlimbas/dependent/UPLOAD
+      - limbas_user:/var/www/html/openlimbas/dependent/USER
+      - limbas_temp:/var/www/html/openlimbas/dependent/TEMP
+      - limbas_inc:/var/www/html/openlimbas/dependent/inc
+      - limbas_backup:/var/www/html/openlimbas/dependent/BACKUP
+      - limbas_localassets:/var/www/html/openlimbas/public/localassets
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  limbas_extensions:
+  limbas_upload:
+  limbas_user:
+  limbas_temp:
+  limbas_inc:
+  limbas_backup:
+  limbas_localassets:
